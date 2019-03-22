@@ -1,0 +1,145 @@
+#!/bin/bash
+
+# Copyright (c) 2008-2012, James Philip Rowell,
+# Orange Imagination & Concepts, Inc.
+# www.orangeimagination.com
+# All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+# 
+#   - Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#   - Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
+#     the documentation and/or other materials provided with the
+#     distribution.
+#   - Neither the name "Orange Imagination & Concepts, Inc." nor the
+#     names of its contributors may be used to endorse or promote
+#     products derived from this software without specific prior written
+#     permission.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+# tabs2spaces/spaces2tabs - helpful wrapper to run 'expand' on a list of files.
+
+set +o noclobber
+cmdName=`basename "$0"`
+
+cleanup() {
+    /bin/rm /tmp/tmpTABS$$ > /dev/null 2>&1
+    exit 0
+}
+
+trap cleanup INT
+
+usageExit() {
+    echo "Usage: $1 [-h | --help] [-t | --tabs=NUMBER] [FILE]..."
+    if [ "$2" = help ]; then
+        cat - <<EOF
+
+tabs2spaces/spaces2tabs is a wrapper for the commands expand and unexpand
+respectively.  The FILES are changed in place.
+
+Options:
+ -h, --help          Display this help and exit
+ -t, --tabs=NUMBER   expands/unexpands tabs by NUMBER characters - default 8.
+
+Note: This script looks at the name of the command (tabs2spaces or
+      spaces2tabs) to determine the behavior, so just hard/soft link
+      the two names to this same script.
+
+Note: To get rid of all the crufty leftovers:
+    find . -name '.*.tabs' -type f -print0 | xargs -0 /bin/rm -f
+
+EOF
+    fi
+    exit 1
+}
+
+tabSize=8
+
+if [ "$cmdName" != "tabs2spaces" ] && [ "$cmdName" != "spaces2tabs" ]; then
+    echo "ERROR: $0 must be named either 'tabs2spaces' or 'spaces2tabs'"
+    exit 1
+fi
+
+#
+# Parse options.  Stop when you get to the file list.
+#
+while :
+do
+    case "$1" in
+        -h|--help) usageExit $cmdName help
+        ;;
+
+        -t)
+	    shift
+	    if ! [[ $1 =~ [0-9]+ ]]; then
+		usageExit $cmdName
+	    fi
+	    tabSize=$1
+	    shift
+        ;;
+
+	--tabs=[0-9]+)
+	    tabSize=`echo $1 | sed "s/--tabs=//"`
+	    shift
+        ;;
+
+        -*) echo "$cmdName: ERROR: Invalid option '$1'."
+             usageExit $cmdName
+        ;;
+
+        *) break # We're done processing arguments, so let's get on with it.
+    esac
+done
+
+echo '#!/bin/bash' >  .tabs.undo.tabs
+echo cd `pwd`      >> .tabs.undo.tabs
+echo '#!/bin/bash' >  .tabs.diff.tabs
+echo cd `pwd`      >> .tabs.diff.tabs
+chmod +x .tabs.undo.tabs .tabs.diff.tabs
+echo '( set -x' >> .tabs.diff.tabs
+
+while  [ $# -ne 0 ]
+do
+    i="$1"
+
+    if  [ -f "$i" ] && [ -w "$i" ] ; then
+	if [ $cmdName == "tabs2spaces" ]; then
+	    expand -t $tabSize < "$i" | sed -e '1,$ s/ *$//' > /tmp/tmpTABS$$
+	else
+	    unexpand -t $tabSize --first-only < "$i" > /tmp/tmpTABS$$
+	fi
+	cmp "$i" /tmp/tmpTABS$$ > /dev/null 2>&1
+	if [ $? -eq 1 ]; then
+            d=`dirname "$i"` 
+            f=`basename "$i"`
+            /bin/cp "$i" "$d"/."$f".tabs
+            echo /bin/cp \""$d"\"/.\""$f"\".tabs \""$i"\" >> .tabs.undo.tabs
+            echo "/usr/bin/diff \""$d"\"/.\""$f"\".tabs \""$i"\"; echo" >> .tabs.diff.tabs
+	    /bin/mv -f /tmp/tmpTABS$$ "$i"
+	    chmod --reference="$d"/."$f".tabs "$i"
+	fi
+    fi
+    if [ ! -w "$i" ]; then
+        echo $cmdName: WARNING: "$i" not writeable, no change made.
+    fi
+    shift
+done
+
+echo ') 2>&1 | grep -v "^+ echo" | less' >> .tabs.diff.tabs
+
+cleanup

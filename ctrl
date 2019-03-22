@@ -1,0 +1,3 @@
+#!/bin/csh
+
+xmodmap -e "remove Lock = Caps_Lock" -e "add Control = Caps_Lock"
