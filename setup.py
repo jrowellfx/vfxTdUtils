@@ -10,7 +10,7 @@ if not os.path.exists('spaces2tabs') :
     createdSpaces2Tabs = True
 
 setup(name='utils',
-      version='1.000',
+      version='1.010',
       description='Some usefil shell utilities.',
       long_description='',
       author='James Philip Rowell',

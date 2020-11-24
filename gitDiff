@@ -4,5 +4,20 @@
 # Also: add the following to .bash_profile:
 #     export GIT_EXTERNAL_DIFF=$HOME/bin/gitDiff
 
-/usr/bin/xxdiff "$2" "$1"
+unameOut="$(uname -s)"
+case "${unameOut}" in
+    Linux*)     machine=linux;;
+    Darwin*)    machine=mac;;
+    CYGWIN*)    machine=cygwin;;
+    MINGW*)     machine=minGw;;
+    *)          machine="UNKNOWN:${unameOut}"
+esac
+
+if [ "$machine" == "mac" ]; then
+    /usr/bin/opendiff "$2" "$1"
+else
+    /usr/bin/xxdiff "$2" "$1"
+fi
+
+
 exit 0

@@ -1,0 +1,11 @@
+" set list " To see invisible characters
+set expandtab
+set softtabstop=4
+set shiftwidth=4
+set tabstop=8
+set ai
+map g 1G
+map q :
+syntax off
+" set compatible - do not want this!
+filetype plugin off
