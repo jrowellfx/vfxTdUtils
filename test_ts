@@ -1,0 +1,8 @@
+./ts -x
+./ts --xxx
+./ts -h
+./ts --help
+./ts 
+./ts --short
+./ts --fullyear
+./ts --fullyear --short
