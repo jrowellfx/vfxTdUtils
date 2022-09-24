@@ -6,3 +6,7 @@
 ./ts --short
 ./ts --fullyear
 ./ts --fullyear --short
+./ts --fullyear --noSeconds
+./ts --fullyear --noMinutes
+./ts --noSeconds
+./ts --noMinutes

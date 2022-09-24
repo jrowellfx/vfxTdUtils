@@ -37,26 +37,21 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # ts - spit out a timestamp for use in backquotes for generating filenames etc.
-#      as YYMMDD-hhmmss
-#
-# Usage: tstamp [--short] 
-#
-# Options:
-#
-# --short       Only output YYMMDD
-# -h, --help    Help message
-#
+#      as YYMMDD-hhmmss. Has options to make shorter forms.
 
 Usage_exit() {
-    echo "Usage: ${0##*/} [--short] [--fullyear]"
+    echo "Usage: ${0##*/} [--short] [--fullyear] [--noSeconds] [--noMinutes]"
     if [ "$1" = help ]; then
 	cat - <<@eof
+
 ${0##*/} prints out a string suitable for a timestamp, as YYMMDD-hhmmss
 
 Options:
 
  --short     Only print out YYMMDD as the timestamp.
  --fullyear  Print year as YYYY instead of just YY
+ --noSeconds Print time as hhmm only
+ --noMinutes Print time as hh only
 
 @eof
     fi
@@ -65,6 +60,8 @@ Options:
 
 isShort=no
 isFullYear=no
+printSeconds=yes
+printMinutes=yes
 
 #
 # Parse options.  Stop when you get to the file list.
@@ -84,6 +81,14 @@ do
              shift
         ;;
 
+        --noSeconds) printSeconds=no
+             shift
+        ;;
+
+        --noMinutes) printSeconds=no; printMinutes=no
+             shift
+        ;;
+
         --*|-*) Usage_exit
         ;;
 
@@ -99,8 +104,20 @@ if [ "$isShort" = yes ]; then
     fi
 else
     if [ "$isFullYear" = yes ]; then
-        date '+%Y%m%d-%H%M%S'
+        if [ "$printMinutes" = no ]; then
+            date '+%Y%m%d-%H'
+        elif [ "$printSeconds" = no ]; then
+            date '+%Y%m%d-%H%M'
+        else
+            date '+%Y%m%d-%H%M%S'
+        fi
     else
-        date '+%y%m%d-%H%M%S'
+        if [ "$printMinutes" = no ]; then
+            date '+%y%m%d-%H'
+        elif [ "$printSeconds" = no ]; then
+            date '+%y%m%d-%H%M'
+        else
+            date '+%y%m%d-%H%M%S'
+        fi
     fi
 fi
