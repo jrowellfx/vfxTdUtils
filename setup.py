@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/env python3
 
 from distutils.core import setup
 import os
@@ -10,8 +10,8 @@ if not os.path.exists('spaces2tabs') :
     createdSpaces2Tabs = True
 
 setup(name='utils',
-      version='1.010',
-      description='Some usefil shell utilities.',
+      version='1.020',
+      description='Some useful shell utilities.',
       long_description='',
       author='James Philip Rowell',
       author_email='james@alpha-eleven.com',
