@@ -39,19 +39,23 @@
 # ts - spit out a timestamp for use in backquotes for generating filenames etc.
 #      as YYMMDD-hhmmss. Has options to make shorter forms.
 
-Usage_exit() {
-    echo "Usage: ${0##*/} [--short] [--fullyear] [--noSeconds] [--noMinutes]"
+VERSION=1.1.0
+
+usage_exit() {
+    echo "Usage: ${0##*/} [-h | --help] [OPTION]..."
     if [ "$1" = help ]; then
 	cat - <<@eof
 
 ${0##*/} prints out a string suitable for a timestamp, as YYMMDD-hhmmss
 
-Options:
+optional arguments:
 
- --short     Only print out YYMMDD as the timestamp.
- --fullyear  Print year as YYYY instead of just YY
- --noSeconds Print time as hhmm only
- --noMinutes Print time as hh only
+ -h, --help  show this help and exit
+ --short     only print out YYMMDD as the timestamp.
+ --fullYear  print year as YYYY instead of just YY
+ --noSeconds print time as hhmm only
+ --noMinutes print time as hh only
+ --version   print out the version number and exit
 
 @eof
     fi
@@ -70,26 +74,30 @@ shopt -s extglob
 while :
 do
     case "$1" in
-        -h|--help) Usage_exit help
+        -h|--help) usage_exit help
+        ;;
+
+        --version) echo $VERSION
+            exit 0
         ;;
 
         --short) isShort=yes
              shift
         ;;
 
-        --fullyear) isFullYear=yes
+        --fullyear|--fullYear) isFullYear=yes
              shift
         ;;
 
-        --noSeconds) printSeconds=no
+        --noseconds|--noSeconds) printSeconds=no
              shift
         ;;
 
-        --noMinutes) printSeconds=no; printMinutes=no
+        --nominutes|--noMinutes) printSeconds=no; printMinutes=no
              shift
         ;;
 
-        --*|-*) Usage_exit
+        --*|-*) usage_exit
         ;;
 
         *) break # We're done processing arguments, so let's get on with it. :-)
