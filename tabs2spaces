@@ -82,6 +82,7 @@ fi
 #
 # Parse options.  Stop when you get to the file list.
 #
+shopt -s extglob
 while :
 do
     case "$1" in
@@ -97,7 +98,7 @@ do
             shift
         ;;
 
-        --tabs=[0-9]+)
+        --tabs=+([0-9]))
             tabSize=`echo $1 | sed "s/--tabs=//"`
             shift
         ;;
