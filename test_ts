@@ -2,11 +2,21 @@
 ./ts --xxx
 ./ts -h
 ./ts --help
+date
 ./ts 
+./ts --noSeconds
+./ts --noMinutes
+./ts --roundQuarter
+./ts --roundHalf
+./ts --onlyTime
+./ts --onlyTime --roundQuarter
+./ts --onlyTime --roundHalf
 ./ts --short
+./ts --onlyDate
 ./ts --fullyear
+./ts --fullYear --roundQuarter
+./ts --fullYear --roundHalf
 ./ts --fullyear --short
 ./ts --fullyear --noSeconds
 ./ts --fullyear --noMinutes
-./ts --noSeconds
-./ts --noMinutes
+./ts --version

@@ -39,7 +39,7 @@
 # ts - spit out a timestamp for use in backquotes for generating filenames etc.
 #      as YYMMDD-hhmmss. Has options to make shorter forms.
 
-VERSION=1.1.0
+VERSION=1.2.0
 
 usage_exit() {
     echo "Usage: ${0##*/} [-h | --help] [OPTION]..."
@@ -50,25 +50,31 @@ ${0##*/} prints out a string suitable for a timestamp, as YYMMDD-hhmmss
 
 optional arguments:
 
- -h, --help  show this help and exit
- --short     only print out YYMMDD as the timestamp.
- --fullYear  print year as YYYY instead of just YY
- --noSeconds print time as hhmm only
- --noMinutes print time as hh only
- --version   print out the version number and exit
+ -h, --help     show this help and exit
+ --onlyDate     skip printing the time, only print the date
+ --short        same as --onlyDate
+ --fullYear     print year as YYYY instead of just YY
+ --noSeconds    print time as hhmm only
+ --noMinutes    print time as hh only
+ --onlyTime     skip printing the date, only print the time
+ --roundQuarter round minutes down to the nearest 15 
+ --roundHalf    round minutes down to the nearst half hour
+ --version      print out the version number and exit
 
 @eof
     fi
     exit 1
 }
 
-isShort=no
+onlyDate=no
 isFullYear=no
 printSeconds=yes
 printMinutes=yes
+roundDown=no
+onlyTime=no
 
 #
-# Parse options.  Stop when you get to the file list.
+# Parse options.
 #
 shopt -s extglob
 while :
@@ -81,7 +87,7 @@ do
             exit 0
         ;;
 
-        --short) isShort=yes
+        --short|--onlyDate|--onlydate) onlyDate=yes; onlyTime=no
              shift
         ;;
 
@@ -97,6 +103,18 @@ do
              shift
         ;;
 
+        --roundQuarter|--roundquarter) roundDown=quarter; printSeconds=no; printMinutes=yes
+             shift
+        ;;
+
+        --roundHalf|--roundhalf) roundDown=half; printSeconds=no; printMinutes=yes
+             shift
+        ;;
+
+        --onlyTime|--onlytime) onlyTime=yes; onlyDate=no
+             shift
+        ;;
+
         --*|-*) usage_exit
         ;;
 
@@ -104,28 +122,54 @@ do
     esac
 done
 
-if [ "$isShort" = yes ]; then
-    if [ "$isFullYear" = yes ]; then
-        date '+%Y%m%d'
-    else
-        date '+%y%m%d'
-    fi
+if [ "$isFullYear" = yes ]; then
+    year=`date '+%Y'`
 else
-    if [ "$isFullYear" = yes ]; then
-        if [ "$printMinutes" = no ]; then
-            date '+%Y%m%d-%H'
-        elif [ "$printSeconds" = no ]; then
-            date '+%Y%m%d-%H%M'
-        else
-            date '+%Y%m%d-%H%M%S'
-        fi
-    else
-        if [ "$printMinutes" = no ]; then
-            date '+%y%m%d-%H'
-        elif [ "$printSeconds" = no ]; then
-            date '+%y%m%d-%H%M'
-        else
-            date '+%y%m%d-%H%M%S'
-        fi
-    fi
+    year=`date '+%y'`
 fi
+month=`date '+%m'`
+day=`date '+%d'`
+hour=`date '+%H'`
+minute=`date '+%M'`
+second=`date '+%S'`
+separator=-
+
+if [ "$roundDown" = quarter ]; then
+    set -f
+    minute=`echo $minute 15 / 15 * p | dc`
+    if [ "$minute" = 0 ]; then
+        minute=00
+    fi
+    set +f
+elif [ "$roundDown" = half ]; then
+    set -f
+    minute=`echo $minute 30 / 30 * p | dc`
+    if [ "$minute" = 0 ]; then
+        minute=00
+    fi
+    set +f
+fi
+
+if [ "$printMinutes" = no ]; then
+    minute=
+fi
+
+if [ "$printSeconds" = no ]; then
+    second=
+fi
+
+if [ "$onlyDate" = yes ]; then
+    hour=
+    minute=
+    second=
+    separator=
+fi
+
+if [ "$onlyTime" = yes ]; then
+    year=
+    month=
+    day=
+    separator=
+fi
+
+echo ${year}${month}${day}${separator}${hour}${minute}${second}

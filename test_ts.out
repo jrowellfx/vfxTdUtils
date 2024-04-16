@@ -1,0 +1,54 @@
+Usage: ts [-h | --help] [OPTION]...
+Usage: ts [-h | --help] [OPTION]...
+Usage: ts [-h | --help] [OPTION]...
+
+ts prints out a string suitable for a timestamp, as YYMMDD-hhmmss
+
+optional arguments:
+
+ -h, --help     show this help and exit
+ --onlyDate     skip printing the time, only print the date
+ --short        same as --onlyDate
+ --fullYear     print year as YYYY instead of just YY
+ --noSeconds    print time as hhmm only
+ --noMinutes    print time as hh only
+ --onlyTime     skip printing the date, only print the time
+ --roundQuarter round minutes down to the nearest 15 
+ --roundHalf    round minutes down to the nearst half hour
+ --version      print out the version number and exit
+
+Usage: ts [-h | --help] [OPTION]...
+
+ts prints out a string suitable for a timestamp, as YYMMDD-hhmmss
+
+optional arguments:
+
+ -h, --help     show this help and exit
+ --onlyDate     skip printing the time, only print the date
+ --short        same as --onlyDate
+ --fullYear     print year as YYYY instead of just YY
+ --noSeconds    print time as hhmm only
+ --noMinutes    print time as hh only
+ --onlyTime     skip printing the date, only print the time
+ --roundQuarter round minutes down to the nearest 15 
+ --roundHalf    round minutes down to the nearst half hour
+ --version      print out the version number and exit
+
+Tue Apr 16 13:22:30 CDT 2024
+240416-132230
+240416-1322
+240416-13
+240416-1315
+240416-1300
+132230
+1315
+1300
+240416
+240416
+20240416-132230
+20240416-1315
+20240416-1300
+20240416
+20240416-1322
+20240416-13
+1.2.0
