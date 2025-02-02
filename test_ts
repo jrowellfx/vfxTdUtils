@@ -4,19 +4,19 @@
 ./ts --help
 date
 ./ts 
-./ts --noSeconds
-./ts --noMinutes
-./ts --roundQuarter
-./ts --roundHalf
-./ts --onlyTime
-./ts --onlyTime --roundQuarter
-./ts --onlyTime --roundHalf
+./ts --no-seconds
+./ts --no-minutes
+./ts --round-quarter
+./ts --round-half
+./ts --only-time
+./ts --only-time --round-quarter
+./ts --only-time --round-half
 ./ts --short
-./ts --onlyDate
-./ts --fullyear
-./ts --fullYear --roundQuarter
-./ts --fullYear --roundHalf
-./ts --fullyear --short
-./ts --fullyear --noSeconds
-./ts --fullyear --noMinutes
+./ts --only-date
+./ts --full-year
+./ts --full-year --round-quarter
+./ts --full-year --round-half
+./ts --full-year --short
+./ts --full-year --no-seconds
+./ts --full-year --no-minutes
 ./ts --version

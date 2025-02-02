@@ -39,10 +39,10 @@
 # ts - spit out a timestamp for use in backquotes for generating filenames etc.
 #      as YYMMDD-hhmmss. Has options to make shorter forms.
 
-VERSION=1.2.0
+VERSION=2.0.0
 
 usage_exit() {
-    echo "Usage: ${0##*/} [-h | --help] [OPTION]..."
+    echo "usage: ${0##*/} [-h | --help] [OPTION]..."
     if [ "$1" = help ]; then
 	cat - <<@eof
 
@@ -50,16 +50,16 @@ ${0##*/} prints out a string suitable for a timestamp, as YYMMDD-hhmmss
 
 optional arguments:
 
- -h, --help     show this help and exit
- --onlyDate     skip printing the time, only print the date
- --short        same as --onlyDate
- --fullYear     print year as YYYY instead of just YY
- --noSeconds    print time as hhmm only
- --noMinutes    print time as hh only
- --onlyTime     skip printing the date, only print the time
- --roundQuarter round minutes down to the nearest 15 
- --roundHalf    round minutes down to the nearst half hour
- --version      print out the version number and exit
+ -h, --help      show this help and exit
+ --only-date     skip printing the time, only print the date
+ --short         same as --only-date
+ --full-year     print year as YYYY instead of just YY
+ --no-seconds    print time as hhmm only
+ --no-minutes    print time as hh only
+ --only-time     skip printing the date, only print the time
+ --round-quarter round minutes down to the nearest 15 
+ --round-half    round minutes down to the nearst half hour
+ --version       print out the version number and exit
 
 @eof
     fi
@@ -87,35 +87,35 @@ do
             exit 0
         ;;
 
-        --short|--onlyDate|--onlydate) onlyDate=yes; onlyTime=no
+        --short|--only-date) onlyDate=yes; onlyTime=no
              shift
         ;;
 
-        --fullyear|--fullYear) isFullYear=yes
+        --full-year) isFullYear=yes
              shift
         ;;
 
-        --noseconds|--noSeconds) printSeconds=no
+        --no-seconds) printSeconds=no
              shift
         ;;
 
-        --nominutes|--noMinutes) printSeconds=no; printMinutes=no
+        --no-minutes) printSeconds=no; printMinutes=no
              shift
         ;;
 
-        --roundQuarter|--roundquarter) roundDown=quarter; printSeconds=no; printMinutes=yes
+        --round-quarter) roundDown=quarter; printSeconds=no; printMinutes=yes
              shift
         ;;
 
-        --roundHalf|--roundhalf) roundDown=half; printSeconds=no; printMinutes=yes
+        --round-half) roundDown=half; printSeconds=no; printMinutes=yes
              shift
         ;;
 
-        --onlyTime|--onlytime) onlyTime=yes; onlyDate=no
+        --only-time) onlyTime=yes; onlyDate=no
              shift
         ;;
 
-        --*|-*) usage_exit
+        --*|-*) echo $0: no such option $1; usage_exit
         ;;
 
         *) break # We're done processing arguments, so let's get on with it. :-)

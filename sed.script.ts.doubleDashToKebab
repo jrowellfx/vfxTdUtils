@@ -1,0 +1,7 @@
+1,$ s/--fullYear/--full-year/g
+1,$ s/--noMinutes/--no-minutes/g
+1,$ s/--noSeconds/--no-seconds/g
+1,$ s/--onlyDate/--only-date/g
+1,$ s/--onlyTime/--only-time/g
+1,$ s/--roundHalf/--round-half/g
+1,$ s/--roundQuarter/--round-quarter/g

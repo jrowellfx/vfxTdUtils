@@ -10,14 +10,14 @@ if not os.path.exists('spaces2tabs') :
     createdSpaces2Tabs = True
 
 setup(name='utils',
-      version='1.020',
+      version='2.000',
       description='Some useful shell utilities.',
       long_description='',
       author='James Philip Rowell',
       author_email='james@alpha-eleven.com',
       url='http://www.alpha-eleven.com',
       py_modules=[],
-      scripts=['tabs2spaces', 'spaces2tabs', 'tstamp'],
+      scripts=['tabs2spaces', 'spaces2tabs', 'tstamp', 'ts'],
       license = "BSD 3-Clause license",
      )
 
