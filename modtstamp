@@ -38,9 +38,9 @@
 
 # tstamp - written by Glen MacDonald for Orange Imagination & Concepts.
 #
-# tstamp: Adjust the timestamp of files.
+# modtstamp: Adjust the timestamp of files.
 #
-# Usage: tstamp [OPTIONS] -N | +N [FILE]...
+# Usage: modtstamp [OPTIONS] -N | +N [FILE]...
 #
 # Description: Change the access and modification timestamps on
 #              files/directories. Useful when dealing with files that
@@ -53,11 +53,11 @@
 #
 #              In this example, to fix the time on these files, you could run:
 #
-#              tstamp -3 file1 file2 file3...
+#              modtstamp -3 file1 file2 file3...
 #
 #              To put the timestamps back to EST, you could run:
 #
-#              tstamp +3 file1 file2 file3...
+#              modtstamp +3 file1 file2 file3...
 #
 # Options:
 #

@@ -17,7 +17,7 @@ setup(name='utils',
       author_email='james@alpha-eleven.com',
       url='http://www.alpha-eleven.com',
       py_modules=[],
-      scripts=['tabs2spaces', 'spaces2tabs', 'tstamp', 'ts'],
+      scripts=['tabs2spaces', 'spaces2tabs', 'modtstamp', 'ts'],
       license = "BSD 3-Clause license",
      )
 
