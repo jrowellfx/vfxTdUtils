@@ -1,22 +1,22 @@
-./ts -x
-./ts --xxx
-./ts -h
-./ts --help
+../ts -x
+../ts --xxx
+../ts -h
+../ts --help
 date
-./ts 
-./ts --no-seconds
-./ts --no-minutes
-./ts --round-quarter
-./ts --round-half
-./ts --only-time
-./ts --only-time --round-quarter
-./ts --only-time --round-half
-./ts --short
-./ts --only-date
-./ts --full-year
-./ts --full-year --round-quarter
-./ts --full-year --round-half
-./ts --full-year --short
-./ts --full-year --no-seconds
-./ts --full-year --no-minutes
-./ts --version
+../ts 
+../ts --no-seconds
+../ts --no-minutes
+../ts --round-quarter
+../ts --round-half
+../ts --only-time
+../ts --only-time --round-quarter
+../ts --only-time --round-half
+../ts --short
+../ts --only-date
+../ts --full-year
+../ts --full-year --round-quarter
+../ts --full-year --round-half
+../ts --full-year --short
+../ts --full-year --no-seconds
+../ts --full-year --no-minutes
+../ts --version

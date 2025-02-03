@@ -1,10 +1,14 @@
-./ts: no such option -x
+../ts: no such option -x
 usage: ts [-h | --help] [OPTION]...
-./ts: no such option --xxx
+../ts: no such option --xxx
 usage: ts [-h | --help] [OPTION]...
 usage: ts [-h | --help] [OPTION]...
 
-ts prints out a string suitable for a timestamp, as YYMMDD-hhmmss
+ts prints out a string suitable for a time stamp as YYMMDD-hhmmss.
+
+Output from ts is suitable for embedding in filenames that need to
+be tagged with a time stamp. Any such filenames will sort properly because
+the date order is echoed as YYYYMMDD.
 
 optional arguments:
 
@@ -21,7 +25,11 @@ optional arguments:
 
 usage: ts [-h | --help] [OPTION]...
 
-ts prints out a string suitable for a timestamp, as YYMMDD-hhmmss
+ts prints out a string suitable for a time stamp as YYMMDD-hhmmss.
+
+Output from ts is suitable for embedding in filenames that need to
+be tagged with a time stamp. Any such filenames will sort properly because
+the date order is echoed as YYYYMMDD.
 
 optional arguments:
 
@@ -36,21 +44,21 @@ optional arguments:
  --round-half    round minutes down to the nearst half hour
  --version       print out the version number and exit
 
-Sun Feb  2 17:16:41 CST 2025
-250202-171641
-250202-1716
-250202-17
-250202-1715
-250202-1700
-171641
-1715
-1700
+Sun Feb  2 18:33:08 CST 2025
+250202-183308
+250202-1833
+250202-18
+250202-1830
+250202-1830
+183308
+1830
+1830
 250202
 250202
-20250202-171641
-20250202-1715
-20250202-1700
+20250202-183308
+20250202-1830
+20250202-1830
 20250202
-20250202-1716
-20250202-17
+20250202-1833
+20250202-18
 2.0.0

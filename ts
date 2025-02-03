@@ -46,7 +46,11 @@ usage_exit() {
     if [ "$1" = help ]; then
 	cat - <<@eof
 
-${0##*/} prints out a string suitable for a timestamp, as YYMMDD-hhmmss
+${0##*/} prints out a string suitable for a time stamp as YYMMDD-hhmmss.
+
+Output from ${0##*/} is suitable for embedding in filenames that need to
+be tagged with a time stamp. Any such filenames will sort properly because
+the date order is echoed as YYYYMMDD.
 
 optional arguments:
 
