@@ -16,15 +16,15 @@ Some useful utilities.
 Download the latest tarball (from the dist directory) and unzip it. For example:
 
 ```
-$ tar -xvzf utils-2.000.tar.gz
-utils-2.000/
-utils-2.000/PKG-INFO
-utils-2.000/README.md
-utils-2.000/modtstamp
-utils-2.000/setup.py
-utils-2.000/spaces2tabs
-utils-2.000/tabs2spaces
-utils-2.000/ts
+$ tar -xvzf utils-2.0.0.tar.gz
+utils-2.0.0/
+utils-2.0.0/PKG-INFO
+utils-2.0.0/README.md
+utils-2.0.0/modtstamp
+utils-2.0.0/setup.py
+utils-2.0.0/spaces2tabs
+utils-2.0.0/tabs2spaces
+utils-2.0.0/ts
 ```
 
 If you are not superuser then just copy the commands (`ts`, `spaces2tabs`, `tabs2spaces` and `modtstamp`) to your `~/bin`.
@@ -33,6 +33,7 @@ If you want to install system wide then
 
 ```
 $ su -
+# cd utils-2.0.0
 # python3 setup.py install
 ```
 
