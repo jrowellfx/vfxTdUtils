@@ -1,3 +1,5 @@
+# tstamp opts
+#
 1,$ s/--fullYear/--full-year/g
 1,$ s/--noMinutes/--no-minutes/g
 1,$ s/--noSeconds/--no-seconds/g
@@ -6,6 +8,14 @@
 1,$ s/--roundHalf/--round-half/g
 1,$ s/--roundQuarter/--round-quarter/g
 
+# rm-spaces opts
+#
+1,$ s/--regularFiles/--regular-files/g
+1,$ s/--removeQuotes/--remove-quotes/g
+1,$ s/--camelCase/--camel-case/g
+
+# Command name changes.
+#
 1,$ s/\<rmSpaces\>/rm-spaces/g
 1,$ s/\<tstamp\>/modxxxtstamp/g     # Temporary name.
 1,$ s/\<ts\>/tstamp/g               # ts was used, see man ts(1). reusing tstamp
