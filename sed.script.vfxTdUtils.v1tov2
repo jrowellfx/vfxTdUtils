@@ -5,3 +5,8 @@
 1,$ s/--onlyTime/--only-time/g
 1,$ s/--roundHalf/--round-half/g
 1,$ s/--roundQuarter/--round-quarter/g
+
+1,$ s/\<rmSpaces\>/rm-spaces/g
+1,$ s/\<tstamp\>/modxxxtstamp/g     # Temporary name.
+1,$ s/\<ts\>/tstamp/g               # ts was used, see man ts(1). reusing tstamp
+1,$ s/\<modxxxtstamp\>/mod-tstamp/g # prior named tstamp is more accurate as mod-tstamp
