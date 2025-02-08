@@ -32,8 +32,7 @@ on the AutoCAD code base when I was working on R13. I renamed almost ALL the API
 (to have nice and consistent naming convention across the WHOLE API
 which I designed to make reading code flow like reading prose)
 and similarly for many internal function calls in the newly designed C++ libraries and modules.
-In large part that work I did was possible simply because I wrote and used `runsed`."  
-- James Rowell -_
+In large part that work I did was possible simply because I wrote and used `runsed`." quote by James Rowell_
 
 `rm-spaces` - a utility to remove spaces from filenames while maintaining filename readability.
 
