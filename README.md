@@ -58,13 +58,13 @@ I dare say, without `lsseq` (or something like
 it that existed at every major studio) it would be extremely tough to TD shots
 from the command-line without GUI support like you see with modern Pipeline tools like
 Autodesk's
-["`Flow Production Tracking`"](https://www.autodesk.com/products/flow-production-tracking)
+"[`Flow Production Tracking`](https://www.autodesk.com/products/flow-production-tracking)"
 software.
 
 - [`lsseq`](https://github.com/jrowellfx/lsseq) - An extremely powerful, feature-rich and robust tool
 akin to `/bin/ls` for listing image-sequences in a nice way. **Essential**!
 - [`renumseq`](https://github.com/jrowellfx/renumSeq) - Command line utility to renumber
-and/or rename image-sequences. An essential companion to `lsseq`.
+and/or rename image-sequences. An valuable companion to `lsseq`.
 - [`expandseq`/`condenseseq`](https://github.com/jrowellfx/expandSeq) - utilities for
 expanding and condensing integer-sequences using a simple frame-range-syntax
 widely used within the VFX-industry.
