@@ -15,10 +15,10 @@ A lot of how we generated images was through programming via scripts of various 
 It was quite technical so you had to be a bit of a programmer
 thus the title "Technical Director".
 
-The "Pipeline" were all the tools we used via the command line
+Our "Pipeline" was all the tools we used via the command line
 to get shots put together. I expect the term "Pipeline" that we use
 these days is borrowed from
-Unix "pipes" that is the "|" character which is used to string
+Unix "pipes" that is the "`|`" character which is used to string
 the output of one command into the input of the next.
 
 Even with all our powerful tools today, I still find these to be helpful on a daily basis
@@ -38,23 +38,30 @@ In large part that work I did was possible simply because I wrote and used `runs
 
 `rm-spaces` - a utility to remove spaces from filenames while maintaining filename readability.
 
-`time-stamp` - prints out a string suitable for a time stamp as `YYMMDD-hhmmss` say to
-embed in a filename. Several options to customize the output as typically needed
+`time-stamp` - prints out a string suitable for a time-stamp as `YYMMDD-hhmmss` say to
+embed in a file-name. Several options to customize the output as typically needed
 when embedding the time-stamp in a file-name or directory-name.
 
 `tabs2spaces/spaces2tabs` - is a wrapper for the commands `expand` and `unexpand`
     respectively.  The FILES are changed in place, and changes can easily
-    be undone. (Note the command spaces2tabs can be a hard link to tabs2spaces,
+    be undone. (Note the command spaces2tabs is either a copy or a hard link to tabs2spaces,
     the functionality of the command switches based on the name.)
 
-`mod-tstamp` - adds or subtracts hours from a file's timestamp which used to be
+`mod-tstamp` - adds or subtracts hours from a file's time-stamp which used to be
     useful when copying files across timezones. Possibly less
     useful these days due to decent system-level timezone support.
 
-### NOTE: The **best** Vfx-TD-Utils are in other repos!
+### NOTE: The most essential VFX-TD-Utils are in [`jrowellfx`](https://github.com/jrowellfx)'s other repos.
 
-Please install the following tools as well, they are essential TD tools that
-you will come to rely on daily!
+Please install the following tools as well, they are 
+essential when TD'ing shots
+from the command line, you will use them daily!
+I dare say, without `lsseq` (or something like
+it that existed at every major studio) it would be extremely tough to TD shots
+from the command-line without GUI support like you see with modern Pipeline tools like
+Autodesk's
+["`Flow Production Tracking`"](https://www.autodesk.com/products/flow-production-tracking)
+software.
 
 - [`lsseq`](https://github.com/jrowellfx/lsseq) - An extremely powerful, feature-rich and robust tool
 akin to `/bin/ls` for listing image-sequences in a nice way. **Essential**!
@@ -75,6 +82,8 @@ Other ***essential*** TD tools don't need to be installed, just mastered. Namely
 - regular-expressions (as used by `sed`).
 - At least be a little familiar with `bash` shell scripting.
 - `vi`
+- `git`
+- Use of file redirection like "`<`" and "`>`" and pipes "`|`".
 
 ## More detailed descriptions of the utilities in `vfxTdUtils`.
 
@@ -153,7 +162,7 @@ Options:
 
 rm-spaces takes spaces out of filenames while maintaining filename readability.
 It removes trailing and leading spaces, removes spaces after or before dots (.),
-plusses (+) etc.
+pluses (+) etc.
 
 rm-spaces then replaces all spaces with underscores (_) unless --camel-case is
 specified, in which case words are converted to 'camel case" unless readability
