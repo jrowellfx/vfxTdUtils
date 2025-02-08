@@ -66,15 +66,15 @@ widely used within the VFX-industry.
 
 Other ***essential*** TD tools don't need to be installed, just mastered. Namely:
 
-- `grep`
+- `grep`, `fgrep`
 - `find`
-- `vi`
 - `sort`
 - `cat`
 - use of back-quotes to echo command output onto the command line,  
   for example: ``touch myfile.`time-stamp --short` `` might create the file: `myfile.250207`
 - regular-expressions (as used by `sed`).
-
+- At least be a little familiar with `bash` shell scripting.
+- `vi`
 
 ## More detailed descriptions of the utilities in `vfxTdUtils`.
 
