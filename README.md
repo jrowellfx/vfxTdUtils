@@ -12,7 +12,7 @@ our work via the shell, like tcsh or bash, with custom scripts and makefiles,
 plus wrangling the files for the plethora of home-brewed tools at the studio.
 
 A lot of how we generated images was through programming via scripts of various sorts.
-It was quite "Technical" so you kind of had to be a bit of a programmer
+It was quite technical so you had to be a bit of a programmer
 thus the title "Technical Director".
 
 The "Pipeline" were all the tools we used via the command line
