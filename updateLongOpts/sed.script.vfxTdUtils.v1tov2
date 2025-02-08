@@ -1,4 +1,4 @@
-# tstamp opts
+# time-stamp opts (used to be command 'ts')
 #
 1,$ s/--fullYear/--full-year/g
 1,$ s/--noMinutes/--no-minutes/g
@@ -8,15 +8,28 @@
 1,$ s/--roundHalf/--round-half/g
 1,$ s/--roundQuarter/--round-quarter/g
 
-# rm-spaces opts
+# rm-spaces opts (used to be command rmSpaces)
 #
 1,$ s/--regularFiles/--regular-files/g
 1,$ s/--removeQuotes/--remove-quotes/g
 1,$ s/--camelCase/--camel-case/g
 
-# Command name changes.
-#
+# Command name changes, no more camelCase names.
+
 1,$ s/\<rmSpaces\>/rm-spaces/g
-1,$ s/\<tstamp\>/modxxxtstamp/g     # Temporary name.
-1,$ s/\<ts\>/tstamp/g               # ts was used, see man ts(1). reusing tstamp
-1,$ s/\<modxxxtstamp\>/mod-tstamp/g # prior named tstamp is more accurate as mod-tstamp
+
+# This next name is better with "mod-" prefix since it modifies file times.
+#
+1,$ s/\<tstamp\>/mod-tstamp/g
+
+# This next substitution may cause unintended changes because the
+# regular-expression-word \<ts\> is so short.
+#
+# For example, say some command in a script you are updating has
+# short options '-t' and '-s' but someone combined them exactly
+# like '-ts', then this next sed substitution may change it to
+# '-time-stamp', which of course is not what you want.
+#
+# Check .runsed.diff.runsed CAREFULLY!
+#
+1,$ s/\<ts\>/time-stamp/g      # Wasn't a good idea to call this command ts, see 'man ts(1)'!
