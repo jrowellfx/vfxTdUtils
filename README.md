@@ -27,12 +27,13 @@ in my work as a VFX-Supervisor and artist.
 `runsed` - an unbelievably useful wrapper-utility for `sed` that been in heavy
 use for 30+ years to batch run sed-scripts on files. Quite robust! Easy to back out changes!
 
-> _I think I hold the record for the most number of file-checkout, changes and commits
+> _"I think I hold the record for the most number of file-checkout, changes and commits
 on the AutoCAD code base when I was working on R13. I renamed almost ALL the API calls
 (to have nice and consistent naming convention across the WHOLE API
 which I designed to make reading code flow like reading prose)
 and similarly for many internal function calls in the newly designed C++ libraries and modules.
-In large part that work I did was possible simply because I wrote and used `runsed`._
+In large part that work I did was possible simply because I wrote and used `runsed`."  
+- James Rowell -_
 
 `rm-spaces` - a utility to remove spaces from filenames while maintaining filename readability.
 
