@@ -1,4 +1,4 @@
-# vfxTdUtils - Visual Effects Technical Director Utilities
+# vfxTdUtils - Visual-Effects Technical-Director Utilities
 
 Here are some useful utilities for VFX "Technical Directors".
 
