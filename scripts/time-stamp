@@ -39,11 +39,13 @@
 # ts - spit out a timestamp for use in backquotes for generating filenames etc.
 #      as YYMMDD-hhmmss. Has options to make shorter forms.
 
+# Semantic Versioning 2.0.0
+#
 # MAJOR version for incompatible API changes
 # MINOR version for added functionality in a backwards compatible manner
 # PATCH version for backwards compatible bug fixes
 #
-VERSION=2.0.0     # Semantic Versioning 2.0.0
+VERSION=2.0.0
 
 usage_exit() {
     echo "usage: ${0##*/} [-h | --help] [OPTION]..."
