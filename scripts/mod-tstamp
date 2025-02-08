@@ -40,7 +40,7 @@
 #
 # modtstamp: Adjust the timestamp of files.
 #
-# Usage: modtstamp [OPTIONS] -N | +N [FILE]...
+# usage: modtstamp [OPTIONS] -N | +N [FILE]...
 #
 # Description: Change the access and modification timestamps on
 #              files/directories. Useful when dealing with files that
@@ -68,8 +68,8 @@
 # -N | +N  Subtract (or add) N hours from (or to) the existing timestamp;
 #          N must be a whole number.  This option is mandatory.
 
-Usage_exit() {
-    echo "Usage: ${0##*/} [-h | --help] [-R] [-a | -m] -N | +N file..."
+usage_exit() {
+    echo "usage: ${0##*/} [-h | --help] [-R] [-a | -m] -N | +N file..."
     if [ "$1" = help ]; then
 	cat - <<@eof
 
@@ -94,7 +94,7 @@ shopt -s extglob
 while :
 do
     case "$1" in
-        -h|--help) Usage_exit help
+        -h|--help) usage_exit help
         ;;
 
         -R) recurse=yes
@@ -103,7 +103,7 @@ do
 
         -a|-m) if [ "$touch_option" != "" ]; then
                 echo "${0##*/}: ERROR: Only one of -a & -m may be specified."
-                Usage_exit
+                usage_exit
             fi
             touch_option="$1"
             shift
@@ -111,7 +111,7 @@ do
 
         -+([0-9])|++([0-9])) if [ "$inc_or_dec" != "" ]; then
                 echo "${0##*/}: ERROR: Only 1 increment/decrement may be specified."
-                Usage_exit
+                usage_exit
             fi
 
             # Verify that the arg is a whole number.  In other words,
@@ -120,7 +120,7 @@ do
             should_be_null=$(echo "$1" | awk '{gsub("^[-+][0-9]*","");print}')
             if [ "$should_be_null" != "" ]; then
                 echo "${0##*/}: ERROR: Timestamp increment/decrement must be a whole number."
-                Usage_exit
+                usage_exit
             fi
 
             inc_or_dec="$1"
@@ -128,7 +128,7 @@ do
         ;;
 
         -*) echo "${0##*/}: ERROR: Invalid option '$1'."
-             Usage_exit
+             usage_exit
         ;;
 
         *) break # We're done processing arguments, so let's get on with it. :-)
@@ -139,7 +139,7 @@ done
 #
 if [ "$inc_or_dec" = "" ]; then
     echo "${0##*/}: ERROR: Missing mandatory increment/decrement parameter."
-    Usage_exit
+    usage_exit
 fi
 
 if [ "$recurse" = yes ]; then

@@ -49,7 +49,7 @@ cleanup() {
 trap cleanup INT
 
 usageExit() {
-    echo "Usage: $1 [-h | --help] [-t | --tabs=NUMBER] [FILE]..."
+    echo "usage: $1 [-h | --help] [-t | --tabs=NUMBER] [FILE]..."
     if [ "$2" = help ]; then
         cat - <<EOF
 
