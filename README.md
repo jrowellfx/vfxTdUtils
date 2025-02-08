@@ -30,7 +30,7 @@ use for 30+ years to batch run sed-scripts on files. Quite robust! Easy to back 
 > _I think I hold the record for the most number of file-checkout, changes and commits
 on the AutoCAD code base when I was working on R13. I renamed almost ALL the API calls
 (to have nice and consistent naming convention across the WHOLE API
-that also made reading code flow more like reading prose)
+which I designed to make reading code flow like reading prose)
 and similarly for many internal function calls in the newly designed C++ libraries and modules.
 In large part that work I did was possible simply because I wrote and used `runsed`._
 
