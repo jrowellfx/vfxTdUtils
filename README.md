@@ -19,7 +19,7 @@ these days is borrowed from
 Unix "pipes" that is the "`|`" character which is used to string
 the output of one command into the input of the next.
 
-Even with all our powerful tools today, I still find these to be helpful on a daily basis
+Even with all our powerful GUI-based tools today, I still find these to be helpful on a daily basis
 in my work as a VFX-Supervisor and artist.
 
 ## Summary of the utilities in `vfxTdUtils`.
