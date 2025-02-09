@@ -1,26 +1,40 @@
 # vfxTdUtils - Visual-Effects Technical-Director Utilities
 
-Here are some useful utilities for VFX "Technical Directors".
+Beyond the other [repositories](https://github.com/jrowellfx)
+provided by me, James Rowell,
+this git-repository provides
+further
+utilities for VFX "Technical Directors"
 
-The early days of the VFX world all VFX artists were called
-"Technical Directors", whether you were lighting, compositing,
+### Some backstory.
+
+In the early days, VFX-artists were often given the title of
+"Technical Director", whether lighting, compositing,
 rigging characters, creating particle-simulations, render-wrangling, etc.,
-but most likely all of the above.
+or most likely all of the above.
 
-The reason we called ourselves TDs was because we did most of
-our work via the shell, like tcsh or bash, with custom scripts and makefiles,
-plus wrangling the files for the plethora of home-brewed tools at the studio.
-It was quite technical so you had to be a bit of a programmer
+The reason we called ourselves TDs was that we did much of
+our work via scripts, in tcsh or bash or with makefiles,
+or using custom scripts that drove the plethora of home-brewed tools at the studio.
+We lived on the command-line, making extensive use of the Unix environment.
+Capitalizing on the
+[Unix philosopy](https://en.wikipedia.org/wiki/Unix_philosophy)
+in our approach to building our shots and "pipelines".
+It was a technical process that required us to be a bit of a programmer,
 thus the title "Technical Director".
 
-Our "Pipeline" was all the tools we used via the command line
-to get shots put together. I expect the term "Pipeline" that we use
-these days is borrowed from
-Unix "pipes" that is the "`|`" character which is used to string
-the output of one command into the input of the next.
+Even with our powerful GUI-based tools today
+I still find it helpful (in my work as a VFX-Supervisor and artist)
+to work in the command-line with old-school TD-utilties and practices.
+This is doubly so working at smaller studios that can't afford pricey
+and comprehensive "Pipeline" tools like Autodesk's
+"[`Flow Production Tracking`](https://www.autodesk.com/products/flow-production-tracking)"
+software.
 
-Even with all our powerful GUI-based tools today, I still find these to be helpful on a daily basis
-in my work as a VFX-Supervisor and artist.
+I hope independent VFX-artists, likely also working without the help of
+monolithic pipeline tools,
+will find my thoughts and utilties to be helpful as building-blocks
+for their own pipelines, joining the ranks of us O.G. Technical-Directors.
 
 ## Summary of the utilities in `vfxTdUtils`.
 
@@ -32,7 +46,7 @@ on the AutoCAD code base when I was working on R13. I renamed almost ALL the API
 (to have nice and consistent naming convention across the WHOLE API
 which I designed to make reading code flow like reading prose)
 and similarly for many internal function calls in the newly designed C++ libraries and modules.
-In large part that work I did was possible simply because I wrote and used `runsed`." quote by James Rowell_
+In large part that work I did was possible simply because I wrote and used `runsed`." ~~ James Rowell_
 
 `rm-spaces` - a utility to remove spaces from filenames while maintaining filename readability.
 
@@ -40,15 +54,15 @@ In large part that work I did was possible simply because I wrote and used `runs
 embed in a file-name. Several options to customize the output as typically needed
 when embedding the time-stamp in a file-name or directory-name.
 
-`tabs2spaces/spaces2tabs` - is a wrapper for the commands `expand` and `unexpand`
-    respectively.  The FILES are changed in place, and changes can easily
-    be undone.
+`tabs2spaces/spaces2tabs` - wrappers for the commands `expand` and `unexpand`
+    respectively.  The FILES are changed in place, and like `runsed` the changes
+    can be easily reviewed and backed out if desired.
 
 `mod-tstamp` - adds or subtracts hours from a file's time-stamp which used to be
     useful when copying files across timezones. Possibly less
     useful these days due to decent system-level timezone support.
 
-### NOTE: The most essential VFX-TD-Utils are in [`jrowellfx`](https://github.com/jrowellfx)'s other repos.
+### The most essential VFX-TD-Utils are in [`jrowellfx`](https://github.com/jrowellfx)'s other repos.
 
 Please install the following tools as well, they are 
 essential when TD'ing shots
