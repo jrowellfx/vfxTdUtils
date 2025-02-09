@@ -66,16 +66,16 @@ when embedding the time-stamp in a file-name or directory-name.
 
 Please install the following tools as well, they are 
 essential when TD'ing shots
-from the command line, you will use them daily!
-I dare say, without `lsseq` (or something like
-it that existed at every major studio) it would be extremely tough to TD shots
-from the command-line without GUI support like you see with modern Pipeline tools like
+from the command line.
+I dare say, without `lsseq` it would be extremely tough to TD shots
+from the command-line without support from modern Pipeline tools like
 Autodesk's
-"[`Flow Production Tracking`](https://www.autodesk.com/products/flow-production-tracking)"
+"[Flow Production Tracking](https://www.autodesk.com/products/flow-production-tracking)"
 software.
 
 - [`lsseq`](https://github.com/jrowellfx/lsseq) - An extremely powerful, feature-rich and robust tool
-akin to `/bin/ls` for listing image-sequences in a nice way. **Essential**!
+akin to `/bin/ls` for listing image-sequences in a nice way. Build other pipeline
+utilities on top of this one.
 - [`renumseq`](https://github.com/jrowellfx/renumSeq) - Command line utility to renumber
 and/or rename image-sequences. An valuable companion to `lsseq`.
 - [`expandseq`/`condenseseq`](https://github.com/jrowellfx/expandSeq) - utilities for
