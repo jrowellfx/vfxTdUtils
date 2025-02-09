@@ -65,6 +65,13 @@ install:
 		chmod +x $(INSTALL_DIR)/$$file; \
 	done
 
+# Uninstall scripts from the target directory
+#
+uninstall:
+	for file in $(SCRIPTS); do \
+		rm $(INSTALL_DIR)/$$file; \
+	done
+
 # Optional: Clean up any temporary files (if needed)
 clean:
 	@echo "Nothing to clean"
