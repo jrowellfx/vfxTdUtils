@@ -61,10 +61,7 @@ SCRIPTS := mod-tstamp \
 check_root: 
 	@if [ `id -u` -eq 0 ]; then \
 		echo "Do not build the tarball as root"; exit 1; \
-	fi; \
-	echo ppid is $$PPID; \
-	echo TARBALL_DIR is $(TARBALL_DIR); \
-	exit 0;
+	fi
 
 tarball:
 	mkdir -p $(TARBALL_DIR)/scripts; \

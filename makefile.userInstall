@@ -50,16 +50,12 @@ SHELL := /bin/bash
 #
 INSTALL_DIR := /usr/local/bin
 
-# If not root then install in user's ~/bin
-# 
-check_root: 
-	@if [ `id -u` -ne 0 ]; then \
-		INSTALL_DIR := $HOME/bin
-	fi
-
 # Install scripts to the target directory
 #
 install:
+	@if [ `id -u` -ne 0 ]; then \
+		INSTALL_DIR := $HOME/bin; \
+	fi; \
 	cd scripts; \
 	SCRIPTS = $(wildcard *)
 	for file in $(SCRIPTS); do \
