@@ -42,8 +42,7 @@ when embedding the time-stamp in a file-name or directory-name.
 
 `tabs2spaces/spaces2tabs` - is a wrapper for the commands `expand` and `unexpand`
     respectively.  The FILES are changed in place, and changes can easily
-    be undone. (Note the command spaces2tabs is either a copy or a hard link to tabs2spaces,
-    the functionality of the command switches based on the name.)
+    be undone.
 
 `mod-tstamp` - adds or subtracts hours from a file's time-stamp which used to be
     useful when copying files across timezones. Possibly less
