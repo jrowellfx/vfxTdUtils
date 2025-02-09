@@ -53,6 +53,7 @@ TARBALL_DIR := dist/$(TARBALL_NAME)
 SCRIPTS := mod-tstamp \
 	rm-spaces \
 	runsed \
+	spaces2tabs \
 	tabs2spaces \
 	time-stamp
 

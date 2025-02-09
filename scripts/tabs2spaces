@@ -36,7 +36,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# tabs2spaces/spaces2tabs - helpful wrapper to run 'expand' on a list of files.
+# tabs2spaces - helpful wrapper to run 'expand' on a list of files.
 
 set +o noclobber
 cmdName=`basename "$0"`
@@ -61,8 +61,7 @@ usageExit() {
     if [ "$2" = help ]; then
         cat - <<EOF
 
-tabs2spaces/spaces2tabs is a wrapper for the commands expand and unexpand
-respectively.  The FILES are changed in place.
+$cmdName is a wrapper for the command expand. The FILES are changed in place.
 
 A backup copy of each original FILE is created called ".FILE.tabs" in the
 directory that FILE resides.
@@ -87,11 +86,6 @@ EOF
 }
 
 tabSize=8
-
-if [ "$cmdName" != "tabs2spaces" ] && [ "$cmdName" != "spaces2tabs" ]; then
-    echo "ERROR: $0 must be named either 'tabs2spaces' or 'spaces2tabs'"
-    exit 1
-fi
 
 #
 # Parse options.  Stop when you get to the file list.
@@ -153,11 +147,7 @@ do
     i="$1"
 
     if  [ -f "$i" ] && [ -w "$i" ] ; then
-        if [ $cmdName == "tabs2spaces" ]; then
-            expand -t $tabSize < "$i" | sed -e '1,$ s/ *$//' > /tmp/tmpTABS$$
-        else
-            unexpand -t $tabSize --first-only < "$i" > /tmp/tmpTABS$$
-        fi
+        expand -t $tabSize < "$i" | sed -e '1,$ s/ *$//' > /tmp/tmpTABS$$
         cmp "$i" /tmp/tmpTABS$$ > /dev/null 2>&1
         if [ $? -eq 1 ]; then
             d=`dirname "$i"`
