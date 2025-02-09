@@ -28,7 +28,7 @@ I still find it helpful (in my work as a VFX-Supervisor and artist)
 to work in the command-line with old-school TD-utilties and practices.
 This is doubly so working at smaller studios that can't afford pricey
 and comprehensive "Pipeline" tools like Autodesk's
-"[`Flow Production Tracking`](https://www.autodesk.com/products/flow-production-tracking)"
+"[Flow Production Tracking](https://www.autodesk.com/products/flow-production-tracking)"
 software.
 
 I hope independent VFX-artists, likely also working without the help of
