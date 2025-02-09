@@ -46,39 +46,42 @@
 #
 VERSION := 2.0.0
 REPO := vfxTdUtils
+
 SHELL := /bin/bash
-TARBALL_NAME := $(REPO)-$(VERSION)
-TARBALL_DIR := dist/$(TARBALL_NAME)
+
+# Define the target directory for system-wide installation
+#
+INSTALL_DIR := /usr/local/bin
+
+# If not root then install in user's ~/bin
+# 
+check_root: 
+	@if [ `id -u` -ne 0 ]; then \
+		INSTALL_DIR := $HOME/bin
+	fi
 
 # List shell scripts
 #
-SCRIPTS := mod-tstamp \
-	rm-spaces \
-	runsed \
-	tabs2spaces \
-	time-stamp
+SCRIPTS := scripts/mod-tstamp \
+	scripts/rm-spaces \
+	scripts/runsed \
+	scripts/tabs2spaces \
+	scripts/time-stamp
 
-# If root then abort with error message.
-# 
-check_root: 
-	@if [ `id -u` -eq 0 ]; then \
-		echo "Do not build the tarball as root"; exit 1; \
-	fi; \
-	echo ppid is $$PPID; \
-	echo TARBALL_DIR is $(TARBALL_DIR); \
-	exit 0;
+all: install
+
+# Install scripts to the target directory
+#
+install: tarball
+	
+	# @for file in $(SCRIPTS); do \
+		# cp $(file) $(INSTALL_DIR); \
+		# chmod +x $(INSTALL_DIR)/$(file); \
+	# done
 
 tarball:
-	mkdir -p $(TARBALL_DIR)/scripts; \
-	cp makefile.userInstall $(TARBALL_DIR)/makefile; \
-	cp README.md $(TARBALL_DIR); \
-	for file in $(SCRIPTS); do \
-		cp scripts/$$file $(TARBALL_DIR)/scripts/$$file; \
-	done; \
-	cd dist; \
-	tar -c -f $(TARBALL_NAME).tar.gz -zv $(TARBALL_NAME)
+	tar -c -f dist/$(REPO)-$(VERSION).tar.gz -zv $(SCRIPTS) README.md makefile
 
 # Optional: Clean up any temporary files (if needed)
-#
 clean:
 	@echo "Nothing to clean"
