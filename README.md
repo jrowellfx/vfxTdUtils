@@ -17,7 +17,7 @@ The reason we called ourselves TDs was that we did much of
 our work via scripts, in tcsh or bash or with makefiles,
 or using custom scripts that drove the plethora of home-brewed tools at the studio.
 We lived on the command-line, making extensive use of the Unix environment.
-Capitalizing on the
+We capitalized on the
 [Unix philosopy](https://en.wikipedia.org/wiki/Unix_philosophy)
 in our approach to building our shots and "pipelines".
 It was a technical process that required us to be a bit of a programmer,
