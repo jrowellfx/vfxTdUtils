@@ -62,7 +62,7 @@ optional arguments:
 
  -h, --help      show this help and exit
  --only-date     skip printing the time, only print the date
- --short         same as --only-date
+ --short         skip printing the time, only print the date with year as YY
  --full-year     print year as YYYY instead of just YY
  --no-seconds    print time as hhmm only
  --no-minutes    print time as hh only
@@ -97,7 +97,11 @@ do
             exit 0
         ;;
 
-        --short|--only-date) onlyDate=yes; onlyTime=no
+        --only-date) onlyDate=yes; onlyTime=no
+             shift
+        ;;
+
+        --short) onlyDate=yes; onlyTime=no; isFullYear=no
              shift
         ;;
 

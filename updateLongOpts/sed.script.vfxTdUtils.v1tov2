@@ -29,6 +29,11 @@
 # short options '-t' and '-s' but someone combined them exactly
 # like '-ts', then this next sed substitution may change it to
 # '-time-stamp', which of course is not what you want.
+# Another example is .vimrc might have "set ts=4" to set
+# tabstops to 4, which obviously you don't want to change.
+#
+# consider running "grep '\<ts\>' * .*" in any directory that
+# you want to run this sed.script to see what hits you get.
 #
 # Check .runsed.diff.runsed CAREFULLY!
 #
