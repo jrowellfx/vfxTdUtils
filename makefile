@@ -77,4 +77,4 @@ tarball:
 # Optional: Clean up any temporary files (if needed)
 #
 clean:
-	@echo "Nothing to clean"
+	rm -r $(TARBALL_DIR)
