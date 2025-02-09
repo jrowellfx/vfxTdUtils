@@ -62,7 +62,13 @@ when embedding the time-stamp in a file-name or directory-name.
     useful when copying files across timezones. Possibly less
     useful these days due to decent system-level timezone support.
 
-### The most essential VFX-TD-Utils are in [`jrowellfx`](https://github.com/jrowellfx)'s other repos.
+## Installation.
+
+Download the latest tarball from the `dist` directory. Unzip it. `cd` into
+the unzip'ed directory. Run "`$ make install`", if as root then it
+will install into `/usr/local/bin`, otherwise in `$HOME/bin`.
+
+## The most essential VFX-TD-Utils are in [`jrowellfx`](https://github.com/jrowellfx)'s other repos.
 
 Please install the following tools as well, they are 
 essential when TD'ing shots
