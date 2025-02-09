@@ -36,8 +36,6 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-### THIS IS A WORK IN PROGRESS - WIP ###
-
 # Semantic Versioning 2.0.0
 #
 # MAJOR version for incompatible API changes
@@ -46,7 +44,6 @@
 #
 VERSION := 2.0.0
 REPO := vfxTdUtils
-
 SHELL := /bin/bash
 
 # Define the target directory for system-wide installation
@@ -60,27 +57,15 @@ check_root:
 		INSTALL_DIR := $HOME/bin
 	fi
 
-# List shell scripts
-#
-SCRIPTS := scripts/mod-tstamp \
-	scripts/rm-spaces \
-	scripts/runsed \
-	scripts/tabs2spaces \
-	scripts/time-stamp
-
-all: install
-
 # Install scripts to the target directory
 #
-install: tarball
-	
-	# @for file in $(SCRIPTS); do \
-		# cp $(file) $(INSTALL_DIR); \
-		# chmod +x $(INSTALL_DIR)/$(file); \
-	# done
-
-tarball:
-	tar -c -f dist/$(REPO)-$(VERSION).tar.gz -zv $(SCRIPTS) README.md makefile
+install:
+	cd scripts; \
+	SCRIPTS = $(wildcard *)
+	for file in $(SCRIPTS); do \
+		cp $$file $(INSTALL_DIR); \
+		chmod +x $(INSTALL_DIR)/$$file; \
+	done
 
 # Optional: Clean up any temporary files (if needed)
 clean:
