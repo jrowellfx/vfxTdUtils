@@ -21,6 +21,7 @@
 1,$ s/--dryrun/--dry-run/g
 1,$ s/--dryRun/--dry-run/g
 1,$ s/--fullYear/--full-year/g
+1,$ s/--full[yY]ear/--full-year/g
 1,$ s/--globalSortByTime/--global-sort-by-time/g
 1,$ s/--goodFrameMinSize/--good-frame-min-size/g
 1,$ s/--imgExt/--img-ext/g
@@ -29,21 +30,27 @@
 1,$ s/--noErrorLists/--no-error-lists/g
 1,$ s/--noError/--no-error/g
 1,$ s/--noMinutes/--no-minutes/g
+1,$ s/--no[mM]inutes/--no-minutes/g
 1,$ s/--noSeconds/--no-seconds/g
+1,$ s/--no[sS]econds/--no-seconds/g
 1,$ s/--onlyCaches/--only-caches/g
 1,$ s/--onlyDate/--only-date/g
+1,$ s/--only[dD]ate/--only-date/g
 1,$ s/--onlyImages/--only-images/g
 1,$ s/--onlyMovies/--only-movies/g
 1,$ s/--onlyOnes/--only-ones/g
 1,$ s/--onlySequences/--only-sequences/g
 1,$ s/--onlyShow/--only-show/g
 1,$ s/--onlyTime/--only-time/g
+1,$ s/--only[tT]ime/--only-time/g
 1,$ s/--prependPathAbs/--prepend-path-abs/g
 1,$ s/--prependPathRel/--prepend-path-rel/g
 1,$ s/--regularFiles/--regular-files/g
 1,$ s/--removeQuotes/--remove-quotes/g
 1,$ s/--replaceUnderscore/--replace-underscore/g
 1,$ s/--roundHalf/--round-half/g
+1,$ s/--round[hH]alf/--round-half/g
+1,$ s/--round[qQ]uarter/--round-quarter/g
 1,$ s/--roundQuarter/--round-quarter/g
 1,$ s/--showBadFrames/--show-bad-frames/g
 1,$ s/--showBadPadding/--show-bad-padding/g
@@ -70,3 +77,28 @@
 /lsseq/ s/\([^-]\)-G$/\1--skip-bad-padding/g
 /lsseq/ s/\([^-]\)-g\([ \t]\)/\1--show-bad-padding\2/g
 /lsseq/ s/\([^-]\)-G\([ \t]\)/\1--skip-bad-padding\2/g
+
+# Command name changes, no more camelCase names.
+
+1,$ s/\<rmSpaces\>/rm-spaces/g
+
+# This next name is better with "mod-" prefix since it modifies file times.
+#
+1,$ s/\<tstamp\>/mod-tstamp/g
+
+# This next substitution may cause unintended changes because the
+# regular-expression-word \<ts\> is so short.
+#
+# For example, say some command in a script you are updating has
+# short options '-t' and '-s' but someone combined them exactly
+# like '-ts', then this next sed substitution may change it to
+# '-time-stamp', which of course is not what you want.
+# Another example is .vimrc might have "set ts=4" to set
+# tabstops to 4, which obviously you don't want to change.
+#
+# consider running "grep '\<ts\>' * .*" in any directory that
+# you want to run this sed.script to see what hits you get.
+#
+# Check .runsed.diff.runsed CAREFULLY!
+#
+1,$ s/\<ts\>/time-stamp/g      # Wasn't a good idea to call this command ts, see 'man ts(1)'!
