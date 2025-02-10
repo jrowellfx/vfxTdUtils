@@ -32,9 +32,11 @@
 # Another example is .vimrc might have "set ts=4" to set
 # tabstops to 4, which obviously you don't want to change.
 #
-# consider running "grep '\<ts\>' * .*" in any directory that
-# you want to run this sed.script to see what hits you get.
+# consider running "grep '[^\.]\<ts\>[^-\.]' * .*" in any directory that
+# you want to run this sed.script to see what hits you get, perhaps
+# collecting a list of files, and editing it so you only 'runsed' on those files
+# with ONLY the following sed instruction.
 #
 # Check .runsed.diff.runsed CAREFULLY!
 #
-1,$ s/\<ts\>/time-stamp/g      # Wasn't a good idea to call this command ts, see 'man ts(1)'!
+1,$ s/\([^\.]\)\<ts\>\([^-\.]\)/\1time-stamp\2/g      # Wasn't a good idea to call this command ts, see 'man ts(1)'!
