@@ -1,12 +1,12 @@
 # time-stamp opts (used to be command 'ts')
 #
-1,$ s/--fullYear/--full-year/g
-1,$ s/--noMinutes/--no-minutes/g
-1,$ s/--noSeconds/--no-seconds/g
-1,$ s/--onlyDate/--only-date/g
-1,$ s/--onlyTime/--only-time/g
-1,$ s/--roundHalf/--round-half/g
-1,$ s/--roundQuarter/--round-quarter/g
+1,$ s/--full[yY]ear/--full-year/g
+1,$ s/--no[mM]inutes/--no-minutes/g
+1,$ s/--no[sS]econds/--no-seconds/g
+1,$ s/--only[dD]ate/--only-date/g
+1,$ s/--only[tT]ime/--only-time/g
+1,$ s/--round[hH]alf/--round-half/g
+1,$ s/--round[qQ]uarter/--round-quarter/g
 
 # rm-spaces opts (used to be command rmSpaces)
 #
