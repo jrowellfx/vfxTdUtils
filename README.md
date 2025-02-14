@@ -20,8 +20,6 @@ We lived on the command-line, making extensive use of the Unix environment.
 We capitalized on the
 [Unix philosopy](https://en.wikipedia.org/wiki/Unix_philosophy)
 in our approach to building our shots and "pipelines".
-It was a technical process that required us to be a bit of a programmer,
-thus the title "Technical Director".
 
 Even with our powerful GUI-based tools today
 I still find it helpful (in my work as a VFX-Supervisor and artist)
