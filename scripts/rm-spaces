@@ -569,10 +569,6 @@ fi
 #
 if [ "$OPT_DO_DIRECTORIES" = true ] ; then
 
-    # /bin/rm .rename.dirs.$cmdName > /dev/null 2>&1
-    # /bin/rm .undo.dirs.$cmdName > /dev/null 2>&1
-    # /bin/rm .failed.dirs.$cmdName > /dev/null 2>&1
-
     # Prep some files to start dumping commands into.
     #
     echo '#!/bin/bash' > .rename.dirs.$cmdName
@@ -588,6 +584,8 @@ if [ "$OPT_DO_DIRECTORIES" = true ] ; then
         treeDepth=1
     fi
 
+    # JPR - may be able to simplify the following by using -depth find option?
+    #
     while [ $treeDepth -gt 0 ]
     do
         # echo "# Depth $treeDepth" >> .rename.dirs.$cmdName
