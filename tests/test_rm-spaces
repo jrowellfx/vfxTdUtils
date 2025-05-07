@@ -144,10 +144,13 @@ rm -rf $TEST_DIR/$RmSp_TESTDIR/*
 # Then touch the file names to make testfiles.
 # Note: pwd should still be $TEST_DIR
 #
-cat createTestData/create.?Test.files | sed -e '1,$ s/\/[^\/]*$//' | sort -u > $tmpfile
+
+*** left off here JPR
+
+cat createTestData_rm-spaces/create.?Test.files | sed -e '1,$ s/\/[^\/]*$//' | sort -u > $tmpfile
 mkdir -p `cat $tmpfile`
-touch `cat createTestData/create.?Test.files`
-chmod 666 `cat createTestData/create.?Test.files`
+touch `cat createTestData_rm-spaces/create.?Test.files`
+chmod 666 `cat createTestData_rm-spaces/create.?Test.files`
 
 # The following are tests. One test per line.
 # The first item on a line is the directory relative to
