@@ -5,3 +5,4 @@ build
 *.bak
 .*.runsed
 __pycache__
+tests/test-rm-spaces-dir

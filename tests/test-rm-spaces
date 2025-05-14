@@ -59,7 +59,7 @@ usage_exit() {
 	cat - <<@eof
 
 ${0##*/} Run regression tests on rm-spaces. Must be run in the
-<rm-spaces-repository>/tests directory.
+<vfxTdUtils-repository>/tests directory.
 
 Options:
 
@@ -74,7 +74,7 @@ Options:
     exit 1
 }
 
-TEST_SYSTEM_RM-SPACES=no
+TEST_SYSTEM_RMSPACES=no
 
 #
 # Parse options.
@@ -86,7 +86,7 @@ do
         -h|--help) usage_exit help
         ;;
 
-        --test-system-rm-spaces) TEST_SYSTEM_RM-SPACES=yes
+        --test-system-rm-spaces) TEST_SYSTEM_RMSPACES=yes
              shift
         ;;
 
@@ -116,7 +116,7 @@ unalias rm > /dev/null 2>&1
 
 TEST_OUT_FILENAME=test-rm-spaces.out.`uname`.new
 
-if [ "$TEST_SYSTEM_RM-SPACES" = no ]; then
+if [ "$TEST_SYSTEM_RMSPACES" = no ]; then
     ln -sf ../scripts/rm-spaces  rm-spaces
 
     if [[ ! ":$PATH:" == *":$TEST_DIR:"* ]]; then
@@ -130,6 +130,7 @@ fi
 echo "Test is using " `which rm-spaces`
 
 export HERO_TESTDIR=test-rm-spaces-dir
+export HERO_CREATEDATADIR=createTestData-rm-spaces
 
 # Double check sensible REPO_DIR value before removing old $HERO_TESTDIR
 #
@@ -144,13 +145,14 @@ elif [[ `basename $REPO_DIR` != 'vfxTdUtils' ]]; then
     cleanupExit 1
 fi
 rm -rf $TEST_DIR/$HERO_TESTDIR/*
+mkdir $TEST_DIR/$HERO_TESTDIR > /dev/null 2>&1
 
 # Create list of test directories needed.
 # Then touch the file names to make testfiles.
-# Note: pwd should still be $TEST_DIR
 # Note: This can create files and/or dirs with spaces in filenames
 #
-cat createTestData/create.?Test.files \
+cd $TEST_DIR/$HERO_TESTDIR
+cat $TEST_DIR/$HERO_CREATEDATADIR/create.?Test.files \
     | sed -e '/^[[:space:]]*$/d' \
     | sed -e '1,$ s/\/[^\/]*$//' \
     | sort -u \
@@ -158,12 +160,13 @@ cat createTestData/create.?Test.files \
     > $tmpFile
 cat $tmpFile | xargs -0 mkdir -p
 #
-cat createTestData/create.?Test.files \
+cat $TEST_DIR/$HERO_CREATEDATADIR/create.?Test.files \
     | sed -e '/^[[:space:]]*$/d' \
     | tr '\n' '\0' \
     > $tmpFile
 cat $tmpFile | xargs -0 touch
 cat $tmpFile | xargs -0 chmod 666
+cd $TEST_DIR
 
 # Timestamp all the test files to be a fixed date so that their file times are 
 # not dependent upon the date set when running the test. This gives us
@@ -171,7 +174,7 @@ cat $tmpFile | xargs -0 chmod 666
 #
 # Note: We use HAL's birthday from 2001: A Space Odyssey.
 #
-find $HERO_TESTDIR -type f -exec touch -t 199201121330 \{\} \;
+find $TEST_DIR/$HERO_TESTDIR -type f -exec touch -t 199201121330 \{\} \;
 
 # The following are tests. One test per line.
 # The first item on a line is the directory relative to
@@ -181,110 +184,15 @@ find $HERO_TESTDIR -type f -exec touch -t 199201121330 \{\} \;
 # Note: use single quotes (') around args with spaces in the name
 #
 cat << EOF > $tmpTestCmdFile
-.   uname
-.   lsseq --version                         # Double check which version being used for this test.
-.   lsseq -RPl --no-error-lists --show-bad-padding -m         # List all sequences in the $HERO_TESTDIR
-.   rm-spaces                                # Run with no args - should do nothing
-.   rm-spaces --version                      # MUST increment with each update/bug fix, corresp w/ release.
-.   rm-spaces --help                         # To keep track of changes with help, plus check if correct
-.   rm-spaces      null/foo.jpg              # No args - warning issued -> nothing to do.
-.   rm-spaces -o 1 null/foo.jpg              # Not a sequence
-.   rm-spaces -o 1 null/foo.[bar].jpg        # Not a sequence
-.   rm-spaces -o 1 null/foo.[a-b].jpg        # Not a sequence
-.   rm-spaces -o 1 null/foo.[-a-b].jpg       # Not a sequence
-.   rm-spaces -o 1 null/foo.[-a--b].jpg      # Not a sequence
-.   rm-spaces -o 1 null/foo.[xx-a-b].jpg     # Not a sequence
-.   rm-spaces -o 1 c01/c.[011--003].jpg c02/c.[11-03].jpg  # Invalid range, [A-B] but A > B
-.   rm-spaces -s -o 1 null/foo.jpg           # Repeat all those tests but silent
-.   rm-spaces -s -o 1 null/foo.[bar].jpg     #    ditto
-.   rm-spaces -s -o 1 null/foo.[a-b].jpg     #    ditto
-.   rm-spaces -s -o 1 null/foo.[-a-b].jpg    #    ditto
-.   rm-spaces -s -o 1 null/foo.[-a--b].jpg   #    ditto
-.   rm-spaces -s -o 1 null/foo.[xx-a-b].jpg  #    ditto
-.   rm-spaces -s -o 1 c01/c.[011--003].jpg c02/c.[11-03].jpg # ditto
-a03 lsseq -RPl --no-error-lists --show-bad-padding -m       # Record sequence before renumbering
-a03 rm-spaces -o 30 a.[0100-0110].jpg        # This should error out
-a03 rm-spaces -s -o 30 a.[0100-0110].jpg     # Same with this, but silent.
-a03 ls -o                                   # regular ls to see dates of files
-a03 lsseq -RPl --no-error-lists --show-bad-padding -m       # Seq should be the same as above.
-a03 rm-spaces -v -o 30 --force --touch 20010601-1230 a.[0100-0110].jpg # Now they should renumber.
-a03 lsseq -RPl --no-error-lists --show-bad-padding -m       # Note new range.
-a03 ls -o                                                   # Note that one files was not overwritten due to missing file in renumed seq
-a02 ls -o                                                   # This next test was carefully laid out so that the highest x120 goes to x140
-a02 lsseq -RPl --no-error-lists --show-bad-padding -m       # and the lowest x100 goes into the vacated x120 slot. Furthermore x105 is
-a02 rm-spaces -v -o 20 --touch 20010601-1300 a.[0100-0120].jpg # missing leaving x0125 untouched after the renum.
-a02 lsseq -RPl --no-error-lists --show-bad-padding -m       # Show new seq range.
-a02 ls -o                                                   # Note all were renumbered EXCEPT x125
-a01 ls -o                                                   # A list 100-140, 101 missing, 134-139 missing.
-a01 lsseq -RPl --no-error-lists --show-bad-padding -m       # Move them all 100, so should leave 140 unmoved,
-a01 rm-spaces -o 100 --touch 20010602 a.[0100-0133].jpg      # and 201 should be missing
-a01 lsseq -RPl --no-error-lists --show-bad-padding -m       # and range should go up to 233. missing 141-199 also.
-a01 ls -o
-.   lsseq -RPl --no-error-lists --show-bad-padding -m b01 x01 y01
-.   rm-spaces -v -o 100 b01/b.[555].jpg x01/x.[-11--03].jpg y01/y.[-011-0002].jpg
-.   lsseq -RPl --no-error-lists --show-bad-padding -m b01 x01 y01
-.   lsseq -RPl --no-error-lists --show-bad-padding -m a02
-.   rm-spaces -v -o 10 a02/a.[0120-0140].jpg 
-.   lsseq -RPl --no-error-lists --show-bad-padding -m a02
-.   rm-spaces -v -o -10 a02/a.[0130-0150].jpg 
-.   lsseq -RPl --no-error-lists --show-bad-padding -m a02
-.   rm-spaces --verbose -o -1 --pad 3 a02/a.[0120-0140].jpg 
-.   lsseq -RPl --no-error-lists --show-bad-padding -m a02
-.   lsseq -RPl --no-error-lists --show-bad-padding -m d01
-.   rm-spaces -v -o 20 /d01/d_[0100-0120].jpg
-.   lsseq -RPl --no-error-lists --show-bad-padding -m d01
-.   rm-spaces -v d01/d_[0120-0140].jpg
-.   rm-spaces -v --replace-underscore d01/d_[0120-0140].jpg
-.   lsseq -RPl --no-error-lists --show-bad-padding -m d01
-e01 lsseq -RPl --no-error-lists --show-bad-padding -m
-e01 rm-spaces -v --replace-underscore e_[5-9999].jpg
-e01 lsseq -RPl --no-error-lists --show-bad-padding -m
-.   rm-spaces -v --replace-underscore --pad 4 e02/e_[5-9999].jpg
-.   rm-spaces -v --replace-underscore --pad 4 e03/e_[5-10005].jpg
-.   lsseq -ZRPl d01
-.   lsseq -ZRPl d02
-.   rm-spaces -o 20 d02/d.[hi]_[0100-0120].jpg
-.   lsseq -ZRPl d02
-.   rm-spaces --replace-underscore d02/d.[hi]_[0120-0140].jpg
-.   lsseq -ZRPl d02
-.   lsseq -ZRPl f01
-.   rm-spaces -v --pad 4 f01/f_[05-1005].jpg
-g01 lsseq -n
-g01 rm-spaces -v -o -400 g.[0530-0547].bgeo.gz
-g01 lsseq -n
-h01 ls -o
-h01 rm-spaces --start 101 --touch xxxx h.[001-010].jpg
-h01 rm-spaces --start 101 --touch 2010 h.[001-010].jpg
-h01 rm-spaces --start 101 --touch 0101 h.[001-010].jpg
-h01 rm-spaces --start 101 --touch 20100101 h.[001-010].jpg
-h01 ls -o
-h01 rm-spaces --start 1 --touch -- h.[101-110].jpg
-h01 ls -o
-h01 date
-h01 echo The dates of the files in the last ls -o should match the prior date command.
-h01 rm-spaces --foobar h.[001-010].jpg
-h01 rm-spaces --start 101 --touch 20200631 h.[001-010].jpg
-h01 rm-spaces --start 101 --touch 20200630 h.[001-010].jpg
-h01 ls -o
-h01 rm-spaces --start 1 --touch 200730 h.[101-110].jpg
-h01 ls -o
-i01 lsseq --no-error-lists
-i01 rm-spaces --dry-run --start 100 --rename -- aaa.[1-10].jpg
-i01 rm-spaces --dry-run --start 100 --rename aaa.[1-10].jpg
-i01 rm-spaces --dry-run --start 100 --rename aaa.[1-10].jpg bbb.[1-10].jpg
-i01 rm-spaces --dry-run --start 100 --rename xxx aaa.[1-10].jpg bbb.[1-10].jpg
-i01 rm-spaces --pad 4 --dry-run --start 100 --rename xxx aaa.[1-10].jpg
-i01 rm-spaces --pad 4          --start 100 --rename xxx aaa.[1-10].jpg
-i01 rm-spaces --pad 3 --dry-run --start  20 --rename xxx ccc.[01-10].jpg
-.   rm-spaces         -v --start 5 --rename g01/yyy i01/eee.[0001-0010].jpg
-.   rm-spaces         -v --start 5 --rename yyy     i01/eee.[0001-0010].jpg
-.   rm-spaces --pad 3 -v --start 5 --rename zzz     i01/ccc.[01-10].jpg
-i01 rm-spaces --pad 3 -v --start 5 --rename nono    noSuchSeq.[01-10].jpg
-.   rm-spaces --pad 3 -v --start 5 --rename nono    i01/noSuchSeq.[01-10].jpg
-i01 lsseq --no-error-lists --only-sequences
-i01 rm-spaces --pad 3 -v --start 50 --rename n.11.m_v001_   bbb.[1-10].jpg
-i01 lsseq --no-error-lists --only-sequences
-.   lsseq --prepend-path-rel --no-error-lists z01 'z 1' 'z 2'
+.    uname
+.    lsseq --version                          # Keep track of which lsseq was run with tests.
+.    rm-spaces                                # Run with no args - should do nothing
+.    rm-spaces --version                      # MUST increment with each update/bug fix, corresp w/ release.
+.    rm-spaces --help                         # To keep track of changes with help, plus check if correct
+.    rm-spaces --noSuchArg                    # To check error checking of args
+adir lsseq     -R -n
+adir rm-spaces -x
+adir lsseq     -R -n
 EOF
 
 export NUM_TESTS=`wc -l < $tmpTestCmdFile`

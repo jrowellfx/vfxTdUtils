@@ -3,12 +3,15 @@
 ----- Test 1 -+- dir: . -+- uname -----
 Linux
 
------ Test 2 -+- dir: . -+- rm-spaces -----
+----- Test 2 -+- dir: . -+- lsseq --version -----
+4.0.0
 
------ Test 3 -+- dir: . -+- rm-spaces --version -----
+----- Test 3 -+- dir: . -+- rm-spaces -----
+
+----- Test 4 -+- dir: . -+- rm-spaces --version -----
 2.0.0
 
------ Test 4 -+- dir: . -+- rm-spaces --help -----
+----- Test 5 -+- dir: . -+- rm-spaces --help -----
 usage: rm-spaces [-h | --help] [OPTIONS]
 
 rm-spaces is a util to help remove spaces from filenames. rm-spaces operates on files
@@ -58,7 +61,35 @@ rm-spaces creates the following executable files in the current working director
 
 --+--  rm-spaces returned non-zero error code: 1  --+--
 
------ Test 5 -+- dir: . -+- rm-spaces --noSuchArg -----
+----- Test 6 -+- dir: . -+- rm-spaces --noSuchArg -----
 rm-spaces: ERROR: Invalid option '--noSuchArg'.
 usage: rm-spaces [-h | --help] [OPTIONS]
 --+--  rm-spaces returned non-zero error code: 1  --+--
+
+----- Test 7 -+- dir: adir -+- lsseq -R -n -----
+.:
+ file5.txt
+a01
+file 3.txt
+file 4 .txt
+file1.txt
+file2 .txt
+
+./a01:
+READ ME.txt
+a.[0100-0110].jpg
+
+----- Test 8 -+- dir: adir -+- rm-spaces -x -----
+
+----- Test 9 -+- dir: adir -+- lsseq -R -n -----
+.:
+a01
+file1.txt
+file2.txt
+file5.txt
+file_3.txt
+file_4.txt
+
+./a01:
+READ ME.txt
+a.[0100-0110].jpg
