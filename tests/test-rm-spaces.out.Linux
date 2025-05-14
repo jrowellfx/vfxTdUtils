@@ -9,7 +9,7 @@ Linux
 ----- Test 3 -+- dir: . -+- rm-spaces -----
 
 ----- Test 4 -+- dir: . -+- rm-spaces --version -----
-2.0.0
+2.0.1
 
 ----- Test 5 -+- dir: . -+- rm-spaces --help -----
 usage: rm-spaces [-h | --help] [OPTIONS]
@@ -36,7 +36,7 @@ It removes trailing and leading spaces, removes spaces after or before dots (.),
 pluses (+) etc.
 
 rm-spaces then replaces all spaces with underscores (_) unless --camel-case is
-specified, in which case words are converted to 'camel case" unless readability
+specified, in which case words are converted to 'camel case' unless readability
 would suffer.
 
 rm-spaces creates the following executable files in the current working directory:
