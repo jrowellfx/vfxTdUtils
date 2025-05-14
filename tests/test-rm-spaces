@@ -114,7 +114,7 @@ export REPO_DIR=`dirname $TEST_DIR`
 unalias rm-spaces > /dev/null 2>&1
 unalias rm > /dev/null 2>&1
 
-TEST_OUT_FILENAME=test_rm-spaces.out.`uname`.new
+TEST_OUT_FILENAME=test-rm-spaces.out.`uname`.new
 
 if [ "$TEST_SYSTEM_RM-SPACES" = no ]; then
     ln -sf ../scripts/rm-spaces  rm-spaces
@@ -124,14 +124,14 @@ if [ "$TEST_SYSTEM_RM-SPACES" = no ]; then
     fi
 else
     /bin/rm rm-spaces > /dev/null 2>&1 # In case softlink is in this dir.
-    TEST_OUT_FILENAME=test_rm-spaces.out.`uname`.installed.new
+    TEST_OUT_FILENAME=test-rm-spaces.out.`uname`.installed.new
 fi
 
 echo "Test is using " `which rm-spaces`
 
 export HERO_TESTDIR=test-rm-spaces-dir
 
-# Double check sensible REPO_DIR value before removing old testdir
+# Double check sensible REPO_DIR value before removing old $HERO_TESTDIR
 #
 if [ -z "$REPO_DIR" ]; then
     echo $0: error: REPO_DIR was empty, dangerous recursive rm avoided.
@@ -143,7 +143,7 @@ elif [[ `basename $REPO_DIR` != 'vfxTdUtils' ]]; then
     echo $0: error: REPO_DIR might not be set to vfxTdUtils repo, dangerous recursive rm avoided.
     cleanupExit 1
 fi
-rm -rf $TEST_DIR/testdir/*
+rm -rf $TEST_DIR/$HERO_TESTDIR/*
 
 # Create list of test directories needed.
 # Then touch the file names to make testfiles.
@@ -171,11 +171,11 @@ cat $tmpFile | xargs -0 chmod 666
 #
 # Note: We use HAL's birthday from 2001: A Space Odyssey.
 #
-find testdir -type f -exec touch -t 199201121330 \{\} \;
+find $HERO_TESTDIR -type f -exec touch -t 199201121330 \{\} \;
 
 # The following are tests. One test per line.
 # The first item on a line is the directory relative to
-#     $TEST_DIR/testdir to run the test in.
+#     $TEST_DIR/$HERO_TESTDIR to run the test in.
 # The second is the command to run.
 # The rest are args to the command.
 # Note: use single quotes (') around args with spaces in the name
@@ -183,7 +183,7 @@ find testdir -type f -exec touch -t 199201121330 \{\} \;
 cat << EOF > $tmpTestCmdFile
 .   uname
 .   lsseq --version                         # Double check which version being used for this test.
-.   lsseq -RPl --no-error-lists --show-bad-padding -m         # List all sequences in the testdir
+.   lsseq -RPl --no-error-lists --show-bad-padding -m         # List all sequences in the $HERO_TESTDIR
 .   rm-spaces                                # Run with no args - should do nothing
 .   rm-spaces --version                      # MUST increment with each update/bug fix, corresp w/ release.
 .   rm-spaces --help                         # To keep track of changes with help, plus check if correct
@@ -328,7 +328,7 @@ while true; do
     echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
     echo --- Test $i of $NUM_TESTS ---
     echo ----- Test $i -+- dir: $workingDir -+- $cmd `cat $tmpArgs` ----- >> $TEST_DIR/$TEST_OUT_FILENAME
-    cd $TEST_DIR/testdir/$workingDir
+    cd $TEST_DIR/$HERO_TESTDIR/$workingDir
 
     # Rewrite $tmpArgs with one arg per line.
     #
