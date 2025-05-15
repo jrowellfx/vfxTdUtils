@@ -14,50 +14,55 @@ Linux
 ----- Test 5 -+- dir: . -+- rm-spaces --help -----
 usage: rm-spaces [-h | --help] [OPTIONS]
 
-rm-spaces is a util to help remove spaces from filenames. rm-spaces operates on files
-in the current working directory (and/or below).
+rm-spaces is a util to help remove spaces from filenames. rm-spaces operates
+on files in the current working directory (and/or below).
 
 Options:
  -h, --help           display this help and exit
+ --not-recursive      only remove spaces from files in the current working
+                        directory [default]
  -r, --recursive      remove spaces from filenames from the current working
-                        directory and down into subdirectories (not default)
- -d, --directories    only remove spaces from directory names
+                        directory and down into subdirectories
  -f, --regular-files  only remove spaces from regular files (and links)
+                        [default]
+ -d, --directories    only remove spaces from directory names. -f and -d are
+                        mutually exclusive.
+ --no-execute         Create executable files containing the commands to
+                        rename any files to remove spaces from their names
+                        [default]
  -x, --execute        make the changes on the fly
  -q, --remove-quotes  also strip '`?"[](){} characters.
- -c, --camel-case     converts words to camel case when possible (not default).
+ --no-camel-case      replace spaces with underscores [default]
+ -c, --camel-case     converts words to camel case when possible
  --dates              replaces spaces before or after dates (eg 2023-03-27) with
                         underscores. (default)
- --noDates            don't try to match dates in filenames as in --dates.
+ --no-dates           don't try to match dates in filenames as in --dates.
  --version            print out the version number and exit
 
 rm-spaces takes spaces out of filenames while maintaining filename readability.
-It removes trailing and leading spaces, removes spaces after or before dots (.),
-pluses (+) etc.
+It removes trailing and leading spaces, removes spaces before and/or after
+dots (.), pluses (+) etc.
 
 rm-spaces then replaces all spaces with underscores (_) unless --camel-case is
-specified, in which case words are converted to 'camel case' unless readability
+specified, in which case words are converted to 'camelCase' unless readability
 would suffer.
 
-rm-spaces creates the following executable files in the current working directory:
+rm-spaces creates one or more of the following executable files in the current
+working directory:
 
  - .rename.files.rm-spaces
-     Run this to rename regular files (must run before directories below).
-     (not necessary with -x option).
+     Run this to rename regular-files.
  - .undo.files.rm-spaces
-     Run this to undo the above changes
+     Run this to undo regular-file name changes
  - .failed.files.rm-spaces
      List of renames that would have failed due to name conflict
-     (hand edit to taste then run it).
 
  - .rename.dirs.rm-spaces
-     Run this to rename directories (must run after changing names on regular files
-     with the .rename.files.rm-spaces script).  (not necessary with -x option).
+     Run this to rename directories.
  - .undo.dirs.rm-spaces
-     Run this to undo the above changes
+     Run this to undo directory name changes
  - .failed.dirs.rm-spaces
      List of renames that would have failed due to name conflict
-     (hand edit to taste then run it).
 
 
 ----- Test 6 -+- dir: . -+- rm-spaces --noSuchArg -----
@@ -152,31 +157,25 @@ file_4.txt
 READ_ME.txt
 a.[0100-0110].jpg
 
------ Test 17 -+- dir: bdir -+- lsseq -a -R -n -----
+----- Test 17 -+- dir: adir -+- ./.undo.files.rm-spaces -----
+
+----- Test 18 -+- dir: adir -+- lsseq -a -R -n -----
 .:
-b 02
-b 03
-b01
+ file5.txt
+.rename.files.rm-spaces
+.undo.files.rm-spaces
+a01
+file 3.txt
+file 4 .txt
+file1.txt
+file2 .txt
 
-./b 02:
-b2.[0101-0105].jpg
-
-./b 03:
+./a01:
 READ ME.txt
-b 3.[0101-0105].jpg
-
-./b01:
-READ ME.txt
-b 1.[0101-0105].jpg
-
------ Test 18 -+- dir: bdir -+- rm-spaces -r -----
+a.[0100-0110].jpg
 
 ----- Test 19 -+- dir: bdir -+- lsseq -a -R -n -----
 .:
-.rename.dirs.rm-spaces
-.rename.files.rm-spaces
-.undo.dirs.rm-spaces
-.undo.files.rm-spaces
 b 02
 b 03
 b01
@@ -192,19 +191,9 @@ b 3.[0101-0105].jpg
 READ ME.txt
 b 1.[0101-0105].jpg
 
------ Test 20 -+- dir: bdir -+- cat .rename.dirs.rm-spaces -----
-#!/bin/bash
-mv './b 02' './b_02'
-mv './b 03' './b_03'
+----- Test 20 -+- dir: bdir -+- rm-spaces -r -----
 
-
------ Test 21 -+- dir: bdir -+- cat .undo.dirs.rm-spaces -----
-#!/bin/bash
-mv './b_03' './b 03'
-mv './b_02' './b 02'
-
-
------ Test 22 -+- dir: bdir -+- cat .rename.files.rm-spaces -----
+----- Test 21 -+- dir: bdir -+- cat .rename.files.rm-spaces -----
 #!/bin/bash
 mv './b 03/READ ME.txt' './b 03/READ_ME.txt'
 mv './b 03/b 3.0101.jpg' './b 03/b_3.0101.jpg'
@@ -220,7 +209,7 @@ mv './b01/b 1.0103.jpg' './b01/b_1.0103.jpg'
 mv './b01/b 1.0105.jpg' './b01/b_1.0105.jpg'
 
 
------ Test 23 -+- dir: bdir -+- cat .undo.files.rm-spaces -----
+----- Test 22 -+- dir: bdir -+- cat .undo.files.rm-spaces -----
 #!/bin/bash
 mv './b01/b_1.0105.jpg' './b01/b 1.0105.jpg'
 mv './b01/b_1.0103.jpg' './b01/b 1.0103.jpg'
@@ -235,3 +224,45 @@ mv './b 03/b_3.0103.jpg' './b 03/b 3.0103.jpg'
 mv './b 03/b_3.0101.jpg' './b 03/b 3.0101.jpg'
 mv './b 03/READ_ME.txt' './b 03/READ ME.txt'
 
+
+----- Test 23 -+- dir: bdir -+- ./.rename.files.rm-spaces -----
+
+----- Test 24 -+- dir: bdir -+- lsseq -a -R -n -----
+.:
+.rename.files.rm-spaces
+.undo.files.rm-spaces
+b 02
+b 03
+b01
+
+./b 02:
+b2.[0101-0105].jpg
+
+./b 03:
+READ_ME.txt
+b_3.[0101-0105].jpg
+
+./b01:
+READ_ME.txt
+b_1.[0101-0105].jpg
+
+----- Test 25 -+- dir: bdir -+- ./.undo.files.rm-spaces -----
+
+----- Test 26 -+- dir: bdir -+- lsseq -a -R -n -----
+.:
+.rename.files.rm-spaces
+.undo.files.rm-spaces
+b 02
+b 03
+b01
+
+./b 02:
+b2.[0101-0105].jpg
+
+./b 03:
+READ ME.txt
+b 3.[0101-0105].jpg
+
+./b01:
+READ ME.txt
+b 1.[0101-0105].jpg

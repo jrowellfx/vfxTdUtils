@@ -62,50 +62,55 @@ usageExit() {
     if [ "$2" = help ]; then
         cat - <<EOF1
 
-$cmdName is a util to help remove spaces from filenames. $cmdName operates on files
-in the current working directory (and/or below).
+$cmdName is a util to help remove spaces from filenames. $cmdName operates
+on files in the current working directory (and/or below).
 
 Options:
  -h, --help           display this help and exit
+ --not-recursive      only remove spaces from files in the current working
+                        directory [default]
  -r, --recursive      remove spaces from filenames from the current working
-                        directory and down into subdirectories (not default)
- -d, --directories    only remove spaces from directory names
+                        directory and down into subdirectories
  -f, --regular-files  only remove spaces from regular files (and links)
+                        [default]
+ -d, --directories    only remove spaces from directory names. -f and -d are
+                        mutually exclusive.
+ --no-execute         Create executable files containing the commands to
+                        rename any files to remove spaces from their names
+                        [default]
  -x, --execute        make the changes on the fly
  -q, --remove-quotes  also strip '\`?"[](){} characters.
- -c, --camel-case     converts words to camel case when possible (not default).
+ --no-camel-case      replace spaces with underscores [default]
+ -c, --camel-case     converts words to camel case when possible
  --dates              replaces spaces before or after dates (eg 2023-03-27) with
                         underscores. (default)
- --noDates            don't try to match dates in filenames as in --dates.
+ --no-dates           don't try to match dates in filenames as in --dates.
  --version            print out the version number and exit
 
 $cmdName takes spaces out of filenames while maintaining filename readability.
-It removes trailing and leading spaces, removes spaces after or before dots (.),
-pluses (+) etc.
+It removes trailing and leading spaces, removes spaces before and/or after
+dots (.), pluses (+) etc.
 
 $cmdName then replaces all spaces with underscores (_) unless --camel-case is
-specified, in which case words are converted to 'camel case' unless readability
+specified, in which case words are converted to 'camelCase' unless readability
 would suffer.
 
-$cmdName creates the following executable files in the current working directory:
+$cmdName creates one or more of the following executable files in the current
+working directory:
 
  - .rename.files.$cmdName
-     Run this to rename regular files (must run before directories below).
-     (not necessary with -x option).
+     Run this to rename regular-files.
  - .undo.files.$cmdName
-     Run this to undo the above changes
+     Run this to undo regular-file name changes
  - .failed.files.$cmdName
      List of renames that would have failed due to name conflict
-     (hand edit to taste then run it).
 
  - .rename.dirs.$cmdName
-     Run this to rename directories (must run after changing names on regular files
-     with the .rename.files.$cmdName script).  (not necessary with -x option).
+     Run this to rename directories.
  - .undo.dirs.$cmdName
-     Run this to undo the above changes
+     Run this to undo directory name changes
  - .failed.dirs.$cmdName
      List of renames that would have failed due to name conflict
-     (hand edit to taste then run it).
 
 EOF1
         exit 0
@@ -115,7 +120,7 @@ EOF1
 
 findOptions="-maxdepth 1"
 OPT_RECURSIVE=false
-OPT_DO_DIRECTORIES=true
+OPT_DO_DIRECTORIES=false
 OPT_DO_REGFILES=true
 OPT_EXECUTE=false
 OPT_CAMELCASE=false
@@ -130,6 +135,11 @@ do
 
         --version) echo $VERSION
             exit 0
+        ;;
+
+        --not-recursive) findOptions="-maxdepth 1"
+            OPT_RECURSIVE=false
+            shift
         ;;
 
         -r|--recursive) findOptions=""
@@ -147,7 +157,15 @@ do
             shift
         ;;
 
+        --no-execute) OPT_EXECUTE=false
+            shift
+        ;;
+
         -x|--execute) OPT_EXECUTE=true
+            shift
+        ;;
+
+        --no-camel-case) OPT_CAMELCASE=false
             shift
         ;;
 
@@ -163,7 +181,7 @@ do
             shift
         ;;
 
-        --noDates) OPT_MATCH_DATES=false
+        --no-dates) OPT_MATCH_DATES=false
             shift
         ;;
         
@@ -179,16 +197,14 @@ echo '#!/bin/bash' > /tmp/tmp.$cmdName.empty.$$
 echo '' >> /tmp/tmp.$cmdName.empty.$$
 
 # Make a sed script that removes spaces.
-# First line needs to be this echo command so that we can reliably
-# generate a tab character. (i.e.; Safe from someone doing tabs2spaces
-# on this script). [23/03/27 - jpr - I have no recollection of the
-# purpose of this echo command.]
+# Start with an empty file, it fills up below
+# based on command-line options above.
 #
-echo -n > /tmp/tmp.$cmdName.sed.script.$$
+cat /dev/null > /tmp/tmp.$cmdName.sed.script.$$
 
 # The sed scripts below attempts to encapsulate some basic
 # heuristics that I (James Rowell) follow when removing spaces
-# or special characters (like quotes etc.) from of filesnames.
+# or special characters (like quotes etc.) from filenames.
 #
 # The next section removes:
 #   - the "'" from apostrophe-s words.
@@ -207,7 +223,7 @@ s/?//g
 EOF2a
 fi
 
-# Replaces all tabs with a space.
+# Replaces white-space (includes tabs) with a single space.
 #
 echo -e '1,$ s/[ \t][ \t]*/ /g' >> /tmp/tmp.$cmdName.sed.script.$$
 
@@ -493,8 +509,8 @@ cat <<EOF3 > /tmp/tmp.$cmdName.$$
     failedCmds=\$2/.failed.\$3.$cmdName
     undoCmds=\$2/.undo.\$3.$cmdName
 
-    bName=\`basename "\$1"\`
     dName=\`dirname  "\$1"\`
+    bName=\`basename "\$1"\`
 
     safe_dName=\`echo "\$dName" | sed -e "s/'/'\"'\"'/g"\`
     safe_bName=\`echo "\$bName" | sed -e "s/'/'\"'\"'/g"\`

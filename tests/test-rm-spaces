@@ -200,13 +200,16 @@ adir rm-spaces -r
 adir lsseq     -a -R -n
 adir ./.rename.files.rm-spaces
 adir lsseq     -a -R -n
+adir ./.undo.files.rm-spaces
+adir lsseq     -a -R -n
 bdir lsseq     -a -R -n
 bdir rm-spaces -r
-bdir lsseq     -a -R -n
-bdir cat .rename.dirs.rm-spaces
-bdir cat .undo.dirs.rm-spaces
 bdir cat .rename.files.rm-spaces
 bdir cat .undo.files.rm-spaces
+bdir ./.rename.files.rm-spaces
+bdir lsseq     -a -R -n
+bdir ./.undo.files.rm-spaces
+bdir lsseq     -a -R -n
 EOF
 
 export NUM_TESTS=`wc -l < $tmpTestCmdFile`
