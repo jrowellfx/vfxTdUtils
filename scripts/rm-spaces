@@ -108,6 +108,7 @@ $cmdName creates the following executable files in the current working directory
      (hand edit to taste then run it).
 
 EOF1
+        exit 0
     fi
     exit 1
 }

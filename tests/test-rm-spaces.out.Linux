@@ -59,14 +59,13 @@ rm-spaces creates the following executable files in the current working director
      List of renames that would have failed due to name conflict
      (hand edit to taste then run it).
 
---+--  rm-spaces returned non-zero error code: 1  --+--
 
 ----- Test 6 -+- dir: . -+- rm-spaces --noSuchArg -----
 rm-spaces: ERROR: Invalid option '--noSuchArg'.
 usage: rm-spaces [-h | --help] [OPTIONS]
 --+--  rm-spaces returned non-zero error code: 1  --+--
 
------ Test 7 -+- dir: adir -+- lsseq -R -n -----
+----- Test 7 -+- dir: adir -+- lsseq -a -R -n -----
 .:
  file5.txt
 a01
@@ -81,8 +80,9 @@ a.[0100-0110].jpg
 
 ----- Test 8 -+- dir: adir -+- rm-spaces -x -----
 
------ Test 9 -+- dir: adir -+- lsseq -R -n -----
+----- Test 9 -+- dir: adir -+- lsseq -a -R -n -----
 .:
+.undo.files.rm-spaces
 a01
 file1.txt
 file2.txt
@@ -93,3 +93,145 @@ file_4.txt
 ./a01:
 READ ME.txt
 a.[0100-0110].jpg
+
+----- Test 10 -+- dir: adir -+- cat ./.undo.files.rm-spaces -----
+#!/bin/bash
+mv './file2.txt' './file2 .txt'
+mv './file_3.txt' './file 3.txt'
+mv './file5.txt' './ file5.txt'
+mv './file_4.txt' './file 4 .txt'
+
+
+----- Test 11 -+- dir: adir -+- ./.undo.files.rm-spaces -----
+
+----- Test 12 -+- dir: adir -+- lsseq -a -R -n -----
+.:
+ file5.txt
+.undo.files.rm-spaces
+a01
+file 3.txt
+file 4 .txt
+file1.txt
+file2 .txt
+
+./a01:
+READ ME.txt
+a.[0100-0110].jpg
+
+----- Test 13 -+- dir: adir -+- rm-spaces -r -----
+
+----- Test 14 -+- dir: adir -+- lsseq -a -R -n -----
+.:
+ file5.txt
+.rename.files.rm-spaces
+.undo.files.rm-spaces
+a01
+file 3.txt
+file 4 .txt
+file1.txt
+file2 .txt
+
+./a01:
+READ ME.txt
+a.[0100-0110].jpg
+
+----- Test 15 -+- dir: adir -+- ./.rename.files.rm-spaces -----
+
+----- Test 16 -+- dir: adir -+- lsseq -a -R -n -----
+.:
+.rename.files.rm-spaces
+.undo.files.rm-spaces
+a01
+file1.txt
+file2.txt
+file5.txt
+file_3.txt
+file_4.txt
+
+./a01:
+READ_ME.txt
+a.[0100-0110].jpg
+
+----- Test 17 -+- dir: bdir -+- lsseq -a -R -n -----
+.:
+b 02
+b 03
+b01
+
+./b 02:
+b2.[0101-0105].jpg
+
+./b 03:
+READ ME.txt
+b 3.[0101-0105].jpg
+
+./b01:
+READ ME.txt
+b 1.[0101-0105].jpg
+
+----- Test 18 -+- dir: bdir -+- rm-spaces -r -----
+
+----- Test 19 -+- dir: bdir -+- lsseq -a -R -n -----
+.:
+.rename.dirs.rm-spaces
+.rename.files.rm-spaces
+.undo.dirs.rm-spaces
+.undo.files.rm-spaces
+b 02
+b 03
+b01
+
+./b 02:
+b2.[0101-0105].jpg
+
+./b 03:
+READ ME.txt
+b 3.[0101-0105].jpg
+
+./b01:
+READ ME.txt
+b 1.[0101-0105].jpg
+
+----- Test 20 -+- dir: bdir -+- cat .rename.dirs.rm-spaces -----
+#!/bin/bash
+mv './b 02' './b_02'
+mv './b 03' './b_03'
+
+
+----- Test 21 -+- dir: bdir -+- cat .undo.dirs.rm-spaces -----
+#!/bin/bash
+mv './b_03' './b 03'
+mv './b_02' './b 02'
+
+
+----- Test 22 -+- dir: bdir -+- cat .rename.files.rm-spaces -----
+#!/bin/bash
+mv './b 03/READ ME.txt' './b 03/READ_ME.txt'
+mv './b 03/b 3.0101.jpg' './b 03/b_3.0101.jpg'
+mv './b 03/b 3.0103.jpg' './b 03/b_3.0103.jpg'
+mv './b 03/b 3.0102.jpg' './b 03/b_3.0102.jpg'
+mv './b 03/b 3.0104.jpg' './b 03/b_3.0104.jpg'
+mv './b 03/b 3.0105.jpg' './b 03/b_3.0105.jpg'
+mv './b01/READ ME.txt' './b01/READ_ME.txt'
+mv './b01/b 1.0102.jpg' './b01/b_1.0102.jpg'
+mv './b01/b 1.0101.jpg' './b01/b_1.0101.jpg'
+mv './b01/b 1.0104.jpg' './b01/b_1.0104.jpg'
+mv './b01/b 1.0103.jpg' './b01/b_1.0103.jpg'
+mv './b01/b 1.0105.jpg' './b01/b_1.0105.jpg'
+
+
+----- Test 23 -+- dir: bdir -+- cat .undo.files.rm-spaces -----
+#!/bin/bash
+mv './b01/b_1.0105.jpg' './b01/b 1.0105.jpg'
+mv './b01/b_1.0103.jpg' './b01/b 1.0103.jpg'
+mv './b01/b_1.0104.jpg' './b01/b 1.0104.jpg'
+mv './b01/b_1.0101.jpg' './b01/b 1.0101.jpg'
+mv './b01/b_1.0102.jpg' './b01/b 1.0102.jpg'
+mv './b01/READ_ME.txt' './b01/READ ME.txt'
+mv './b 03/b_3.0105.jpg' './b 03/b 3.0105.jpg'
+mv './b 03/b_3.0104.jpg' './b 03/b 3.0104.jpg'
+mv './b 03/b_3.0102.jpg' './b 03/b 3.0102.jpg'
+mv './b 03/b_3.0103.jpg' './b 03/b 3.0103.jpg'
+mv './b 03/b_3.0101.jpg' './b 03/b 3.0101.jpg'
+mv './b 03/READ_ME.txt' './b 03/READ ME.txt'
+

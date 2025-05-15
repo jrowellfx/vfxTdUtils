@@ -38,10 +38,10 @@
 
 # test_rm-spaces - Run the rm-spaces regression tests.
 
-tmpArgs=/tmp/tmpARGS_RM-SPACES.$$
-tmpTestCmdFile=/tmp/tmpTESTCMDFILE_RM-SPACES.$$
-tmpFile=/tmp/tmpFILE_RM-SPACES.$$
-tmpLine=/tmp/tmpLINE_RM-SPACES.$$
+tmpArgs=/tmp/tmpARGS_RMSPACES.$$
+tmpTestCmdFile=/tmp/tmpTESTCMDFILE_RMSPACES.$$
+tmpFile=/tmp/tmpFILE_RMSPACES.$$
+tmpLine=/tmp/tmpLINE_RMSPACES.$$
 #
 cleanupExit() {
     /bin/rm $tmpArgs > /dev/null 2>&1
@@ -190,9 +190,23 @@ cat << EOF > $tmpTestCmdFile
 .    rm-spaces --version                      # MUST increment with each update/bug fix, corresp w/ release.
 .    rm-spaces --help                         # To keep track of changes with help, plus check if correct
 .    rm-spaces --noSuchArg                    # To check error checking of args
-adir lsseq     -R -n
+adir lsseq     -a -R -n
 adir rm-spaces -x
-adir lsseq     -R -n
+adir lsseq     -a -R -n
+adir cat ./.undo.files.rm-spaces
+adir ./.undo.files.rm-spaces
+adir lsseq     -a -R -n
+adir rm-spaces -r
+adir lsseq     -a -R -n
+adir ./.rename.files.rm-spaces
+adir lsseq     -a -R -n
+bdir lsseq     -a -R -n
+bdir rm-spaces -r
+bdir lsseq     -a -R -n
+bdir cat .rename.dirs.rm-spaces
+bdir cat .undo.dirs.rm-spaces
+bdir cat .rename.files.rm-spaces
+bdir cat .undo.files.rm-spaces
 EOF
 
 export NUM_TESTS=`wc -l < $tmpTestCmdFile`
