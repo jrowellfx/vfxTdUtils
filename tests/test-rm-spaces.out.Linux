@@ -9,7 +9,7 @@ Linux
 ----- Test 3 -+- dir: . -+- rm-spaces -----
 
 ----- Test 4 -+- dir: . -+- rm-spaces --version -----
-2.0.1
+2.1.0
 
 ----- Test 5 -+- dir: . -+- rm-spaces --help -----
 usage: rm-spaces [-h | --help] [OPTIONS]
