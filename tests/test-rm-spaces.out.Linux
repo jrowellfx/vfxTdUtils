@@ -70,10 +70,10 @@ rm-spaces: ERROR: Invalid option '--noSuchArg'.
 usage: rm-spaces [-h | --help] [OPTIONS]
 --+--  rm-spaces returned non-zero error code: 1  --+--
 
------ Test 7 -+- dir: adir -+- lsseq -a -R -n -----
+----- Test 7 -+- dir: adir -+- lsseq -a -R -n -F -----
 .:
  file5.txt
-a01
+a01/
 file 3.txt
 file 4 .txt
 file1.txt
@@ -85,10 +85,10 @@ a.[0100-0110].jpg
 
 ----- Test 8 -+- dir: adir -+- rm-spaces -x -----
 
------ Test 9 -+- dir: adir -+- lsseq -a -R -n -----
+----- Test 9 -+- dir: adir -+- lsseq -a -R -n -F -----
 .:
-.undo.files.rm-spaces
-a01
+.undo.files.rm-spaces*
+a01/
 file1.txt
 file2.txt
 file5.txt
@@ -109,11 +109,11 @@ mv './file_4.txt' './file 4 .txt'
 
 ----- Test 11 -+- dir: adir -+- ./.undo.files.rm-spaces -----
 
------ Test 12 -+- dir: adir -+- lsseq -a -R -n -----
+----- Test 12 -+- dir: adir -+- lsseq -a -R -n -F -----
 .:
  file5.txt
-.undo.files.rm-spaces
-a01
+.undo.files.rm-spaces*
+a01/
 file 3.txt
 file 4 .txt
 file1.txt
@@ -125,12 +125,12 @@ a.[0100-0110].jpg
 
 ----- Test 13 -+- dir: adir -+- rm-spaces -r -----
 
------ Test 14 -+- dir: adir -+- lsseq -a -R -n -----
+----- Test 14 -+- dir: adir -+- lsseq -a -R -n -F -----
 .:
  file5.txt
-.rename.files.rm-spaces
-.undo.files.rm-spaces
-a01
+.rename.files.rm-spaces*
+.undo.files.rm-spaces*
+a01/
 file 3.txt
 file 4 .txt
 file1.txt
@@ -142,11 +142,11 @@ a.[0100-0110].jpg
 
 ----- Test 15 -+- dir: adir -+- ./.rename.files.rm-spaces -----
 
------ Test 16 -+- dir: adir -+- lsseq -a -R -n -----
+----- Test 16 -+- dir: adir -+- lsseq -a -R -n -F -----
 .:
-.rename.files.rm-spaces
-.undo.files.rm-spaces
-a01
+.rename.files.rm-spaces*
+.undo.files.rm-spaces*
+a01/
 file1.txt
 file2.txt
 file5.txt
@@ -159,12 +159,12 @@ a.[0100-0110].jpg
 
 ----- Test 17 -+- dir: adir -+- ./.undo.files.rm-spaces -----
 
------ Test 18 -+- dir: adir -+- lsseq -a -R -n -----
+----- Test 18 -+- dir: adir -+- lsseq -a -R -n -F -----
 .:
  file5.txt
-.rename.files.rm-spaces
-.undo.files.rm-spaces
-a01
+.rename.files.rm-spaces*
+.undo.files.rm-spaces*
+a01/
 file 3.txt
 file 4 .txt
 file1.txt
@@ -174,11 +174,12 @@ file2 .txt
 READ ME.txt
 a.[0100-0110].jpg
 
------ Test 19 -+- dir: bdir -+- lsseq -a -R -n -----
+----- Test 19 -+- dir: bdir -+- lsseq -a -R -n -F -----
 .:
-b 02
-b 03
-b01
+b 02/
+b 03/
+b 04/
+b_01/
 
 ./b 02:
 b2.[0101-0105].jpg
@@ -187,7 +188,207 @@ b2.[0101-0105].jpg
 READ ME.txt
 b 3.[0101-0105].jpg
 
-./b01:
+./b 04:
+b 04 sub1a/
+b 04 sub1b/
+b 04 sub1c/
+
+./b 04/b 04 sub1a:
+b 04 sub2a/
+b 04 sub2b/
+b 04 sub2c/
+
+./b 04/b 04 sub1a/b 04 sub2a:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1a/b 04 sub2a/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2a/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2a/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2b:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1a/b 04 sub2b/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2b/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2b/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2c:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1a/b 04 sub2c/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2c/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2c/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b:
+b 04 sub2a/
+b 04 sub2b/
+b 04 sub2c/
+
+./b 04/b 04 sub1b/b 04 sub2a:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1b/b 04 sub2a/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2a/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2a/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2b:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1b/b 04 sub2b/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2b/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2b/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2c:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1b/b 04 sub2c/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2c/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2c/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c:
+b 04 sub2a/
+b 04 sub2b/
+b 04 sub2c/
+
+./b 04/b 04 sub1c/b 04 sub2a:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1c/b 04 sub2a/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2a/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2a/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2b:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1c/b 04 sub2b/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2b/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2b/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2c:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1c/b 04 sub2c/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2c/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2c/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_01:
 READ ME.txt
 b 1.[0101-0105].jpg
 
@@ -195,45 +396,208 @@ b 1.[0101-0105].jpg
 
 ----- Test 21 -+- dir: bdir -+- cat .rename.files.rm-spaces -----
 #!/bin/bash
+mv './b_01/READ ME.txt' './b_01/READ_ME.txt'
+mv './b_01/b 1.0102.jpg' './b_01/b_1.0102.jpg'
+mv './b_01/b 1.0101.jpg' './b_01/b_1.0101.jpg'
+mv './b_01/b 1.0104.jpg' './b_01/b_1.0104.jpg'
+mv './b_01/b 1.0103.jpg' './b_01/b_1.0103.jpg'
+mv './b_01/b 1.0105.jpg' './b_01/b_1.0105.jpg'
 mv './b 03/READ ME.txt' './b 03/READ_ME.txt'
 mv './b 03/b 3.0101.jpg' './b 03/b_3.0101.jpg'
 mv './b 03/b 3.0103.jpg' './b 03/b_3.0103.jpg'
 mv './b 03/b 3.0102.jpg' './b 03/b_3.0102.jpg'
 mv './b 03/b 3.0104.jpg' './b 03/b_3.0104.jpg'
 mv './b 03/b 3.0105.jpg' './b 03/b_3.0105.jpg'
-mv './b01/READ ME.txt' './b01/READ_ME.txt'
-mv './b01/b 1.0102.jpg' './b01/b_1.0102.jpg'
-mv './b01/b 1.0101.jpg' './b01/b_1.0101.jpg'
-mv './b01/b 1.0104.jpg' './b01/b_1.0104.jpg'
-mv './b01/b 1.0103.jpg' './b01/b_1.0103.jpg'
-mv './b01/b 1.0105.jpg' './b01/b_1.0105.jpg'
+mv './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3b/tmp04 yyy.txt' './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3b/tmp04_yyy.txt'
+mv './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3b/tmp04 xxx.txt' './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3b/tmp04_xxx.txt'
+mv './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3b/tmp04 zzz.txt' './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3b/tmp04_zzz.txt'
+mv './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3a/tmp04 yyy.txt' './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3a/tmp04_yyy.txt'
+mv './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3a/tmp04 xxx.txt' './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3a/tmp04_xxx.txt'
+mv './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3a/tmp04 zzz.txt' './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3a/tmp04_zzz.txt'
+mv './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3c/tmp04 yyy.txt' './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3c/tmp04_yyy.txt'
+mv './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3c/tmp04 xxx.txt' './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3c/tmp04_xxx.txt'
+mv './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3c/tmp04 zzz.txt' './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3c/tmp04_zzz.txt'
+mv './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3b/tmp04 yyy.txt' './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3b/tmp04_yyy.txt'
+mv './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3b/tmp04 xxx.txt' './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3b/tmp04_xxx.txt'
+mv './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3b/tmp04 zzz.txt' './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3b/tmp04_zzz.txt'
+mv './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3a/tmp04 yyy.txt' './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3a/tmp04_yyy.txt'
+mv './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3a/tmp04 xxx.txt' './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3a/tmp04_xxx.txt'
+mv './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3a/tmp04 zzz.txt' './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3a/tmp04_zzz.txt'
+mv './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3c/tmp04 yyy.txt' './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3c/tmp04_yyy.txt'
+mv './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3c/tmp04 xxx.txt' './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3c/tmp04_xxx.txt'
+mv './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3c/tmp04 zzz.txt' './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3c/tmp04_zzz.txt'
+mv './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3b/tmp04 yyy.txt' './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3b/tmp04_yyy.txt'
+mv './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3b/tmp04 xxx.txt' './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3b/tmp04_xxx.txt'
+mv './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3b/tmp04 zzz.txt' './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3b/tmp04_zzz.txt'
+mv './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3a/tmp04 yyy.txt' './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3a/tmp04_yyy.txt'
+mv './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3a/tmp04 xxx.txt' './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3a/tmp04_xxx.txt'
+mv './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3a/tmp04 zzz.txt' './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3a/tmp04_zzz.txt'
+mv './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3c/tmp04 yyy.txt' './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3c/tmp04_yyy.txt'
+mv './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3c/tmp04 xxx.txt' './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3c/tmp04_xxx.txt'
+mv './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3c/tmp04 zzz.txt' './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3c/tmp04_zzz.txt'
+mv './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3b/tmp04 yyy.txt' './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3b/tmp04_yyy.txt'
+mv './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3b/tmp04 xxx.txt' './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3b/tmp04_xxx.txt'
+mv './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3b/tmp04 zzz.txt' './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3b/tmp04_zzz.txt'
+mv './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3a/tmp04 yyy.txt' './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3a/tmp04_yyy.txt'
+mv './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3a/tmp04 xxx.txt' './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3a/tmp04_xxx.txt'
+mv './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3a/tmp04 zzz.txt' './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3a/tmp04_zzz.txt'
+mv './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3c/tmp04 yyy.txt' './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3c/tmp04_yyy.txt'
+mv './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3c/tmp04 xxx.txt' './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3c/tmp04_xxx.txt'
+mv './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3c/tmp04 zzz.txt' './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3c/tmp04_zzz.txt'
+mv './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3b/tmp04 yyy.txt' './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3b/tmp04_yyy.txt'
+mv './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3b/tmp04 xxx.txt' './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3b/tmp04_xxx.txt'
+mv './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3b/tmp04 zzz.txt' './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3b/tmp04_zzz.txt'
+mv './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3a/tmp04 yyy.txt' './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3a/tmp04_yyy.txt'
+mv './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3a/tmp04 xxx.txt' './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3a/tmp04_xxx.txt'
+mv './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3a/tmp04 zzz.txt' './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3a/tmp04_zzz.txt'
+mv './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3c/tmp04 yyy.txt' './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3c/tmp04_yyy.txt'
+mv './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3c/tmp04 xxx.txt' './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3c/tmp04_xxx.txt'
+mv './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3c/tmp04 zzz.txt' './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3c/tmp04_zzz.txt'
+mv './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3b/tmp04 yyy.txt' './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3b/tmp04_yyy.txt'
+mv './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3b/tmp04 xxx.txt' './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3b/tmp04_xxx.txt'
+mv './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3b/tmp04 zzz.txt' './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3b/tmp04_zzz.txt'
+mv './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3a/tmp04 yyy.txt' './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3a/tmp04_yyy.txt'
+mv './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3a/tmp04 xxx.txt' './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3a/tmp04_xxx.txt'
+mv './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3a/tmp04 zzz.txt' './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3a/tmp04_zzz.txt'
+mv './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3c/tmp04 yyy.txt' './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3c/tmp04_yyy.txt'
+mv './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3c/tmp04 xxx.txt' './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3c/tmp04_xxx.txt'
+mv './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3c/tmp04 zzz.txt' './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3c/tmp04_zzz.txt'
+mv './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3b/tmp04 yyy.txt' './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3b/tmp04_yyy.txt'
+mv './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3b/tmp04 xxx.txt' './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3b/tmp04_xxx.txt'
+mv './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3b/tmp04 zzz.txt' './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3b/tmp04_zzz.txt'
+mv './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3a/tmp04 yyy.txt' './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3a/tmp04_yyy.txt'
+mv './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3a/tmp04 xxx.txt' './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3a/tmp04_xxx.txt'
+mv './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3a/tmp04 zzz.txt' './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3a/tmp04_zzz.txt'
+mv './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3c/tmp04 yyy.txt' './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3c/tmp04_yyy.txt'
+mv './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3c/tmp04 xxx.txt' './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3c/tmp04_xxx.txt'
+mv './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3c/tmp04 zzz.txt' './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3c/tmp04_zzz.txt'
+mv './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3b/tmp04 yyy.txt' './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3b/tmp04_yyy.txt'
+mv './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3b/tmp04 xxx.txt' './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3b/tmp04_xxx.txt'
+mv './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3b/tmp04 zzz.txt' './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3b/tmp04_zzz.txt'
+mv './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3a/tmp04 yyy.txt' './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3a/tmp04_yyy.txt'
+mv './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3a/tmp04 xxx.txt' './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3a/tmp04_xxx.txt'
+mv './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3a/tmp04 zzz.txt' './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3a/tmp04_zzz.txt'
+mv './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3c/tmp04 yyy.txt' './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3c/tmp04_yyy.txt'
+mv './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3c/tmp04 xxx.txt' './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3c/tmp04_xxx.txt'
+mv './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3c/tmp04 zzz.txt' './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3c/tmp04_zzz.txt'
+mv './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3b/tmp04 yyy.txt' './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3b/tmp04_yyy.txt'
+mv './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3b/tmp04 xxx.txt' './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3b/tmp04_xxx.txt'
+mv './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3b/tmp04 zzz.txt' './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3b/tmp04_zzz.txt'
+mv './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3a/tmp04 yyy.txt' './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3a/tmp04_yyy.txt'
+mv './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3a/tmp04 xxx.txt' './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3a/tmp04_xxx.txt'
+mv './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3a/tmp04 zzz.txt' './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3a/tmp04_zzz.txt'
+mv './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3c/tmp04 yyy.txt' './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3c/tmp04_yyy.txt'
+mv './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3c/tmp04 xxx.txt' './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3c/tmp04_xxx.txt'
+mv './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3c/tmp04 zzz.txt' './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3c/tmp04_zzz.txt'
 
 
 ----- Test 22 -+- dir: bdir -+- cat .undo.files.rm-spaces -----
 #!/bin/bash
-mv './b01/b_1.0105.jpg' './b01/b 1.0105.jpg'
-mv './b01/b_1.0103.jpg' './b01/b 1.0103.jpg'
-mv './b01/b_1.0104.jpg' './b01/b 1.0104.jpg'
-mv './b01/b_1.0101.jpg' './b01/b 1.0101.jpg'
-mv './b01/b_1.0102.jpg' './b01/b 1.0102.jpg'
-mv './b01/READ_ME.txt' './b01/READ ME.txt'
+mv './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3c/tmp04_zzz.txt' './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3c/tmp04 zzz.txt'
+mv './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3c/tmp04_xxx.txt' './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3c/tmp04 xxx.txt'
+mv './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3c/tmp04_yyy.txt' './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3c/tmp04 yyy.txt'
+mv './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3a/tmp04_zzz.txt' './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3a/tmp04 zzz.txt'
+mv './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3a/tmp04_xxx.txt' './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3a/tmp04 xxx.txt'
+mv './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3a/tmp04_yyy.txt' './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3a/tmp04 yyy.txt'
+mv './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3b/tmp04_zzz.txt' './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3b/tmp04 zzz.txt'
+mv './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3b/tmp04_xxx.txt' './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3b/tmp04 xxx.txt'
+mv './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3b/tmp04_yyy.txt' './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3b/tmp04 yyy.txt'
+mv './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3c/tmp04_zzz.txt' './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3c/tmp04 zzz.txt'
+mv './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3c/tmp04_xxx.txt' './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3c/tmp04 xxx.txt'
+mv './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3c/tmp04_yyy.txt' './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3c/tmp04 yyy.txt'
+mv './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3a/tmp04_zzz.txt' './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3a/tmp04 zzz.txt'
+mv './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3a/tmp04_xxx.txt' './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3a/tmp04 xxx.txt'
+mv './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3a/tmp04_yyy.txt' './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3a/tmp04 yyy.txt'
+mv './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3b/tmp04_zzz.txt' './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3b/tmp04 zzz.txt'
+mv './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3b/tmp04_xxx.txt' './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3b/tmp04 xxx.txt'
+mv './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3b/tmp04_yyy.txt' './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3b/tmp04 yyy.txt'
+mv './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3c/tmp04_zzz.txt' './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3c/tmp04 zzz.txt'
+mv './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3c/tmp04_xxx.txt' './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3c/tmp04 xxx.txt'
+mv './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3c/tmp04_yyy.txt' './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3c/tmp04 yyy.txt'
+mv './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3a/tmp04_zzz.txt' './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3a/tmp04 zzz.txt'
+mv './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3a/tmp04_xxx.txt' './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3a/tmp04 xxx.txt'
+mv './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3a/tmp04_yyy.txt' './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3a/tmp04 yyy.txt'
+mv './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3b/tmp04_zzz.txt' './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3b/tmp04 zzz.txt'
+mv './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3b/tmp04_xxx.txt' './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3b/tmp04 xxx.txt'
+mv './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3b/tmp04_yyy.txt' './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3b/tmp04 yyy.txt'
+mv './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3c/tmp04_zzz.txt' './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3c/tmp04 zzz.txt'
+mv './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3c/tmp04_xxx.txt' './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3c/tmp04 xxx.txt'
+mv './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3c/tmp04_yyy.txt' './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3c/tmp04 yyy.txt'
+mv './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3a/tmp04_zzz.txt' './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3a/tmp04 zzz.txt'
+mv './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3a/tmp04_xxx.txt' './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3a/tmp04 xxx.txt'
+mv './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3a/tmp04_yyy.txt' './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3a/tmp04 yyy.txt'
+mv './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3b/tmp04_zzz.txt' './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3b/tmp04 zzz.txt'
+mv './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3b/tmp04_xxx.txt' './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3b/tmp04 xxx.txt'
+mv './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3b/tmp04_yyy.txt' './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3b/tmp04 yyy.txt'
+mv './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3c/tmp04_zzz.txt' './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3c/tmp04 zzz.txt'
+mv './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3c/tmp04_xxx.txt' './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3c/tmp04 xxx.txt'
+mv './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3c/tmp04_yyy.txt' './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3c/tmp04 yyy.txt'
+mv './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3a/tmp04_zzz.txt' './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3a/tmp04 zzz.txt'
+mv './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3a/tmp04_xxx.txt' './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3a/tmp04 xxx.txt'
+mv './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3a/tmp04_yyy.txt' './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3a/tmp04 yyy.txt'
+mv './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3b/tmp04_zzz.txt' './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3b/tmp04 zzz.txt'
+mv './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3b/tmp04_xxx.txt' './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3b/tmp04 xxx.txt'
+mv './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3b/tmp04_yyy.txt' './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3b/tmp04 yyy.txt'
+mv './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3c/tmp04_zzz.txt' './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3c/tmp04 zzz.txt'
+mv './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3c/tmp04_xxx.txt' './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3c/tmp04 xxx.txt'
+mv './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3c/tmp04_yyy.txt' './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3c/tmp04 yyy.txt'
+mv './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3a/tmp04_zzz.txt' './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3a/tmp04 zzz.txt'
+mv './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3a/tmp04_xxx.txt' './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3a/tmp04 xxx.txt'
+mv './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3a/tmp04_yyy.txt' './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3a/tmp04 yyy.txt'
+mv './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3b/tmp04_zzz.txt' './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3b/tmp04 zzz.txt'
+mv './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3b/tmp04_xxx.txt' './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3b/tmp04 xxx.txt'
+mv './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3b/tmp04_yyy.txt' './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3b/tmp04 yyy.txt'
+mv './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3c/tmp04_zzz.txt' './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3c/tmp04 zzz.txt'
+mv './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3c/tmp04_xxx.txt' './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3c/tmp04 xxx.txt'
+mv './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3c/tmp04_yyy.txt' './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3c/tmp04 yyy.txt'
+mv './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3a/tmp04_zzz.txt' './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3a/tmp04 zzz.txt'
+mv './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3a/tmp04_xxx.txt' './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3a/tmp04 xxx.txt'
+mv './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3a/tmp04_yyy.txt' './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3a/tmp04 yyy.txt'
+mv './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3b/tmp04_zzz.txt' './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3b/tmp04 zzz.txt'
+mv './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3b/tmp04_xxx.txt' './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3b/tmp04 xxx.txt'
+mv './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3b/tmp04_yyy.txt' './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3b/tmp04 yyy.txt'
+mv './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3c/tmp04_zzz.txt' './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3c/tmp04 zzz.txt'
+mv './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3c/tmp04_xxx.txt' './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3c/tmp04 xxx.txt'
+mv './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3c/tmp04_yyy.txt' './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3c/tmp04 yyy.txt'
+mv './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3a/tmp04_zzz.txt' './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3a/tmp04 zzz.txt'
+mv './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3a/tmp04_xxx.txt' './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3a/tmp04 xxx.txt'
+mv './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3a/tmp04_yyy.txt' './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3a/tmp04 yyy.txt'
+mv './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3b/tmp04_zzz.txt' './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3b/tmp04 zzz.txt'
+mv './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3b/tmp04_xxx.txt' './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3b/tmp04 xxx.txt'
+mv './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3b/tmp04_yyy.txt' './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3b/tmp04 yyy.txt'
+mv './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3c/tmp04_zzz.txt' './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3c/tmp04 zzz.txt'
+mv './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3c/tmp04_xxx.txt' './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3c/tmp04 xxx.txt'
+mv './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3c/tmp04_yyy.txt' './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3c/tmp04 yyy.txt'
+mv './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3a/tmp04_zzz.txt' './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3a/tmp04 zzz.txt'
+mv './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3a/tmp04_xxx.txt' './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3a/tmp04 xxx.txt'
+mv './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3a/tmp04_yyy.txt' './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3a/tmp04 yyy.txt'
+mv './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3b/tmp04_zzz.txt' './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3b/tmp04 zzz.txt'
+mv './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3b/tmp04_xxx.txt' './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3b/tmp04 xxx.txt'
+mv './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3b/tmp04_yyy.txt' './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3b/tmp04 yyy.txt'
 mv './b 03/b_3.0105.jpg' './b 03/b 3.0105.jpg'
 mv './b 03/b_3.0104.jpg' './b 03/b 3.0104.jpg'
 mv './b 03/b_3.0102.jpg' './b 03/b 3.0102.jpg'
 mv './b 03/b_3.0103.jpg' './b 03/b 3.0103.jpg'
 mv './b 03/b_3.0101.jpg' './b 03/b 3.0101.jpg'
 mv './b 03/READ_ME.txt' './b 03/READ ME.txt'
+mv './b_01/b_1.0105.jpg' './b_01/b 1.0105.jpg'
+mv './b_01/b_1.0103.jpg' './b_01/b 1.0103.jpg'
+mv './b_01/b_1.0104.jpg' './b_01/b 1.0104.jpg'
+mv './b_01/b_1.0101.jpg' './b_01/b 1.0101.jpg'
+mv './b_01/b_1.0102.jpg' './b_01/b 1.0102.jpg'
+mv './b_01/READ_ME.txt' './b_01/READ ME.txt'
 
 
 ----- Test 23 -+- dir: bdir -+- ./.rename.files.rm-spaces -----
 
------ Test 24 -+- dir: bdir -+- lsseq -a -R -n -----
+----- Test 24 -+- dir: bdir -+- lsseq -a -R -n -F -----
 .:
-.rename.files.rm-spaces
-.undo.files.rm-spaces
-b 02
-b 03
-b01
+.rename.files.rm-spaces*
+.undo.files.rm-spaces*
+b 02/
+b 03/
+b 04/
+b_01/
 
 ./b 02:
 b2.[0101-0105].jpg
@@ -242,19 +606,220 @@ b2.[0101-0105].jpg
 READ_ME.txt
 b_3.[0101-0105].jpg
 
-./b01:
+./b 04:
+b 04 sub1a/
+b 04 sub1b/
+b 04 sub1c/
+
+./b 04/b 04 sub1a:
+b 04 sub2a/
+b 04 sub2b/
+b 04 sub2c/
+
+./b 04/b 04 sub1a/b 04 sub2a:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1a/b 04 sub2a/b 04 sub3a:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2a/b 04 sub3b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2a/b 04 sub3c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2b:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1a/b 04 sub2b/b 04 sub3a:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2b/b 04 sub3b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2b/b 04 sub3c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2c:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1a/b 04 sub2c/b 04 sub3a:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2c/b 04 sub3b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2c/b 04 sub3c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1b:
+b 04 sub2a/
+b 04 sub2b/
+b 04 sub2c/
+
+./b 04/b 04 sub1b/b 04 sub2a:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1b/b 04 sub2a/b 04 sub3a:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2a/b 04 sub3b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2a/b 04 sub3c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2b:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1b/b 04 sub2b/b 04 sub3a:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2b/b 04 sub3b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2b/b 04 sub3c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2c:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1b/b 04 sub2c/b 04 sub3a:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2c/b 04 sub3b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2c/b 04 sub3c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1c:
+b 04 sub2a/
+b 04 sub2b/
+b 04 sub2c/
+
+./b 04/b 04 sub1c/b 04 sub2a:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1c/b 04 sub2a/b 04 sub3a:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2a/b 04 sub3b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2a/b 04 sub3c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2b:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1c/b 04 sub2b/b 04 sub3a:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2b/b 04 sub3b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2b/b 04 sub3c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2c:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1c/b 04 sub2c/b 04 sub3a:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2c/b 04 sub3b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2c/b 04 sub3c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_01:
 READ_ME.txt
 b_1.[0101-0105].jpg
 
 ----- Test 25 -+- dir: bdir -+- ./.undo.files.rm-spaces -----
 
------ Test 26 -+- dir: bdir -+- lsseq -a -R -n -----
+----- Test 26 -+- dir: bdir -+- lsseq -a -R -n -F -----
 .:
-.rename.files.rm-spaces
-.undo.files.rm-spaces
-b 02
-b 03
-b01
+.rename.files.rm-spaces*
+.undo.files.rm-spaces*
+b 02/
+b 03/
+b 04/
+b_01/
 
 ./b 02:
 b2.[0101-0105].jpg
@@ -263,6 +828,940 @@ b2.[0101-0105].jpg
 READ ME.txt
 b 3.[0101-0105].jpg
 
-./b01:
+./b 04:
+b 04 sub1a/
+b 04 sub1b/
+b 04 sub1c/
+
+./b 04/b 04 sub1a:
+b 04 sub2a/
+b 04 sub2b/
+b 04 sub2c/
+
+./b 04/b 04 sub1a/b 04 sub2a:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1a/b 04 sub2a/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2a/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2a/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2b:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1a/b 04 sub2b/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2b/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2b/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2c:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1a/b 04 sub2c/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2c/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2c/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b:
+b 04 sub2a/
+b 04 sub2b/
+b 04 sub2c/
+
+./b 04/b 04 sub1b/b 04 sub2a:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1b/b 04 sub2a/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2a/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2a/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2b:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1b/b 04 sub2b/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2b/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2b/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2c:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1b/b 04 sub2c/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2c/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2c/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c:
+b 04 sub2a/
+b 04 sub2b/
+b 04 sub2c/
+
+./b 04/b 04 sub1c/b 04 sub2a:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1c/b 04 sub2a/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2a/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2a/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2b:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1c/b 04 sub2b/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2b/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2b/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2c:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1c/b 04 sub2c/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2c/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2c/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_01:
 READ ME.txt
 b 1.[0101-0105].jpg
+
+----- Test 27 -+- dir: bdir -+- rm-spaces -r --directories -----
+
+----- Test 28 -+- dir: bdir -+- lsseq -a -n -F -----
+.rename.dirs.rm-spaces*
+.rename.files.rm-spaces*
+.undo.dirs.rm-spaces*
+.undo.files.rm-spaces*
+b 02/
+b 03/
+b 04/
+b_01/
+
+----- Test 29 -+- dir: bdir -+- cat ./.rename.dirs.rm-spaces -----
+#!/bin/bash
+mv './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3b' './b 04/b 04 sub1a/b 04 sub2b/b_04_sub3b'
+mv './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3a' './b 04/b 04 sub1a/b 04 sub2b/b_04_sub3a'
+mv './b 04/b 04 sub1a/b 04 sub2b/b 04 sub3c' './b 04/b 04 sub1a/b 04 sub2b/b_04_sub3c'
+mv './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3b' './b 04/b 04 sub1a/b 04 sub2a/b_04_sub3b'
+mv './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3a' './b 04/b 04 sub1a/b 04 sub2a/b_04_sub3a'
+mv './b 04/b 04 sub1a/b 04 sub2a/b 04 sub3c' './b 04/b 04 sub1a/b 04 sub2a/b_04_sub3c'
+mv './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3b' './b 04/b 04 sub1a/b 04 sub2c/b_04_sub3b'
+mv './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3a' './b 04/b 04 sub1a/b 04 sub2c/b_04_sub3a'
+mv './b 04/b 04 sub1a/b 04 sub2c/b 04 sub3c' './b 04/b 04 sub1a/b 04 sub2c/b_04_sub3c'
+mv './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3b' './b 04/b 04 sub1c/b 04 sub2b/b_04_sub3b'
+mv './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3a' './b 04/b 04 sub1c/b 04 sub2b/b_04_sub3a'
+mv './b 04/b 04 sub1c/b 04 sub2b/b 04 sub3c' './b 04/b 04 sub1c/b 04 sub2b/b_04_sub3c'
+mv './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3b' './b 04/b 04 sub1c/b 04 sub2a/b_04_sub3b'
+mv './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3a' './b 04/b 04 sub1c/b 04 sub2a/b_04_sub3a'
+mv './b 04/b 04 sub1c/b 04 sub2a/b 04 sub3c' './b 04/b 04 sub1c/b 04 sub2a/b_04_sub3c'
+mv './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3b' './b 04/b 04 sub1c/b 04 sub2c/b_04_sub3b'
+mv './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3a' './b 04/b 04 sub1c/b 04 sub2c/b_04_sub3a'
+mv './b 04/b 04 sub1c/b 04 sub2c/b 04 sub3c' './b 04/b 04 sub1c/b 04 sub2c/b_04_sub3c'
+mv './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3b' './b 04/b 04 sub1b/b 04 sub2b/b_04_sub3b'
+mv './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3a' './b 04/b 04 sub1b/b 04 sub2b/b_04_sub3a'
+mv './b 04/b 04 sub1b/b 04 sub2b/b 04 sub3c' './b 04/b 04 sub1b/b 04 sub2b/b_04_sub3c'
+mv './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3b' './b 04/b 04 sub1b/b 04 sub2a/b_04_sub3b'
+mv './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3a' './b 04/b 04 sub1b/b 04 sub2a/b_04_sub3a'
+mv './b 04/b 04 sub1b/b 04 sub2a/b 04 sub3c' './b 04/b 04 sub1b/b 04 sub2a/b_04_sub3c'
+mv './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3b' './b 04/b 04 sub1b/b 04 sub2c/b_04_sub3b'
+mv './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3a' './b 04/b 04 sub1b/b 04 sub2c/b_04_sub3a'
+mv './b 04/b 04 sub1b/b 04 sub2c/b 04 sub3c' './b 04/b 04 sub1b/b 04 sub2c/b_04_sub3c'
+mv './b 04/b 04 sub1a/b 04 sub2b' './b 04/b 04 sub1a/b_04_sub2b'
+mv './b 04/b 04 sub1a/b 04 sub2a' './b 04/b 04 sub1a/b_04_sub2a'
+mv './b 04/b 04 sub1a/b 04 sub2c' './b 04/b 04 sub1a/b_04_sub2c'
+mv './b 04/b 04 sub1c/b 04 sub2b' './b 04/b 04 sub1c/b_04_sub2b'
+mv './b 04/b 04 sub1c/b 04 sub2a' './b 04/b 04 sub1c/b_04_sub2a'
+mv './b 04/b 04 sub1c/b 04 sub2c' './b 04/b 04 sub1c/b_04_sub2c'
+mv './b 04/b 04 sub1b/b 04 sub2b' './b 04/b 04 sub1b/b_04_sub2b'
+mv './b 04/b 04 sub1b/b 04 sub2a' './b 04/b 04 sub1b/b_04_sub2a'
+mv './b 04/b 04 sub1b/b 04 sub2c' './b 04/b 04 sub1b/b_04_sub2c'
+mv './b 04/b 04 sub1a' './b 04/b_04_sub1a'
+mv './b 04/b 04 sub1c' './b 04/b_04_sub1c'
+mv './b 04/b 04 sub1b' './b 04/b_04_sub1b'
+mv './b 02' './b_02'
+mv './b 03' './b_03'
+mv './b 04' './b_04'
+
+
+----- Test 30 -+- dir: bdir -+- ./.rename.dirs.rm-spaces -----
+
+----- Test 31 -+- dir: bdir -+- lsseq -a -R -n -F -----
+.:
+.rename.dirs.rm-spaces*
+.rename.files.rm-spaces*
+.undo.dirs.rm-spaces*
+.undo.files.rm-spaces*
+b_01/
+b_02/
+b_03/
+b_04/
+
+./b_01:
+READ ME.txt
+b 1.[0101-0105].jpg
+
+./b_02:
+b2.[0101-0105].jpg
+
+./b_03:
+READ ME.txt
+b 3.[0101-0105].jpg
+
+./b_04:
+b_04_sub1a/
+b_04_sub1b/
+b_04_sub1c/
+
+./b_04/b_04_sub1a:
+b_04_sub2a/
+b_04_sub2b/
+b_04_sub2c/
+
+./b_04/b_04_sub1a/b_04_sub2a:
+b_04_sub3a/
+b_04_sub3b/
+b_04_sub3c/
+
+./b_04/b_04_sub1a/b_04_sub2a/b_04_sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1a/b_04_sub2a/b_04_sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1a/b_04_sub2a/b_04_sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1a/b_04_sub2b:
+b_04_sub3a/
+b_04_sub3b/
+b_04_sub3c/
+
+./b_04/b_04_sub1a/b_04_sub2b/b_04_sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1a/b_04_sub2b/b_04_sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1a/b_04_sub2b/b_04_sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1a/b_04_sub2c:
+b_04_sub3a/
+b_04_sub3b/
+b_04_sub3c/
+
+./b_04/b_04_sub1a/b_04_sub2c/b_04_sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1a/b_04_sub2c/b_04_sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1a/b_04_sub2c/b_04_sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1b:
+b_04_sub2a/
+b_04_sub2b/
+b_04_sub2c/
+
+./b_04/b_04_sub1b/b_04_sub2a:
+b_04_sub3a/
+b_04_sub3b/
+b_04_sub3c/
+
+./b_04/b_04_sub1b/b_04_sub2a/b_04_sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1b/b_04_sub2a/b_04_sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1b/b_04_sub2a/b_04_sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1b/b_04_sub2b:
+b_04_sub3a/
+b_04_sub3b/
+b_04_sub3c/
+
+./b_04/b_04_sub1b/b_04_sub2b/b_04_sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1b/b_04_sub2b/b_04_sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1b/b_04_sub2b/b_04_sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1b/b_04_sub2c:
+b_04_sub3a/
+b_04_sub3b/
+b_04_sub3c/
+
+./b_04/b_04_sub1b/b_04_sub2c/b_04_sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1b/b_04_sub2c/b_04_sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1b/b_04_sub2c/b_04_sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1c:
+b_04_sub2a/
+b_04_sub2b/
+b_04_sub2c/
+
+./b_04/b_04_sub1c/b_04_sub2a:
+b_04_sub3a/
+b_04_sub3b/
+b_04_sub3c/
+
+./b_04/b_04_sub1c/b_04_sub2a/b_04_sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1c/b_04_sub2a/b_04_sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1c/b_04_sub2a/b_04_sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1c/b_04_sub2b:
+b_04_sub3a/
+b_04_sub3b/
+b_04_sub3c/
+
+./b_04/b_04_sub1c/b_04_sub2b/b_04_sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1c/b_04_sub2b/b_04_sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1c/b_04_sub2b/b_04_sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1c/b_04_sub2c:
+b_04_sub3a/
+b_04_sub3b/
+b_04_sub3c/
+
+./b_04/b_04_sub1c/b_04_sub2c/b_04_sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1c/b_04_sub2c/b_04_sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_04/b_04_sub1c/b_04_sub2c/b_04_sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+----- Test 32 -+- dir: bdir -+- ./.undo.dirs.rm-spaces -----
+
+----- Test 33 -+- dir: bdir -+- lsseq -a -R -n -F -----
+.:
+.rename.dirs.rm-spaces*
+.rename.files.rm-spaces*
+.undo.dirs.rm-spaces*
+.undo.files.rm-spaces*
+b 02/
+b 03/
+b 04/
+b_01/
+
+./b 02:
+b2.[0101-0105].jpg
+
+./b 03:
+READ ME.txt
+b 3.[0101-0105].jpg
+
+./b 04:
+b 04 sub1a/
+b 04 sub1b/
+b 04 sub1c/
+
+./b 04/b 04 sub1a:
+b 04 sub2a/
+b 04 sub2b/
+b 04 sub2c/
+
+./b 04/b 04 sub1a/b 04 sub2a:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1a/b 04 sub2a/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2a/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2a/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2b:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1a/b 04 sub2b/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2b/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2b/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2c:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1a/b 04 sub2c/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2c/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1a/b 04 sub2c/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b:
+b 04 sub2a/
+b 04 sub2b/
+b 04 sub2c/
+
+./b 04/b 04 sub1b/b 04 sub2a:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1b/b 04 sub2a/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2a/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2a/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2b:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1b/b 04 sub2b/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2b/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2b/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2c:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1b/b 04 sub2c/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2c/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1b/b 04 sub2c/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c:
+b 04 sub2a/
+b 04 sub2b/
+b 04 sub2c/
+
+./b 04/b 04 sub1c/b 04 sub2a:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1c/b 04 sub2a/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2a/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2a/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2b:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1c/b 04 sub2b/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2b/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2b/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2c:
+b 04 sub3a/
+b 04 sub3b/
+b 04 sub3c/
+
+./b 04/b 04 sub1c/b 04 sub2c/b 04 sub3a:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2c/b 04 sub3b:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b 04/b 04 sub1c/b 04 sub2c/b 04 sub3c:
+tmp04 xxx.txt
+tmp04 yyy.txt
+tmp04 zzz.txt
+
+./b_01:
+READ ME.txt
+b 1.[0101-0105].jpg
+
+----- Test 34 -+- dir: bdir -+- ./.rename.dirs.rm-spaces -----
+
+----- Test 35 -+- dir: bdir -+- rm-spaces -r --regular-files -----
+
+----- Test 36 -+- dir: bdir -+- ./.rename.files.rm-spaces -----
+
+----- Test 37 -+- dir: bdir -+- lsseq -a -R -n -F -----
+.:
+.rename.dirs.rm-spaces*
+.rename.files.rm-spaces*
+.undo.dirs.rm-spaces*
+.undo.files.rm-spaces*
+b_01/
+b_02/
+b_03/
+b_04/
+
+./b_01:
+READ_ME.txt
+b_1.[0101-0105].jpg
+
+./b_02:
+b2.[0101-0105].jpg
+
+./b_03:
+READ_ME.txt
+b_3.[0101-0105].jpg
+
+./b_04:
+b_04_sub1a/
+b_04_sub1b/
+b_04_sub1c/
+
+./b_04/b_04_sub1a:
+b_04_sub2a/
+b_04_sub2b/
+b_04_sub2c/
+
+./b_04/b_04_sub1a/b_04_sub2a:
+b_04_sub3a/
+b_04_sub3b/
+b_04_sub3c/
+
+./b_04/b_04_sub1a/b_04_sub2a/b_04_sub3a:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1a/b_04_sub2a/b_04_sub3b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1a/b_04_sub2a/b_04_sub3c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1a/b_04_sub2b:
+b_04_sub3a/
+b_04_sub3b/
+b_04_sub3c/
+
+./b_04/b_04_sub1a/b_04_sub2b/b_04_sub3a:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1a/b_04_sub2b/b_04_sub3b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1a/b_04_sub2b/b_04_sub3c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1a/b_04_sub2c:
+b_04_sub3a/
+b_04_sub3b/
+b_04_sub3c/
+
+./b_04/b_04_sub1a/b_04_sub2c/b_04_sub3a:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1a/b_04_sub2c/b_04_sub3b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1a/b_04_sub2c/b_04_sub3c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1b:
+b_04_sub2a/
+b_04_sub2b/
+b_04_sub2c/
+
+./b_04/b_04_sub1b/b_04_sub2a:
+b_04_sub3a/
+b_04_sub3b/
+b_04_sub3c/
+
+./b_04/b_04_sub1b/b_04_sub2a/b_04_sub3a:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1b/b_04_sub2a/b_04_sub3b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1b/b_04_sub2a/b_04_sub3c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1b/b_04_sub2b:
+b_04_sub3a/
+b_04_sub3b/
+b_04_sub3c/
+
+./b_04/b_04_sub1b/b_04_sub2b/b_04_sub3a:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1b/b_04_sub2b/b_04_sub3b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1b/b_04_sub2b/b_04_sub3c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1b/b_04_sub2c:
+b_04_sub3a/
+b_04_sub3b/
+b_04_sub3c/
+
+./b_04/b_04_sub1b/b_04_sub2c/b_04_sub3a:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1b/b_04_sub2c/b_04_sub3b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1b/b_04_sub2c/b_04_sub3c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1c:
+b_04_sub2a/
+b_04_sub2b/
+b_04_sub2c/
+
+./b_04/b_04_sub1c/b_04_sub2a:
+b_04_sub3a/
+b_04_sub3b/
+b_04_sub3c/
+
+./b_04/b_04_sub1c/b_04_sub2a/b_04_sub3a:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1c/b_04_sub2a/b_04_sub3b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1c/b_04_sub2a/b_04_sub3c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1c/b_04_sub2b:
+b_04_sub3a/
+b_04_sub3b/
+b_04_sub3c/
+
+./b_04/b_04_sub1c/b_04_sub2b/b_04_sub3a:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1c/b_04_sub2b/b_04_sub3b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1c/b_04_sub2b/b_04_sub3c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1c/b_04_sub2c:
+b_04_sub3a/
+b_04_sub3b/
+b_04_sub3c/
+
+./b_04/b_04_sub1c/b_04_sub2c/b_04_sub3a:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1c/b_04_sub2c/b_04_sub3b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./b_04/b_04_sub1c/b_04_sub2c/b_04_sub3c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
