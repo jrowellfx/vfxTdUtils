@@ -1,0 +1,101 @@
+ddir/d 'sub1a/d sub2a/d sub3a/tmp04 xxx.txt
+ddir/d 'sub1a/d sub2a/d sub3a/tmp04 yyy.txt
+ddir/d 'sub1a/d sub2a/d sub3a/tmp04 zzz.txt
+ddir/d `sub1a/d sub2a/d sub3b/tmp04 xxx.txt
+ddir/d `sub1a/d sub2a/d sub3b/tmp04 yyy.txt
+ddir/d `sub1a/d sub2a/d sub3b/tmp04 zzz.txt
+ddir/d "sub1a/d sub2a/d sub3c/tmp04 xxx.txt
+ddir/d "sub1a/d sub2a/d sub3c/tmp04 yyy.txt
+ddir/d "sub1a/d sub2a/d sub3c/tmp04 zzz.txt
+
+
+ddir/d [sub1a/d ]sub2b/d sub3a/tmp04 xxx.txt
+ddir/d [sub1a/d ]sub2b/d sub3a/tmp04 yyy.txt
+ddir/d [sub1a/d ]sub2b/d sub3a/tmp04 zzz.txt
+ddir/d (sub1a/d sub2b/d) sub3b/tmp04 xxx.txt
+ddir/d (sub1a/d sub2b/d) sub3b/tmp04 yyy.txt
+ddir/d (sub1a/d sub2b/d) sub3b/tmp04 zzz.txt
+ddir/d \sub1a/d sub2b/d sub3c/tmp04 xxx.txt
+ddir/d \sub1a/d sub2b/d sub3c/tmp04 yyy.txt
+ddir/d \sub1a/d sub2b/d sub3c/tmp04 zzz.txt
+
+
+ddir/d sub1a/d [sub2c]/d sub3a/tmp04 xxx.txt
+ddir/d sub1a/d [sub2c]/d sub3a/tmp04 yyy.txt
+ddir/d sub1a/d [sub2c]/d sub3a/tmp04 zzz.txt
+ddir/d sub1a/d (sub2c)/d sub3b/tmp04 xxx.txt
+ddir/d sub1a/d (sub2c)/d sub3b/tmp04 yyy.txt
+ddir/d sub1a/d (sub2c)/d sub3b/tmp04 zzz.txt
+ddir/d sub1a/d 'sub2c'/d sub3c/tmp04 xxx.txt
+ddir/d sub1a/d "sub2c"/d sub3c/tmp04 yyy.txt
+ddir/d sub1a/d `sub2c`/d sub3c/tmp04 zzz.txt
+
+
+
+
+ddir/d sub*1b/d sub2a/d sub3a/tmp04 xxx.txt
+ddir/d sub*1b/d sub2a/d sub3a/tmp04 yyy.txt
+ddir/d sub*1b/d sub2a/d sub3a/tmp04 zzz.txt
+ddir/d sub?1b/d sub2a/d sub3b/tmp04 xxx.txt
+ddir/d sub?1b/d sub2a/d sub3b/tmp04 yyy.txt
+ddir/d sub?1b/d sub2a/d sub3b/tmp04 zzz.txt
+ddir/d sub**1b/d sub2a/d sub3c/tmp04 xxx.txt
+ddir/d sub**1b/d sub2a/d sub3c/tmp04 yyy.txt
+ddir/d sub**1b/d sub2a/d sub3c/tmp04 zzz.txt
+
+
+ddir/d sub1b/d sub2b/d sub3a/tmp04 xxx.txt
+ddir/d sub1b/d sub2b/d sub3a/tmp04 yyy.txt
+ddir/d sub1b/d sub2b/d sub3a/tmp04 zzz.txt
+ddir/d sub1b/d sub2b/d sub3b/tmp04 xxx.txt
+ddir/d sub1b/d sub2b/d sub3b/tmp04 yyy.txt
+ddir/d sub1b/d sub2b/d sub3b/tmp04 zzz.txt
+ddir/d sub1b/d sub2b/d sub3c/tmp04 xxx.txt
+ddir/d sub1b/d sub2b/d sub3c/tmp04 yyy.txt
+ddir/d sub1b/d sub2b/d sub3c/tmp04 zzz.txt
+
+
+ddir/d sub1b/d sub2c/d sub3a/tmp04 xxx.txt
+ddir/d sub1b/d sub2c/d sub3a/tmp04 yyy.txt
+ddir/d sub1b/d sub2c/d sub3a/tmp04 zzz.txt
+ddir/d sub1b/d sub2c/d sub3b/tmp04 xxx.txt
+ddir/d sub1b/d sub2c/d sub3b/tmp04 yyy.txt
+ddir/d sub1b/d sub2c/d sub3b/tmp04 zzz.txt
+ddir/d sub1b/d sub2c/d sub3c/tmp04 xxx.txt
+ddir/d sub1b/d sub2c/d sub3c/tmp04 yyy.txt
+ddir/d sub1b/d sub2c/d sub3c/tmp04 zzz.txt
+
+
+
+
+ddir/d sub1c/d sub2a/d sub3a/tmp04 xxx.txt
+ddir/d sub1c/d sub2a/d sub3a/tmp04 yyy.txt
+ddir/d sub1c/d sub2a/d sub3a/tmp04 zzz.txt
+ddir/d sub1c/d sub2a/d sub3b/tmp04 xxx.txt
+ddir/d sub1c/d sub2a/d sub3b/tmp04 yyy.txt
+ddir/d sub1c/d sub2a/d sub3b/tmp04 zzz.txt
+ddir/d sub1c/d sub2a/d sub3c/tmp04 xxx.txt
+ddir/d sub1c/d sub2a/d sub3c/tmp04 yyy.txt
+ddir/d sub1c/d sub2a/d sub3c/tmp04 zzz.txt
+
+
+ddir/d sub1c/d sub2b/d sub3a/tmp04 xxx.txt
+ddir/d sub1c/d sub2b/d sub3a/tmp04 yyy.txt
+ddir/d sub1c/d sub2b/d sub3a/tmp04 zzz.txt
+ddir/d sub1c/d sub2b/d sub3b/tmp04 xxx.txt
+ddir/d sub1c/d sub2b/d sub3b/tmp04 yyy.txt
+ddir/d sub1c/d sub2b/d sub3b/tmp04 zzz.txt
+ddir/d sub1c/d sub2b/d sub3c/tmp04 xxx.txt
+ddir/d sub1c/d sub2b/d sub3c/tmp04 yyy.txt
+ddir/d sub1c/d sub2b/d sub3c/tmp04 zzz.txt
+
+
+ddir/d sub1c/d sub2c/d sub3a/tmp04 xxx.txt
+ddir/d sub1c/d sub2c/d sub3a/tmp04 yyy.txt
+ddir/d sub1c/d sub2c/d sub3a/tmp04 zzz.txt
+ddir/d sub1c/d sub2c/d sub3b/tmp04 xxx.txt
+ddir/d sub1c/d sub2c/d sub3b/tmp04 yyy.txt
+ddir/d sub1c/d sub2c/d sub3b/tmp04 zzz.txt
+ddir/d sub1c/d sub2c/d sub3c/tmp04 xxx.txt
+ddir/d sub1c/d sub2c/d sub3c/tmp04 yyy.txt
+ddir/d sub1c/d sub2c/d sub3c/tmp04 zzz.txt

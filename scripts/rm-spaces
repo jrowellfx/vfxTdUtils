@@ -211,6 +211,7 @@ cat /dev/null > /tmp/tmp.$cmdName.sed.script.$$
 #   - then replaces these characters: [ ] ( ) ' \ ` " 
 #     with a space.
 #   - Totally removes question-marks.
+#   - Totally removes stars "*".
 #
 if [ "$OPT_REMOVE_QUOTES" = true ] ; then
 cat <<EOF2a >> /tmp/tmp.$cmdName.sed.script.$$
@@ -220,6 +221,7 @@ s/\\[/ /g
 s/\\]/ /g
 s/[(){}'\`"]/ /g
 s/?//g
+s/\\*//g
 EOF2a
 fi
 

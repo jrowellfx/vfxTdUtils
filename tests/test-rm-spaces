@@ -233,6 +233,21 @@ cdir ./.rename.files.rm-spaces
 cdir lsseq     -a -R -n -F
 cdir ./.undo.files.rm-spaces
 cdir lsseq     -a -R -n -F
+ddir lsseq     -a -R -n -F
+ddir rm-spaces -q -r --regular-files
+ddir cat ./.rename.files.rm-spaces
+ddir ./.rename.files.rm-spaces
+ddir lsseq     -a -R -n -F
+ddir ./.undo.files.rm-spaces
+ddir rm-spaces -q -r --directories
+ddir cat ./.rename.dirs.rm-spaces
+ddir ./.rename.dirs.rm-spaces
+ddir rm-spaces -q -r --regular-files
+ddir ./.rename.files.rm-spaces
+ddir lsseq     -a -R -n -F
+ddir ./.undo.files.rm-spaces
+ddir ./.undo.dirs.rm-spaces
+ddir lsseq     -a -R -n -F
 EOF
 
 ### cat << EOFdebug > $tmpTestCmdFile
