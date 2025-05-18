@@ -221,7 +221,23 @@ bdir ./.rename.dirs.rm-spaces
 bdir rm-spaces -r --regular-files
 bdir ./.rename.files.rm-spaces
 bdir lsseq     -a -R -n -F
+cdir lsseq     -a -R -n -F
+cdir rm-spaces -r --regular-files
+cdir lsseq     -a -n -F
+cdir ./.rename.files.rm-spaces
+cdir lsseq     -a -R -n -F
+cdir ./.undo.files.rm-spaces
+cdir lsseq     -a -R -n -F
+cdir rm-spaces -q -r --regular-files
+cdir ./.rename.files.rm-spaces
+cdir lsseq     -a -R -n -F
+cdir ./.undo.files.rm-spaces
+cdir lsseq     -a -R -n -F
 EOF
+
+### cat << EOFdebug > $tmpTestCmdFile
+### cdir rm-spaces
+### EOFdebug
 
 export NUM_TESTS=`wc -l < $tmpTestCmdFile`
 

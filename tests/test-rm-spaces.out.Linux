@@ -1765,3 +1765,63 @@ tmp04_zzz.txt
 tmp04_xxx.txt
 tmp04_yyy.txt
 tmp04_zzz.txt
+
+----- Test 38 -+- dir: cdir -+- lsseq -a -R -n -F -----
+.:
+c_01/
+
+./c_01:
+charlie's file.txt
+
+----- Test 39 -+- dir: cdir -+- rm-spaces -r --regular-files -----
+
+----- Test 40 -+- dir: cdir -+- lsseq -a -n -F -----
+.rename.files.rm-spaces*
+.undo.files.rm-spaces*
+c_01/
+
+----- Test 41 -+- dir: cdir -+- ./.rename.files.rm-spaces -----
+
+----- Test 42 -+- dir: cdir -+- lsseq -a -R -n -F -----
+.:
+.rename.files.rm-spaces*
+.undo.files.rm-spaces*
+c_01/
+
+./c_01:
+charlie's_file.txt
+
+----- Test 43 -+- dir: cdir -+- ./.undo.files.rm-spaces -----
+
+----- Test 44 -+- dir: cdir -+- lsseq -a -R -n -F -----
+.:
+.rename.files.rm-spaces*
+.undo.files.rm-spaces*
+c_01/
+
+./c_01:
+charlie's file.txt
+
+----- Test 45 -+- dir: cdir -+- rm-spaces -q -r --regular-files -----
+
+----- Test 46 -+- dir: cdir -+- ./.rename.files.rm-spaces -----
+
+----- Test 47 -+- dir: cdir -+- lsseq -a -R -n -F -----
+.:
+.rename.files.rm-spaces*
+.undo.files.rm-spaces*
+c_01/
+
+./c_01:
+charlies_file.txt
+
+----- Test 48 -+- dir: cdir -+- ./.undo.files.rm-spaces -----
+
+----- Test 49 -+- dir: cdir -+- lsseq -a -R -n -F -----
+.:
+.rename.files.rm-spaces*
+.undo.files.rm-spaces*
+c_01/
+
+./c_01:
+charlie's file.txt
