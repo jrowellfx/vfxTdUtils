@@ -66,6 +66,19 @@ Download the latest tarball from the `dist` directory. Unzip it. `cd` into
 the unzip'ed directory. Run "`$ make install`", if as root then it
 will install into `/usr/local/bin`, otherwise in `$HOME/bin`.
 
+## Version numbers of utilities in latest RELEASE.
+
+`vfxTdUtils-2.0.0.tar.gz` contains the above mentioned utilities with
+the following versions each:
+
+```
+mod-tstamp  : v1.0.0
+rm-spaces   : v2.0.0
+runsed      : v1.0.1
+spaces2tabs : v1.0.0
+tabs2spaces : v1.0.0
+time-stamp  : v2.0.0
+```
 ## The most essential VFX-TD-Utils are in [`jrowellfx`](https://github.com/jrowellfx)'s other repos.
 
 Please install the following tools as well, they are 
