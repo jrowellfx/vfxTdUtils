@@ -209,23 +209,22 @@ bdir rm-spaces -r
 bdir cat .rename.files.rm-spaces
 bdir cat .undo.files.rm-spaces
 bdir ./.rename.files.rm-spaces
+bdir find . -name '* *' -type f
 bdir lsseq     -a -R -n -F
 bdir ./.undo.files.rm-spaces
-bdir lsseq     -a -R -n -F
+bdir find . -name '* *' -type f
+bdir rm .rename.files.rm-spaces .undo.files.rm-spaces
 bdir rm-spaces -r --directories
-bdir lsseq     -a -n -F
-bdir cat ./.rename.dirs.rm-spaces
+bdir ls -a -C
 bdir ./.rename.dirs.rm-spaces
-bdir lsseq     -a -R -n -F
-bdir ./.undo.dirs.rm-spaces
-bdir lsseq     -a -R -n -F
-bdir ./.rename.dirs.rm-spaces
+bdir find .
+bdir find . -name '* *' -type d
 bdir rm-spaces -r --regular-files
 bdir ./.rename.files.rm-spaces
-bdir lsseq     -a -R -n -F
+bdir find .
 cdir lsseq     -a -R -n -F
 cdir rm-spaces -r --regular-files
-cdir lsseq     -a -n -F
+cdir lsseq     -a -R -n -F
 cdir ./.rename.files.rm-spaces
 cdir lsseq     -a -R -n -F
 cdir ./.undo.files.rm-spaces
@@ -235,21 +234,22 @@ cdir ./.rename.files.rm-spaces
 cdir lsseq     -a -R -n -F
 cdir ./.undo.files.rm-spaces
 cdir lsseq     -a -R -n -F
-ddir lsseq     -a -R -n -F
+ddir pwd
+ddir find . -type f
 ddir rm-spaces -q -r --regular-files
 ddir cat ./.rename.files.rm-spaces
 ddir ./.rename.files.rm-spaces
-ddir lsseq     -a -R -n -F
+ddir find . -type f
 ddir ./.undo.files.rm-spaces
+ddir rm .rename.files.rm-spaces .undo.files.rm-spaces
 ddir rm-spaces -q -r --directories
-ddir cat ./.rename.dirs.rm-spaces
 ddir ./.rename.dirs.rm-spaces
 ddir rm-spaces -q -r --regular-files
 ddir ./.rename.files.rm-spaces
-ddir lsseq     -a -R -n -F
+ddir find . -type f
 ddir ./.undo.files.rm-spaces
 ddir ./.undo.dirs.rm-spaces
-ddir lsseq     -a -R -n -F
+ddir find . -type f
 EOF
 
 ### cat << EOFdebug > $tmpTestCmdFile
@@ -311,13 +311,18 @@ while true; do
     # Use mapfile to allow us to pass args with spaces in the names to the test $cmd being run.
     #
     mapfile -t < "$tmpArgs"
-    $cmd "${MAPFILE[@]}" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+    if [ "$cmd" = find ]; then
+        $cmd "${MAPFILE[@]}" | sort >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+    else
+        $cmd "${MAPFILE[@]}" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+    fi
     retVal=$?
     if [ $retVal -ne 0 ]; then
         echo "--+--  $cmd returned non-zero error code: $retVal  --+--" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
     fi
     i=$((i + 1))
 done
+
 set +f # Turn globbing back on
 
 sed -e "1,$ s-$TEST_DIR-/...absPathToRepo.../tests-g" < $TEST_DIR/$TEST_OUT_FILENAME | \

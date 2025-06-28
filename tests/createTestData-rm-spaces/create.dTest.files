@@ -14,19 +14,19 @@ ddir/d 'sub1_a/d }sub?2_b/d (sub**3_a/tmp04 zzz.txt
 ddir/d 'sub1_a/d }sub?2_b/d )sub3_b/tmp04 xxx.txt
 ddir/d 'sub1_a/d }sub?2_b/d )sub3_b/tmp04 yyy.txt
 ddir/d 'sub1_a/d }sub?2_b/d )sub3_b/tmp04 zzz.txt
-ddir/d 'sub1_a/d }sub?2_b/d \sub3_c/tmp04 xxx.txt
-ddir/d 'sub1_a/d }sub?2_b/d \sub3_c/tmp04 yyy.txt
-ddir/d 'sub1_a/d }sub?2_b/d \sub3_c/tmp04 zzz.txt
+ddir/d 'sub1_a/d }sub?2_b/d ?sub3_c/tmp04 xxx.txt
+ddir/d 'sub1_a/d }sub?2_b/d ?sub3_c/tmp04 yyy.txt
+ddir/d 'sub1_a/d }sub?2_b/d ?sub3_c/tmp04 zzz.txt
 
-ddir/d 'sub1_a/d \sub*2_c/d {sub**3_a/tmp04 xxx.txt
-ddir/d 'sub1_a/d \sub*2_c/d {sub**3_a/tmp04 yyy.txt
-ddir/d 'sub1_a/d \sub*2_c/d {sub**3_a/tmp04 zzz.txt
-ddir/d 'sub1_a/d \sub*2_c/d }sub3_b/tmp04 xxx.txt
-ddir/d 'sub1_a/d \sub*2_c/d }sub3_b/tmp04 yyy.txt
-ddir/d 'sub1_a/d \sub*2_c/d }sub3_b/tmp04 zzz.txt
-ddir/d 'sub1_a/d \sub*2_c/d sub3_c/tmp04 xxx.txt
-ddir/d 'sub1_a/d \sub*2_c/d sub3_c/tmp04 yyy.txt
-ddir/d 'sub1_a/d \sub*2_c/d sub3_c/tmp04 zzz.txt
+ddir/d 'sub1_a/d sub*2_c/d {sub**3_a/tmp04 xxx.txt
+ddir/d 'sub1_a/d sub*2_c/d {sub**3_a/tmp04 yyy.txt
+ddir/d 'sub1_a/d sub*2_c/d {sub**3_a/tmp04 zzz.txt
+ddir/d 'sub1_a/d sub*2_c/d }sub3_b/tmp04 xxx.txt
+ddir/d 'sub1_a/d sub*2_c/d }sub3_b/tmp04 yyy.txt
+ddir/d 'sub1_a/d sub*2_c/d }sub3_b/tmp04 zzz.txt
+ddir/d 'sub1_a/d sub*2_c/d sub3_c/tmp04 xxx.txt
+ddir/d 'sub1_a/d sub*2_c/d sub3_c/tmp04 yyy.txt
+ddir/d 'sub1_a/d sub*2_c/d sub3_c/tmp04 zzz.txt
 
 ddir/d {sub*1_b/d }sub?2_b/d (sub**3_a/tmp04 xxx.txt
 ddir/d {sub*1_b/d }sub?2_b/d (sub**3_a/tmp04 yyy.txt
@@ -34,9 +34,9 @@ ddir/d {sub*1_b/d }sub?2_b/d (sub**3_a/tmp04 zzz.txt
 ddir/d {sub*1_b/d }sub?2_b/d )sub3_b/tmp04 xxx.txt
 ddir/d {sub*1_b/d }sub?2_b/d )sub3_b/tmp04 yyy.txt
 ddir/d {sub*1_b/d }sub?2_b/d )sub3_b/tmp04 zzz.txt
-ddir/d {sub*1_b/d }sub?2_b/d \sub3_c/tmp04 xxx.txt
-ddir/d {sub*1_b/d }sub?2_b/d \sub3_c/tmp04 yyy.txt
-ddir/d {sub*1_b/d }sub?2_b/d \sub3_c/tmp04 zzz.txt
+ddir/d {sub*1_b/d }sub?2_b/d ?sub3_c/tmp04 xxx.txt
+ddir/d {sub*1_b/d }sub?2_b/d ?sub3_c/tmp04 yyy.txt
+ddir/d {sub*1_b/d }sub?2_b/d ?sub3_c/tmp04 zzz.txt
 
 ddir/d sub1_c/d sub2_a/d sub3_a/tmp04 'xxx.txt
 ddir/d sub1_c/d sub2_a/d sub3_a/tmp04 `yyy.txt
@@ -48,15 +48,15 @@ ddir/d sub1_c/d sub2_a/d sub3_c/tmp04 {xxx.txt
 ddir/d sub1_c/d sub2_a/d sub3_c/tmp04 (yyy.txt
 ddir/d sub1_c/d sub2_a/d sub3_c/tmp04 )zzz.txt
 
-ddir/d sub1_c/d sub2_b/d sub3_a/tmp04 \xxx.txt
-ddir/d sub1_c/d sub2_b/d sub3_a/tmp04 \yyy.txt
-ddir/d sub1_c/d sub2_b/d sub3_a/tmp04 \zzz.txt
+ddir/d sub1_c/d sub2_b/d sub3_a/tmp04 ?xxx.txt
+ddir/d sub1_c/d sub2_b/d sub3_a/tmp04 ?yyy.txt
+ddir/d sub1_c/d sub2_b/d sub3_a/tmp04 ?zzz.txt
 ddir/d sub1_c/d sub2_b/d sub3_b/tmp'04 xxx.txt
 ddir/d sub1_c/d sub2_b/d sub3_b/tmp`04 yyy.txt
 ddir/d sub1_c/d sub2_b/d sub3_b/tmp"04 zzz.txt
 ddir/d sub1_c/d sub2_b/d sub3_c/tmp[04 xxx.txt
 ddir/d sub1_c/d sub2_b/d sub3_c/tmp]04 yyy.txt
-ddir/d sub1_c/d sub2_b/d sub3_c/tmp\04 zzz.txt
+ddir/d sub1_c/d sub2_b/d sub3_c/tmp?04 zzz.txt
 
 ddir/d sub1_c/d sub2_c/d sub3_a/tmp{04 xxx.txt
 ddir/d sub1_c/d sub2_c/d sub3_a/tmp}04 yyy.txt

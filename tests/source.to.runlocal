@@ -1,0 +1,10 @@
+# !!! This script MUST be run from the 'tests'
+# !!! directory in the vfxTdUtils git repo for this to work.
+#
+export TEST_DIR=`pwd`
+
+ln -sf ../scripts/rm-spaces  rm-spaces
+
+if [[ ! ":$PATH:" == *":$TEST_DIR:"* ]]; then
+    export PATH="$TEST_DIR:$PATH"
+fi

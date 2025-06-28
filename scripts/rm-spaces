@@ -81,7 +81,7 @@ Options:
                         rename any files to remove spaces from their names
                         [default]
  -x, --execute        make the changes on the fly
- -q, --remove-quotes  also strip '\`?"[](){}\\ characters.
+ -q, --remove-quotes  also strip {}[]()'\`"?* characters.
  --no-camel-case      replace spaces with underscores [default]
  -c, --camel-case     converts words to camel case when possible
  --dates              replaces spaces before or after dates (eg 2023-03-27) with
@@ -211,7 +211,7 @@ cat /dev/null > /tmp/tmp.$cmdName.sed.script.$$
 #
 # The next section removes:
 #   - the "'" from apostrophe-s words.
-#   - then replaces these characters: { } [ ] ( ) ' \ ` " 
+#   - then replaces these characters: { } [ ] ( ) ' ` "
 #     with a space.
 #   - Totally removes question-marks.
 #   - Totally removes stars "*".
