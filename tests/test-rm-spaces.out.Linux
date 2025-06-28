@@ -4,7 +4,7 @@
 Linux
 
 ----- Test 2 -+- dir: . -+- lsseq --version -----
-4.0.0
+4.0.1
 
 ----- Test 3 -+- dir: . -+- rm-spaces -----
 
@@ -22,7 +22,8 @@ Options:
  --not-recursive      only remove spaces from files in the current working
                         directory [default]
  -r, --recursive      remove spaces from filenames from the current working
-                        directory and down into subdirectories
+                        directory and down into subdirectories (note:
+                        rm-spaces does not follow symbolic-links.)
  -f, --regular-files  only remove spaces from regular files (and links)
                         [default]
  -d, --directories    only remove spaces from directory names. -f and -d are
@@ -1828,264 +1829,159 @@ charlie's file.txt
 
 ----- Test 50 -+- dir: ddir -+- lsseq -a -R -n -F -----
 .:
-d "sub1a/
-d 'sub1a/
-d (sub1a/
-d [sub1a/
-d \sub1a/
-d `sub1a/
-d sub**1b/
-d sub*1b/
-d sub1a/
-d sub1b/
-d sub1c/
-d sub?1b/
+d 'sub1_a/
+d sub1_c/
+d {sub*1_b/
 
-./d "sub1a:
-d sub2a/
+./d 'sub1_a:
+d \sub*2_c/
+d `sub2_a/
+d }sub?2_b/
 
-./d "sub1a/d sub2a:
-d sub3c/
+./d 'sub1_a/d \sub*2_c:
+d sub3_c/
+d {sub**3_a/
+d }sub3_b/
 
-./d "sub1a/d sub2a/d sub3c:
+./d 'sub1_a/d \sub*2_c/d sub3_c:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
 
-./d 'sub1a:
-d sub2a/
-
-./d 'sub1a/d sub2a:
-d sub3a/
-
-./d 'sub1a/d sub2a/d sub3a:
+./d 'sub1_a/d \sub*2_c/d {sub**3_a:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
 
-./d (sub1a:
-d sub2b/
-
-./d (sub1a/d sub2b:
-d) sub3b/
-
-./d (sub1a/d sub2b/d) sub3b:
+./d 'sub1_a/d \sub*2_c/d }sub3_b:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
 
-./d [sub1a:
-d ]sub2b/
+./d 'sub1_a/d `sub2_a:
+d "sub3_a/
+d [sub3_b/
+d ]sub3_c/
 
-./d [sub1a/d ]sub2b:
-d sub3a/
-
-./d [sub1a/d ]sub2b/d sub3a:
+./d 'sub1_a/d `sub2_a/d "sub3_a:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
 
-./d \sub1a:
-d sub2b/
-
-./d \sub1a/d sub2b:
-d sub3c/
-
-./d \sub1a/d sub2b/d sub3c:
+./d 'sub1_a/d `sub2_a/d [sub3_b:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
 
-./d `sub1a:
-d sub2a/
-
-./d `sub1a/d sub2a:
-d sub3b/
-
-./d `sub1a/d sub2a/d sub3b:
+./d 'sub1_a/d `sub2_a/d ]sub3_c:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
 
-./d sub**1b:
-d sub2a/
+./d 'sub1_a/d }sub?2_b:
+d (sub**3_a/
+d )sub3_b/
+d \sub3_c/
 
-./d sub**1b/d sub2a:
-d sub3c/
-
-./d sub**1b/d sub2a/d sub3c:
+./d 'sub1_a/d }sub?2_b/d (sub**3_a:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
 
-./d sub*1b:
-d sub2a/
-
-./d sub*1b/d sub2a:
-d sub3a/
-
-./d sub*1b/d sub2a/d sub3a:
+./d 'sub1_a/d }sub?2_b/d )sub3_b:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
 
-./d sub1a:
-d "sub2c"/
-d 'sub2c'/
-d (sub2c)/
-d [sub2c]/
-d `sub2c`/
-
-./d sub1a/d "sub2c":
-d sub3c/
-
-./d sub1a/d "sub2c"/d sub3c:
-tmp04 yyy.txt
-
-./d sub1a/d 'sub2c':
-d sub3c/
-
-./d sub1a/d 'sub2c'/d sub3c:
-tmp04 xxx.txt
-
-./d sub1a/d (sub2c):
-d sub3b/
-
-./d sub1a/d (sub2c)/d sub3b:
+./d 'sub1_a/d }sub?2_b/d \sub3_c:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
 
-./d sub1a/d [sub2c]:
-d sub3a/
+./d sub1_c:
+d sub2_a/
+d sub2_b/
+d sub2_c/
 
-./d sub1a/d [sub2c]/d sub3a:
+./d sub1_c/d sub2_a:
+d sub3_a/
+d sub3_b/
+d sub3_c/
+
+./d sub1_c/d sub2_a/d sub3_a:
+tmp04 "zzz.txt
+tmp04 'xxx.txt
+tmp04 `yyy.txt
+
+./d sub1_c/d sub2_a/d sub3_b:
+tmp04 [xxx.txt
+tmp04 ]yyy.txt
+tmp04 }zzz.txt
+
+./d sub1_c/d sub2_a/d sub3_c:
+tmp04 (yyy.txt
+tmp04 )zzz.txt
+tmp04 {xxx.txt
+
+./d sub1_c/d sub2_b:
+d sub3_a/
+d sub3_b/
+d sub3_c/
+
+./d sub1_c/d sub2_b/d sub3_a:
+tmp04 \xxx.txt
+tmp04 \yyy.txt
+tmp04 \zzz.txt
+
+./d sub1_c/d sub2_b/d sub3_b:
+tmp"04 zzz.txt
+tmp'04 xxx.txt
+tmp`04 yyy.txt
+
+./d sub1_c/d sub2_b/d sub3_c:
+tmp[04 xxx.txt
+tmp\04 zzz.txt
+tmp]04 yyy.txt
+
+./d sub1_c/d sub2_c:
+d sub3_a/
+d sub3_b/
+d sub3_c/
+
+./d sub1_c/d sub2_c/d sub3_a:
+tmp(04 zzz.txt
+tmp{04 xxx.txt
+tmp}04 yyy.txt
+
+./d sub1_c/d sub2_c/d sub3_b:
+tmp)04 xxx.txt
+tmp{04 yyy.txt
+tmp}04 zzz.txt
+
+./d sub1_c/d sub2_c/d sub3_c:
+tmp**04 xxx.txt
+tmp*?04 zzz.txt
+tmp??04 yyy.txt
+
+./d {sub*1_b:
+d }sub?2_b/
+
+./d {sub*1_b/d }sub?2_b:
+d (sub**3_a/
+d )sub3_b/
+d \sub3_c/
+
+./d {sub*1_b/d }sub?2_b/d (sub**3_a:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
 
-./d sub1a/d `sub2c`:
-d sub3c/
-
-./d sub1a/d `sub2c`/d sub3c:
-tmp04 zzz.txt
-
-./d sub1b:
-d sub2b/
-d sub2c/
-
-./d sub1b/d sub2b:
-d sub3a/
-d sub3b/
-d sub3c/
-
-./d sub1b/d sub2b/d sub3a:
+./d {sub*1_b/d }sub?2_b/d )sub3_b:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
 
-./d sub1b/d sub2b/d sub3b:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1b/d sub2b/d sub3c:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1b/d sub2c:
-d sub3a/
-d sub3b/
-d sub3c/
-
-./d sub1b/d sub2c/d sub3a:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1b/d sub2c/d sub3b:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1b/d sub2c/d sub3c:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1c:
-d sub2a/
-d sub2b/
-d sub2c/
-
-./d sub1c/d sub2a:
-d sub3a/
-d sub3b/
-d sub3c/
-
-./d sub1c/d sub2a/d sub3a:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1c/d sub2a/d sub3b:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1c/d sub2a/d sub3c:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1c/d sub2b:
-d sub3a/
-d sub3b/
-d sub3c/
-
-./d sub1c/d sub2b/d sub3a:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1c/d sub2b/d sub3b:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1c/d sub2b/d sub3c:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1c/d sub2c:
-d sub3a/
-d sub3b/
-d sub3c/
-
-./d sub1c/d sub2c/d sub3a:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1c/d sub2c/d sub3b:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1c/d sub2c/d sub3c:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub?1b:
-d sub2a/
-
-./d sub?1b/d sub2a:
-d sub3b/
-
-./d sub?1b/d sub2a/d sub3b:
+./d {sub*1_b/d }sub?2_b/d \sub3_c:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
@@ -2094,751 +1990,271 @@ tmp04 zzz.txt
 
 ----- Test 52 -+- dir: ddir -+- cat ./.rename.files.rm-spaces -----
 #!/bin/bash
-mv './d [sub1a' './d_sub1a'
-mv './d [sub1a/d ]sub2b' './d [sub1a/d_sub2b'
-mv './d [sub1a/d ]sub2b/d sub3a' './d [sub1a/d ]sub2b/d_sub3a'
-mv './d [sub1a/d ]sub2b/d sub3a/tmp04 yyy.txt' './d [sub1a/d ]sub2b/d sub3a/tmp04_yyy.txt'
-mv './d [sub1a/d ]sub2b/d sub3a/tmp04 xxx.txt' './d [sub1a/d ]sub2b/d sub3a/tmp04_xxx.txt'
-mv './d [sub1a/d ]sub2b/d sub3a/tmp04 zzz.txt' './d [sub1a/d ]sub2b/d sub3a/tmp04_zzz.txt'
-mv './d sub?1b' './d_sub1b'
-mv './d sub?1b/d sub2a' './d sub?1b/d_sub2a'
-mv './d sub?1b/d sub2a/d sub3b' './d sub?1b/d sub2a/d_sub3b'
-mv './d sub?1b/d sub2a/d sub3b/tmp04 yyy.txt' './d sub?1b/d sub2a/d sub3b/tmp04_yyy.txt'
-mv './d sub?1b/d sub2a/d sub3b/tmp04 xxx.txt' './d sub?1b/d sub2a/d sub3b/tmp04_xxx.txt'
-mv './d sub?1b/d sub2a/d sub3b/tmp04 zzz.txt' './d sub?1b/d sub2a/d sub3b/tmp04_zzz.txt'
-mv './d sub1c' './d_sub1c'
-mv './d sub1c/d sub2b' './d sub1c/d_sub2b'
-mv './d sub1c/d sub2b/d sub3c' './d sub1c/d sub2b/d_sub3c'
-mv './d sub1c/d sub2b/d sub3c/tmp04 yyy.txt' './d sub1c/d sub2b/d sub3c/tmp04_yyy.txt'
-mv './d sub1c/d sub2b/d sub3c/tmp04 xxx.txt' './d sub1c/d sub2b/d sub3c/tmp04_xxx.txt'
-mv './d sub1c/d sub2b/d sub3c/tmp04 zzz.txt' './d sub1c/d sub2b/d sub3c/tmp04_zzz.txt'
-mv './d sub1c/d sub2b/d sub3a' './d sub1c/d sub2b/d_sub3a'
-mv './d sub1c/d sub2b/d sub3a/tmp04 yyy.txt' './d sub1c/d sub2b/d sub3a/tmp04_yyy.txt'
-mv './d sub1c/d sub2b/d sub3a/tmp04 xxx.txt' './d sub1c/d sub2b/d sub3a/tmp04_xxx.txt'
-mv './d sub1c/d sub2b/d sub3a/tmp04 zzz.txt' './d sub1c/d sub2b/d sub3a/tmp04_zzz.txt'
-mv './d sub1c/d sub2b/d sub3b' './d sub1c/d sub2b/d_sub3b'
-mv './d sub1c/d sub2b/d sub3b/tmp04 yyy.txt' './d sub1c/d sub2b/d sub3b/tmp04_yyy.txt'
-mv './d sub1c/d sub2b/d sub3b/tmp04 xxx.txt' './d sub1c/d sub2b/d sub3b/tmp04_xxx.txt'
-mv './d sub1c/d sub2b/d sub3b/tmp04 zzz.txt' './d sub1c/d sub2b/d sub3b/tmp04_zzz.txt'
-mv './d sub1c/d sub2c' './d sub1c/d_sub2c'
-mv './d sub1c/d sub2c/d sub3c' './d sub1c/d sub2c/d_sub3c'
-mv './d sub1c/d sub2c/d sub3c/tmp04 yyy.txt' './d sub1c/d sub2c/d sub3c/tmp04_yyy.txt'
-mv './d sub1c/d sub2c/d sub3c/tmp04 xxx.txt' './d sub1c/d sub2c/d sub3c/tmp04_xxx.txt'
-mv './d sub1c/d sub2c/d sub3c/tmp04 zzz.txt' './d sub1c/d sub2c/d sub3c/tmp04_zzz.txt'
-mv './d sub1c/d sub2c/d sub3a' './d sub1c/d sub2c/d_sub3a'
-mv './d sub1c/d sub2c/d sub3a/tmp04 yyy.txt' './d sub1c/d sub2c/d sub3a/tmp04_yyy.txt'
-mv './d sub1c/d sub2c/d sub3a/tmp04 xxx.txt' './d sub1c/d sub2c/d sub3a/tmp04_xxx.txt'
-mv './d sub1c/d sub2c/d sub3a/tmp04 zzz.txt' './d sub1c/d sub2c/d sub3a/tmp04_zzz.txt'
-mv './d sub1c/d sub2c/d sub3b' './d sub1c/d sub2c/d_sub3b'
-mv './d sub1c/d sub2c/d sub3b/tmp04 yyy.txt' './d sub1c/d sub2c/d sub3b/tmp04_yyy.txt'
-mv './d sub1c/d sub2c/d sub3b/tmp04 xxx.txt' './d sub1c/d sub2c/d sub3b/tmp04_xxx.txt'
-mv './d sub1c/d sub2c/d sub3b/tmp04 zzz.txt' './d sub1c/d sub2c/d sub3b/tmp04_zzz.txt'
-mv './d sub1c/d sub2a' './d sub1c/d_sub2a'
-mv './d sub1c/d sub2a/d sub3c' './d sub1c/d sub2a/d_sub3c'
-mv './d sub1c/d sub2a/d sub3c/tmp04 yyy.txt' './d sub1c/d sub2a/d sub3c/tmp04_yyy.txt'
-mv './d sub1c/d sub2a/d sub3c/tmp04 xxx.txt' './d sub1c/d sub2a/d sub3c/tmp04_xxx.txt'
-mv './d sub1c/d sub2a/d sub3c/tmp04 zzz.txt' './d sub1c/d sub2a/d sub3c/tmp04_zzz.txt'
-mv './d sub1c/d sub2a/d sub3a' './d sub1c/d sub2a/d_sub3a'
-mv './d sub1c/d sub2a/d sub3a/tmp04 yyy.txt' './d sub1c/d sub2a/d sub3a/tmp04_yyy.txt'
-mv './d sub1c/d sub2a/d sub3a/tmp04 xxx.txt' './d sub1c/d sub2a/d sub3a/tmp04_xxx.txt'
-mv './d sub1c/d sub2a/d sub3a/tmp04 zzz.txt' './d sub1c/d sub2a/d sub3a/tmp04_zzz.txt'
-mv './d sub1c/d sub2a/d sub3b' './d sub1c/d sub2a/d_sub3b'
-mv './d sub1c/d sub2a/d sub3b/tmp04 yyy.txt' './d sub1c/d sub2a/d sub3b/tmp04_yyy.txt'
-mv './d sub1c/d sub2a/d sub3b/tmp04 xxx.txt' './d sub1c/d sub2a/d sub3b/tmp04_xxx.txt'
-mv './d sub1c/d sub2a/d sub3b/tmp04 zzz.txt' './d sub1c/d sub2a/d sub3b/tmp04_zzz.txt'
-mv './d `sub1a' './d_sub1a'
-mv './d `sub1a/d sub2a' './d `sub1a/d_sub2a'
-mv './d `sub1a/d sub2a/d sub3b' './d `sub1a/d sub2a/d_sub3b'
-mv './d `sub1a/d sub2a/d sub3b/tmp04 yyy.txt' './d `sub1a/d sub2a/d sub3b/tmp04_yyy.txt'
-mv './d `sub1a/d sub2a/d sub3b/tmp04 xxx.txt' './d `sub1a/d sub2a/d sub3b/tmp04_xxx.txt'
-mv './d `sub1a/d sub2a/d sub3b/tmp04 zzz.txt' './d `sub1a/d sub2a/d sub3b/tmp04_zzz.txt'
-mv './d (sub1a' './d_sub1a'
-mv './d (sub1a/d sub2b' './d (sub1a/d_sub2b'
-mv './d (sub1a/d sub2b/d) sub3b' './d (sub1a/d sub2b/d_sub3b'
-mv './d (sub1a/d sub2b/d) sub3b/tmp04 yyy.txt' './d (sub1a/d sub2b/d) sub3b/tmp04_yyy.txt'
-mv './d (sub1a/d sub2b/d) sub3b/tmp04 xxx.txt' './d (sub1a/d sub2b/d) sub3b/tmp04_xxx.txt'
-mv './d (sub1a/d sub2b/d) sub3b/tmp04 zzz.txt' './d (sub1a/d sub2b/d) sub3b/tmp04_zzz.txt'
-mv './d \sub1a' './d\sub1a'
-mv './d \sub1a/d sub2b' './d \sub1a/d_sub2b'
-mv './d \sub1a/d sub2b/d sub3c' './d \sub1a/d sub2b/d_sub3c'
-mv './d \sub1a/d sub2b/d sub3c/tmp04 yyy.txt' './d \sub1a/d sub2b/d sub3c/tmp04_yyy.txt'
-mv './d \sub1a/d sub2b/d sub3c/tmp04 xxx.txt' './d \sub1a/d sub2b/d sub3c/tmp04_xxx.txt'
-mv './d \sub1a/d sub2b/d sub3c/tmp04 zzz.txt' './d \sub1a/d sub2b/d sub3c/tmp04_zzz.txt'
-mv './d sub1a' './d_sub1a'
-mv './d sub1a/d [sub2c]' './d sub1a/d_sub2c'
-mv './d sub1a/d [sub2c]/d sub3a' './d sub1a/d [sub2c]/d_sub3a'
-mv './d sub1a/d [sub2c]/d sub3a/tmp04 yyy.txt' './d sub1a/d [sub2c]/d sub3a/tmp04_yyy.txt'
-mv './d sub1a/d [sub2c]/d sub3a/tmp04 xxx.txt' './d sub1a/d [sub2c]/d sub3a/tmp04_xxx.txt'
-mv './d sub1a/d [sub2c]/d sub3a/tmp04 zzz.txt' './d sub1a/d [sub2c]/d sub3a/tmp04_zzz.txt'
-mv './d sub1a/d '"'"'sub2c'"'"'' './d sub1a/d_sub2c'
-mv './d sub1a/d '"'"'sub2c'"'"'/d sub3c' './d sub1a/d '"'"'sub2c'"'"'/d_sub3c'
-mv './d sub1a/d '"'"'sub2c'"'"'/d sub3c/tmp04 xxx.txt' './d sub1a/d '"'"'sub2c'"'"'/d sub3c/tmp04_xxx.txt'
-mv './d sub1a/d "sub2c"' './d sub1a/d_sub2c'
-mv './d sub1a/d "sub2c"/d sub3c' './d sub1a/d "sub2c"/d_sub3c'
-mv './d sub1a/d "sub2c"/d sub3c/tmp04 yyy.txt' './d sub1a/d "sub2c"/d sub3c/tmp04_yyy.txt'
-mv './d sub1a/d `sub2c`' './d sub1a/d_sub2c'
-mv './d sub1a/d `sub2c`/d sub3c' './d sub1a/d `sub2c`/d_sub3c'
-mv './d sub1a/d `sub2c`/d sub3c/tmp04 zzz.txt' './d sub1a/d `sub2c`/d sub3c/tmp04_zzz.txt'
-mv './d sub1a/d (sub2c)' './d sub1a/d_sub2c'
-mv './d sub1a/d (sub2c)/d sub3b' './d sub1a/d (sub2c)/d_sub3b'
-mv './d sub1a/d (sub2c)/d sub3b/tmp04 yyy.txt' './d sub1a/d (sub2c)/d sub3b/tmp04_yyy.txt'
-mv './d sub1a/d (sub2c)/d sub3b/tmp04 xxx.txt' './d sub1a/d (sub2c)/d sub3b/tmp04_xxx.txt'
-mv './d sub1a/d (sub2c)/d sub3b/tmp04 zzz.txt' './d sub1a/d (sub2c)/d sub3b/tmp04_zzz.txt'
-mv './d '"'"'sub1a' './d_sub1a'
-mv './d '"'"'sub1a/d sub2a' './d '"'"'sub1a/d_sub2a'
-mv './d '"'"'sub1a/d sub2a/d sub3a' './d '"'"'sub1a/d sub2a/d_sub3a'
-mv './d '"'"'sub1a/d sub2a/d sub3a/tmp04 yyy.txt' './d '"'"'sub1a/d sub2a/d sub3a/tmp04_yyy.txt'
-mv './d '"'"'sub1a/d sub2a/d sub3a/tmp04 xxx.txt' './d '"'"'sub1a/d sub2a/d sub3a/tmp04_xxx.txt'
-mv './d '"'"'sub1a/d sub2a/d sub3a/tmp04 zzz.txt' './d '"'"'sub1a/d sub2a/d sub3a/tmp04_zzz.txt'
-mv './d "sub1a' './d_sub1a'
-mv './d "sub1a/d sub2a' './d "sub1a/d_sub2a'
-mv './d "sub1a/d sub2a/d sub3c' './d "sub1a/d sub2a/d_sub3c'
-mv './d "sub1a/d sub2a/d sub3c/tmp04 yyy.txt' './d "sub1a/d sub2a/d sub3c/tmp04_yyy.txt'
-mv './d "sub1a/d sub2a/d sub3c/tmp04 xxx.txt' './d "sub1a/d sub2a/d sub3c/tmp04_xxx.txt'
-mv './d "sub1a/d sub2a/d sub3c/tmp04 zzz.txt' './d "sub1a/d sub2a/d sub3c/tmp04_zzz.txt'
-mv './d sub**1b' './d_sub1b'
-mv './d sub**1b/d sub2a' './d sub**1b/d_sub2a'
-mv './d sub**1b/d sub2a/d sub3c' './d sub**1b/d sub2a/d_sub3c'
-mv './d sub**1b/d sub2a/d sub3c/tmp04 yyy.txt' './d sub**1b/d sub2a/d sub3c/tmp04_yyy.txt'
-mv './d sub**1b/d sub2a/d sub3c/tmp04 xxx.txt' './d sub**1b/d sub2a/d sub3c/tmp04_xxx.txt'
-mv './d sub**1b/d sub2a/d sub3c/tmp04 zzz.txt' './d sub**1b/d sub2a/d sub3c/tmp04_zzz.txt'
-mv './d sub*1b' './d_sub1b'
-mv './d sub*1b/d sub2a' './d sub*1b/d_sub2a'
-mv './d sub*1b/d sub2a/d sub3a' './d sub*1b/d sub2a/d_sub3a'
-mv './d sub*1b/d sub2a/d sub3a/tmp04 yyy.txt' './d sub*1b/d sub2a/d sub3a/tmp04_yyy.txt'
-mv './d sub*1b/d sub2a/d sub3a/tmp04 xxx.txt' './d sub*1b/d sub2a/d sub3a/tmp04_xxx.txt'
-mv './d sub*1b/d sub2a/d sub3a/tmp04 zzz.txt' './d sub*1b/d sub2a/d sub3a/tmp04_zzz.txt'
-mv './d sub1b' './d_sub1b'
-mv './d sub1b/d sub2b' './d sub1b/d_sub2b'
-mv './d sub1b/d sub2b/d sub3c' './d sub1b/d sub2b/d_sub3c'
-mv './d sub1b/d sub2b/d sub3c/tmp04 yyy.txt' './d sub1b/d sub2b/d sub3c/tmp04_yyy.txt'
-mv './d sub1b/d sub2b/d sub3c/tmp04 xxx.txt' './d sub1b/d sub2b/d sub3c/tmp04_xxx.txt'
-mv './d sub1b/d sub2b/d sub3c/tmp04 zzz.txt' './d sub1b/d sub2b/d sub3c/tmp04_zzz.txt'
-mv './d sub1b/d sub2b/d sub3a' './d sub1b/d sub2b/d_sub3a'
-mv './d sub1b/d sub2b/d sub3a/tmp04 yyy.txt' './d sub1b/d sub2b/d sub3a/tmp04_yyy.txt'
-mv './d sub1b/d sub2b/d sub3a/tmp04 xxx.txt' './d sub1b/d sub2b/d sub3a/tmp04_xxx.txt'
-mv './d sub1b/d sub2b/d sub3a/tmp04 zzz.txt' './d sub1b/d sub2b/d sub3a/tmp04_zzz.txt'
-mv './d sub1b/d sub2b/d sub3b' './d sub1b/d sub2b/d_sub3b'
-mv './d sub1b/d sub2b/d sub3b/tmp04 yyy.txt' './d sub1b/d sub2b/d sub3b/tmp04_yyy.txt'
-mv './d sub1b/d sub2b/d sub3b/tmp04 xxx.txt' './d sub1b/d sub2b/d sub3b/tmp04_xxx.txt'
-mv './d sub1b/d sub2b/d sub3b/tmp04 zzz.txt' './d sub1b/d sub2b/d sub3b/tmp04_zzz.txt'
-mv './d sub1b/d sub2c' './d sub1b/d_sub2c'
-mv './d sub1b/d sub2c/d sub3c' './d sub1b/d sub2c/d_sub3c'
-mv './d sub1b/d sub2c/d sub3c/tmp04 yyy.txt' './d sub1b/d sub2c/d sub3c/tmp04_yyy.txt'
-mv './d sub1b/d sub2c/d sub3c/tmp04 xxx.txt' './d sub1b/d sub2c/d sub3c/tmp04_xxx.txt'
-mv './d sub1b/d sub2c/d sub3c/tmp04 zzz.txt' './d sub1b/d sub2c/d sub3c/tmp04_zzz.txt'
-mv './d sub1b/d sub2c/d sub3a' './d sub1b/d sub2c/d_sub3a'
-mv './d sub1b/d sub2c/d sub3a/tmp04 yyy.txt' './d sub1b/d sub2c/d sub3a/tmp04_yyy.txt'
-mv './d sub1b/d sub2c/d sub3a/tmp04 xxx.txt' './d sub1b/d sub2c/d sub3a/tmp04_xxx.txt'
-mv './d sub1b/d sub2c/d sub3a/tmp04 zzz.txt' './d sub1b/d sub2c/d sub3a/tmp04_zzz.txt'
-mv './d sub1b/d sub2c/d sub3b' './d sub1b/d sub2c/d_sub3b'
-mv './d sub1b/d sub2c/d sub3b/tmp04 yyy.txt' './d sub1b/d sub2c/d sub3b/tmp04_yyy.txt'
-mv './d sub1b/d sub2c/d sub3b/tmp04 xxx.txt' './d sub1b/d sub2c/d sub3b/tmp04_xxx.txt'
-mv './d sub1b/d sub2c/d sub3b/tmp04 zzz.txt' './d sub1b/d sub2c/d sub3b/tmp04_zzz.txt'
+mv './d '"'"'sub1_a/d `sub2_a/d "sub3_a/tmp04 yyy.txt' './d '"'"'sub1_a/d `sub2_a/d "sub3_a/tmp04_yyy.txt'
+mv './d '"'"'sub1_a/d `sub2_a/d "sub3_a/tmp04 xxx.txt' './d '"'"'sub1_a/d `sub2_a/d "sub3_a/tmp04_xxx.txt'
+mv './d '"'"'sub1_a/d `sub2_a/d "sub3_a/tmp04 zzz.txt' './d '"'"'sub1_a/d `sub2_a/d "sub3_a/tmp04_zzz.txt'
+mv './d '"'"'sub1_a/d `sub2_a/d [sub3_b/tmp04 yyy.txt' './d '"'"'sub1_a/d `sub2_a/d [sub3_b/tmp04_yyy.txt'
+mv './d '"'"'sub1_a/d `sub2_a/d [sub3_b/tmp04 xxx.txt' './d '"'"'sub1_a/d `sub2_a/d [sub3_b/tmp04_xxx.txt'
+mv './d '"'"'sub1_a/d `sub2_a/d [sub3_b/tmp04 zzz.txt' './d '"'"'sub1_a/d `sub2_a/d [sub3_b/tmp04_zzz.txt'
+mv './d '"'"'sub1_a/d `sub2_a/d ]sub3_c/tmp04 yyy.txt' './d '"'"'sub1_a/d `sub2_a/d ]sub3_c/tmp04_yyy.txt'
+mv './d '"'"'sub1_a/d `sub2_a/d ]sub3_c/tmp04 xxx.txt' './d '"'"'sub1_a/d `sub2_a/d ]sub3_c/tmp04_xxx.txt'
+mv './d '"'"'sub1_a/d `sub2_a/d ]sub3_c/tmp04 zzz.txt' './d '"'"'sub1_a/d `sub2_a/d ]sub3_c/tmp04_zzz.txt'
+mv './d '"'"'sub1_a/d }sub?2_b/d (sub**3_a/tmp04 yyy.txt' './d '"'"'sub1_a/d }sub?2_b/d (sub**3_a/tmp04_yyy.txt'
+mv './d '"'"'sub1_a/d }sub?2_b/d (sub**3_a/tmp04 xxx.txt' './d '"'"'sub1_a/d }sub?2_b/d (sub**3_a/tmp04_xxx.txt'
+mv './d '"'"'sub1_a/d }sub?2_b/d (sub**3_a/tmp04 zzz.txt' './d '"'"'sub1_a/d }sub?2_b/d (sub**3_a/tmp04_zzz.txt'
+mv './d '"'"'sub1_a/d }sub?2_b/d \sub3_c/tmp04 yyy.txt' './d '"'"'sub1_a/d }sub?2_b/d \sub3_c/tmp04_yyy.txt'
+mv './d '"'"'sub1_a/d }sub?2_b/d \sub3_c/tmp04 xxx.txt' './d '"'"'sub1_a/d }sub?2_b/d \sub3_c/tmp04_xxx.txt'
+mv './d '"'"'sub1_a/d }sub?2_b/d \sub3_c/tmp04 zzz.txt' './d '"'"'sub1_a/d }sub?2_b/d \sub3_c/tmp04_zzz.txt'
+mv './d '"'"'sub1_a/d }sub?2_b/d )sub3_b/tmp04 yyy.txt' './d '"'"'sub1_a/d }sub?2_b/d )sub3_b/tmp04_yyy.txt'
+mv './d '"'"'sub1_a/d }sub?2_b/d )sub3_b/tmp04 xxx.txt' './d '"'"'sub1_a/d }sub?2_b/d )sub3_b/tmp04_xxx.txt'
+mv './d '"'"'sub1_a/d }sub?2_b/d )sub3_b/tmp04 zzz.txt' './d '"'"'sub1_a/d }sub?2_b/d )sub3_b/tmp04_zzz.txt'
+mv './d '"'"'sub1_a/d \sub*2_c/d }sub3_b/tmp04 yyy.txt' './d '"'"'sub1_a/d \sub*2_c/d }sub3_b/tmp04_yyy.txt'
+mv './d '"'"'sub1_a/d \sub*2_c/d }sub3_b/tmp04 xxx.txt' './d '"'"'sub1_a/d \sub*2_c/d }sub3_b/tmp04_xxx.txt'
+mv './d '"'"'sub1_a/d \sub*2_c/d }sub3_b/tmp04 zzz.txt' './d '"'"'sub1_a/d \sub*2_c/d }sub3_b/tmp04_zzz.txt'
+mv './d '"'"'sub1_a/d \sub*2_c/d {sub**3_a/tmp04 yyy.txt' './d '"'"'sub1_a/d \sub*2_c/d {sub**3_a/tmp04_yyy.txt'
+mv './d '"'"'sub1_a/d \sub*2_c/d {sub**3_a/tmp04 xxx.txt' './d '"'"'sub1_a/d \sub*2_c/d {sub**3_a/tmp04_xxx.txt'
+mv './d '"'"'sub1_a/d \sub*2_c/d {sub**3_a/tmp04 zzz.txt' './d '"'"'sub1_a/d \sub*2_c/d {sub**3_a/tmp04_zzz.txt'
+mv './d '"'"'sub1_a/d \sub*2_c/d sub3_c/tmp04 yyy.txt' './d '"'"'sub1_a/d \sub*2_c/d sub3_c/tmp04_yyy.txt'
+mv './d '"'"'sub1_a/d \sub*2_c/d sub3_c/tmp04 xxx.txt' './d '"'"'sub1_a/d \sub*2_c/d sub3_c/tmp04_xxx.txt'
+mv './d '"'"'sub1_a/d \sub*2_c/d sub3_c/tmp04 zzz.txt' './d '"'"'sub1_a/d \sub*2_c/d sub3_c/tmp04_zzz.txt'
+mv './d {sub*1_b/d }sub?2_b/d (sub**3_a/tmp04 yyy.txt' './d {sub*1_b/d }sub?2_b/d (sub**3_a/tmp04_yyy.txt'
+mv './d {sub*1_b/d }sub?2_b/d (sub**3_a/tmp04 xxx.txt' './d {sub*1_b/d }sub?2_b/d (sub**3_a/tmp04_xxx.txt'
+mv './d {sub*1_b/d }sub?2_b/d (sub**3_a/tmp04 zzz.txt' './d {sub*1_b/d }sub?2_b/d (sub**3_a/tmp04_zzz.txt'
+mv './d {sub*1_b/d }sub?2_b/d \sub3_c/tmp04 yyy.txt' './d {sub*1_b/d }sub?2_b/d \sub3_c/tmp04_yyy.txt'
+mv './d {sub*1_b/d }sub?2_b/d \sub3_c/tmp04 xxx.txt' './d {sub*1_b/d }sub?2_b/d \sub3_c/tmp04_xxx.txt'
+mv './d {sub*1_b/d }sub?2_b/d \sub3_c/tmp04 zzz.txt' './d {sub*1_b/d }sub?2_b/d \sub3_c/tmp04_zzz.txt'
+mv './d {sub*1_b/d }sub?2_b/d )sub3_b/tmp04 yyy.txt' './d {sub*1_b/d }sub?2_b/d )sub3_b/tmp04_yyy.txt'
+mv './d {sub*1_b/d }sub?2_b/d )sub3_b/tmp04 xxx.txt' './d {sub*1_b/d }sub?2_b/d )sub3_b/tmp04_xxx.txt'
+mv './d {sub*1_b/d }sub?2_b/d )sub3_b/tmp04 zzz.txt' './d {sub*1_b/d }sub?2_b/d )sub3_b/tmp04_zzz.txt'
+mv './d sub1_c/d sub2_a/d sub3_a/tmp04 `yyy.txt' './d sub1_c/d sub2_a/d sub3_a/tmp04_yyy.txt'
+mv './d sub1_c/d sub2_a/d sub3_a/tmp04 '"'"'xxx.txt' './d sub1_c/d sub2_a/d sub3_a/tmp04_xxx.txt'
+mv './d sub1_c/d sub2_a/d sub3_a/tmp04 "zzz.txt' './d sub1_c/d sub2_a/d sub3_a/tmp04_zzz.txt'
+mv './d sub1_c/d sub2_a/d sub3_c/tmp04 )zzz.txt' './d sub1_c/d sub2_a/d sub3_c/tmp04_zzz.txt'
+mv './d sub1_c/d sub2_a/d sub3_c/tmp04 {xxx.txt' './d sub1_c/d sub2_a/d sub3_c/tmp04_xxx.txt'
+mv './d sub1_c/d sub2_a/d sub3_c/tmp04 (yyy.txt' './d sub1_c/d sub2_a/d sub3_c/tmp04_yyy.txt'
+mv './d sub1_c/d sub2_a/d sub3_b/tmp04 ]yyy.txt' './d sub1_c/d sub2_a/d sub3_b/tmp04_yyy.txt'
+mv './d sub1_c/d sub2_a/d sub3_b/tmp04 }zzz.txt' './d sub1_c/d sub2_a/d sub3_b/tmp04_zzz.txt'
+mv './d sub1_c/d sub2_a/d sub3_b/tmp04 [xxx.txt' './d sub1_c/d sub2_a/d sub3_b/tmp04_xxx.txt'
+mv './d sub1_c/d sub2_c/d sub3_a/tmp{04 xxx.txt' './d sub1_c/d sub2_c/d sub3_a/tmp_04_xxx.txt'
+mv './d sub1_c/d sub2_c/d sub3_a/tmp(04 zzz.txt' './d sub1_c/d sub2_c/d sub3_a/tmp_04_zzz.txt'
+mv './d sub1_c/d sub2_c/d sub3_a/tmp}04 yyy.txt' './d sub1_c/d sub2_c/d sub3_a/tmp_04_yyy.txt'
+mv './d sub1_c/d sub2_c/d sub3_c/tmp*?04 zzz.txt' './d sub1_c/d sub2_c/d sub3_c/tmp04_zzz.txt'
+mv './d sub1_c/d sub2_c/d sub3_c/tmp??04 yyy.txt' './d sub1_c/d sub2_c/d sub3_c/tmp04_yyy.txt'
+mv './d sub1_c/d sub2_c/d sub3_c/tmp**04 xxx.txt' './d sub1_c/d sub2_c/d sub3_c/tmp04_xxx.txt'
+mv './d sub1_c/d sub2_c/d sub3_b/tmp}04 zzz.txt' './d sub1_c/d sub2_c/d sub3_b/tmp_04_zzz.txt'
+mv './d sub1_c/d sub2_c/d sub3_b/tmp)04 xxx.txt' './d sub1_c/d sub2_c/d sub3_b/tmp_04_xxx.txt'
+mv './d sub1_c/d sub2_c/d sub3_b/tmp{04 yyy.txt' './d sub1_c/d sub2_c/d sub3_b/tmp_04_yyy.txt'
+mv './d sub1_c/d sub2_b/d sub3_a/tmp04 \yyy.txt' './d sub1_c/d sub2_b/d sub3_a/tmp04\yyy.txt'
+mv './d sub1_c/d sub2_b/d sub3_a/tmp04 \zzz.txt' './d sub1_c/d sub2_b/d sub3_a/tmp04\zzz.txt'
+mv './d sub1_c/d sub2_b/d sub3_a/tmp04 \xxx.txt' './d sub1_c/d sub2_b/d sub3_a/tmp04\xxx.txt'
+mv './d sub1_c/d sub2_b/d sub3_c/tmp[04 xxx.txt' './d sub1_c/d sub2_b/d sub3_c/tmp_04_xxx.txt'
+mv './d sub1_c/d sub2_b/d sub3_c/tmp]04 yyy.txt' './d sub1_c/d sub2_b/d sub3_c/tmp_04_yyy.txt'
+mv './d sub1_c/d sub2_b/d sub3_c/tmp\04 zzz.txt' './d sub1_c/d sub2_b/d sub3_c/tmp\04_zzz.txt'
+mv './d sub1_c/d sub2_b/d sub3_b/tmp"04 zzz.txt' './d sub1_c/d sub2_b/d sub3_b/tmp_04_zzz.txt'
+mv './d sub1_c/d sub2_b/d sub3_b/tmp'"'"'04 xxx.txt' './d sub1_c/d sub2_b/d sub3_b/tmp_04_xxx.txt'
+mv './d sub1_c/d sub2_b/d sub3_b/tmp`04 yyy.txt' './d sub1_c/d sub2_b/d sub3_b/tmp_04_yyy.txt'
 
 
 ----- Test 53 -+- dir: ddir -+- ./.rename.files.rm-spaces -----
-mv: cannot stat './d [sub1a/d ]sub2b': No such file or directory
-mv: cannot stat './d [sub1a/d ]sub2b/d sub3a': No such file or directory
-mv: cannot stat './d [sub1a/d ]sub2b/d sub3a/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d [sub1a/d ]sub2b/d sub3a/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d [sub1a/d ]sub2b/d sub3a/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d sub?1b/d sub2a': No such file or directory
-mv: cannot stat './d sub?1b/d sub2a/d sub3b': No such file or directory
-mv: cannot stat './d sub?1b/d sub2a/d sub3b/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d sub?1b/d sub2a/d sub3b/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d sub?1b/d sub2a/d sub3b/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2b': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d sub3c': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d sub3c/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d sub3c/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d sub3c/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d sub3a': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d sub3a/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d sub3a/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d sub3a/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d sub3b': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d sub3b/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d sub3b/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d sub3b/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2c': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d sub3c': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d sub3c/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d sub3c/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d sub3c/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d sub3a': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d sub3a/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d sub3a/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d sub3a/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d sub3b': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d sub3b/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d sub3b/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d sub3b/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2a': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d sub3c': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d sub3c/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d sub3c/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d sub3c/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d sub3a': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d sub3a/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d sub3a/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d sub3a/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d sub3b': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d sub3b/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d sub3b/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d sub3b/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d `sub1a/d sub2a': No such file or directory
-mv: cannot stat './d `sub1a/d sub2a/d sub3b': No such file or directory
-mv: cannot stat './d `sub1a/d sub2a/d sub3b/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d `sub1a/d sub2a/d sub3b/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d `sub1a/d sub2a/d sub3b/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d (sub1a/d sub2b': No such file or directory
-mv: cannot stat './d (sub1a/d sub2b/d) sub3b': No such file or directory
-mv: cannot stat './d (sub1a/d sub2b/d) sub3b/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d (sub1a/d sub2b/d) sub3b/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d (sub1a/d sub2b/d) sub3b/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d \sub1a/d sub2b': No such file or directory
-mv: cannot stat './d \sub1a/d sub2b/d sub3c': No such file or directory
-mv: cannot stat './d \sub1a/d sub2b/d sub3c/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d \sub1a/d sub2b/d sub3c/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d \sub1a/d sub2b/d sub3c/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d sub1a/d [sub2c]': No such file or directory
-mv: cannot stat './d sub1a/d [sub2c]/d sub3a': No such file or directory
-mv: cannot stat './d sub1a/d [sub2c]/d sub3a/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d sub1a/d [sub2c]/d sub3a/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d sub1a/d [sub2c]/d sub3a/tmp04 zzz.txt': No such file or directory
-mv: cannot stat "./d sub1a/d 'sub2c'": No such file or directory
-mv: cannot stat "./d sub1a/d 'sub2c'/d sub3c": No such file or directory
-mv: cannot stat "./d sub1a/d 'sub2c'/d sub3c/tmp04 xxx.txt": No such file or directory
-mv: cannot stat './d sub1a/d "sub2c"': No such file or directory
-mv: cannot stat './d sub1a/d "sub2c"/d sub3c': No such file or directory
-mv: cannot stat './d sub1a/d "sub2c"/d sub3c/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d sub1a/d `sub2c`': No such file or directory
-mv: cannot stat './d sub1a/d `sub2c`/d sub3c': No such file or directory
-mv: cannot stat './d sub1a/d `sub2c`/d sub3c/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d sub1a/d (sub2c)': No such file or directory
-mv: cannot stat './d sub1a/d (sub2c)/d sub3b': No such file or directory
-mv: cannot stat './d sub1a/d (sub2c)/d sub3b/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d sub1a/d (sub2c)/d sub3b/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d sub1a/d (sub2c)/d sub3b/tmp04 zzz.txt': No such file or directory
-mv: cannot stat "./d 'sub1a/d sub2a": No such file or directory
-mv: cannot stat "./d 'sub1a/d sub2a/d sub3a": No such file or directory
-mv: cannot stat "./d 'sub1a/d sub2a/d sub3a/tmp04 yyy.txt": No such file or directory
-mv: cannot stat "./d 'sub1a/d sub2a/d sub3a/tmp04 xxx.txt": No such file or directory
-mv: cannot stat "./d 'sub1a/d sub2a/d sub3a/tmp04 zzz.txt": No such file or directory
-mv: cannot stat './d "sub1a/d sub2a': No such file or directory
-mv: cannot stat './d "sub1a/d sub2a/d sub3c': No such file or directory
-mv: cannot stat './d "sub1a/d sub2a/d sub3c/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d "sub1a/d sub2a/d sub3c/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d "sub1a/d sub2a/d sub3c/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d sub**1b/d sub2a': No such file or directory
-mv: cannot stat './d sub**1b/d sub2a/d sub3c': No such file or directory
-mv: cannot stat './d sub**1b/d sub2a/d sub3c/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d sub**1b/d sub2a/d sub3c/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d sub**1b/d sub2a/d sub3c/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d sub*1b/d sub2a': No such file or directory
-mv: cannot stat './d sub*1b/d sub2a/d sub3a': No such file or directory
-mv: cannot stat './d sub*1b/d sub2a/d sub3a/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d sub*1b/d sub2a/d sub3a/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d sub*1b/d sub2a/d sub3a/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2b': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d sub3c': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d sub3c/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d sub3c/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d sub3c/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d sub3a': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d sub3a/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d sub3a/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d sub3a/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d sub3b': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d sub3b/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d sub3b/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d sub3b/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2c': No such file or directory
-mv: cannot stat './d sub1b/d sub2c/d sub3c': No such file or directory
-mv: cannot stat './d sub1b/d sub2c/d sub3c/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2c/d sub3c/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2c/d sub3c/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2c/d sub3a': No such file or directory
-mv: cannot stat './d sub1b/d sub2c/d sub3a/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2c/d sub3a/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2c/d sub3a/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2c/d sub3b': No such file or directory
-mv: cannot stat './d sub1b/d sub2c/d sub3b/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2c/d sub3b/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2c/d sub3b/tmp04 zzz.txt': No such file or directory
---+--  ./.rename.files.rm-spaces returned non-zero error code: 1  --+--
 
 ----- Test 54 -+- dir: ddir -+- lsseq -a -R -n -F -----
 .:
 .rename.files.rm-spaces*
 .undo.files.rm-spaces*
-d\sub1a/
-d_sub1a/
-d_sub1b/
-d_sub1c/
+d 'sub1_a/
+d sub1_c/
+d {sub*1_b/
 
-./d\sub1a:
-d sub2b/
+./d 'sub1_a:
+d \sub*2_c/
+d `sub2_a/
+d }sub?2_b/
 
-./d\sub1a/d sub2b:
-d sub3c/
+./d 'sub1_a/d \sub*2_c:
+d sub3_c/
+d {sub**3_a/
+d }sub3_b/
 
-./d\sub1a/d sub2b/d sub3c:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
+./d 'sub1_a/d \sub*2_c/d sub3_c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
 
-./d_sub1a:
-d "sub1a/
-d 'sub1a/
-d (sub1a/
-d ]sub2b/
-d `sub1a/
-d sub1a/
+./d 'sub1_a/d \sub*2_c/d {sub**3_a:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
 
-./d_sub1a/d "sub1a:
-d sub2a/
+./d 'sub1_a/d \sub*2_c/d }sub3_b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
 
-./d_sub1a/d "sub1a/d sub2a:
-d sub3c/
+./d 'sub1_a/d `sub2_a:
+d "sub3_a/
+d [sub3_b/
+d ]sub3_c/
 
-./d_sub1a/d "sub1a/d sub2a/d sub3c:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
+./d 'sub1_a/d `sub2_a/d "sub3_a:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
 
-./d_sub1a/d 'sub1a:
-d sub2a/
+./d 'sub1_a/d `sub2_a/d [sub3_b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
 
-./d_sub1a/d 'sub1a/d sub2a:
-d sub3a/
+./d 'sub1_a/d `sub2_a/d ]sub3_c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
 
-./d_sub1a/d 'sub1a/d sub2a/d sub3a:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
+./d 'sub1_a/d }sub?2_b:
+d (sub**3_a/
+d )sub3_b/
+d \sub3_c/
 
-./d_sub1a/d (sub1a:
-d sub2b/
+./d 'sub1_a/d }sub?2_b/d (sub**3_a:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
 
-./d_sub1a/d (sub1a/d sub2b:
-d) sub3b/
+./d 'sub1_a/d }sub?2_b/d )sub3_b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
 
-./d_sub1a/d (sub1a/d sub2b/d) sub3b:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
+./d 'sub1_a/d }sub?2_b/d \sub3_c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
 
-./d_sub1a/d ]sub2b:
-d sub3a/
+./d sub1_c:
+d sub2_a/
+d sub2_b/
+d sub2_c/
 
-./d_sub1a/d ]sub2b/d sub3a:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
+./d sub1_c/d sub2_a:
+d sub3_a/
+d sub3_b/
+d sub3_c/
 
-./d_sub1a/d `sub1a:
-d sub2a/
+./d sub1_c/d sub2_a/d sub3_a:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
 
-./d_sub1a/d `sub1a/d sub2a:
-d sub3b/
+./d sub1_c/d sub2_a/d sub3_b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
 
-./d_sub1a/d `sub1a/d sub2a/d sub3b:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
+./d sub1_c/d sub2_a/d sub3_c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
 
-./d_sub1a/d sub1a:
-d "sub2c"/
-d 'sub2c'/
-d (sub2c)/
-d [sub2c]/
-d `sub2c`/
+./d sub1_c/d sub2_b:
+d sub3_a/
+d sub3_b/
+d sub3_c/
 
-./d_sub1a/d sub1a/d "sub2c":
-d sub3c/
+./d sub1_c/d sub2_b/d sub3_a:
+tmp04\xxx.txt
+tmp04\yyy.txt
+tmp04\zzz.txt
 
-./d_sub1a/d sub1a/d "sub2c"/d sub3c:
-tmp04 yyy.txt
+./d sub1_c/d sub2_b/d sub3_b:
+tmp_04_xxx.txt
+tmp_04_yyy.txt
+tmp_04_zzz.txt
 
-./d_sub1a/d sub1a/d 'sub2c':
-d sub3c/
+./d sub1_c/d sub2_b/d sub3_c:
+tmp\04_zzz.txt
+tmp_04_xxx.txt
+tmp_04_yyy.txt
 
-./d_sub1a/d sub1a/d 'sub2c'/d sub3c:
-tmp04 xxx.txt
+./d sub1_c/d sub2_c:
+d sub3_a/
+d sub3_b/
+d sub3_c/
 
-./d_sub1a/d sub1a/d (sub2c):
-d sub3b/
+./d sub1_c/d sub2_c/d sub3_a:
+tmp_04_xxx.txt
+tmp_04_yyy.txt
+tmp_04_zzz.txt
 
-./d_sub1a/d sub1a/d (sub2c)/d sub3b:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
+./d sub1_c/d sub2_c/d sub3_b:
+tmp_04_xxx.txt
+tmp_04_yyy.txt
+tmp_04_zzz.txt
 
-./d_sub1a/d sub1a/d [sub2c]:
-d sub3a/
+./d sub1_c/d sub2_c/d sub3_c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
 
-./d_sub1a/d sub1a/d [sub2c]/d sub3a:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
+./d {sub*1_b:
+d }sub?2_b/
 
-./d_sub1a/d sub1a/d `sub2c`:
-d sub3c/
+./d {sub*1_b/d }sub?2_b:
+d (sub**3_a/
+d )sub3_b/
+d \sub3_c/
 
-./d_sub1a/d sub1a/d `sub2c`/d sub3c:
-tmp04 zzz.txt
+./d {sub*1_b/d }sub?2_b/d (sub**3_a:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
 
-./d_sub1b:
-d sub**1b/
-d sub*1b/
-d sub1b/
-d sub2a/
+./d {sub*1_b/d }sub?2_b/d )sub3_b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
 
-./d_sub1b/d sub**1b:
-d sub2a/
-
-./d_sub1b/d sub**1b/d sub2a:
-d sub3c/
-
-./d_sub1b/d sub**1b/d sub2a/d sub3c:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1b/d sub*1b:
-d sub2a/
-
-./d_sub1b/d sub*1b/d sub2a:
-d sub3a/
-
-./d_sub1b/d sub*1b/d sub2a/d sub3a:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1b/d sub1b:
-d sub2b/
-d sub2c/
-
-./d_sub1b/d sub1b/d sub2b:
-d sub3a/
-d sub3b/
-d sub3c/
-
-./d_sub1b/d sub1b/d sub2b/d sub3a:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1b/d sub1b/d sub2b/d sub3b:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1b/d sub1b/d sub2b/d sub3c:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1b/d sub1b/d sub2c:
-d sub3a/
-d sub3b/
-d sub3c/
-
-./d_sub1b/d sub1b/d sub2c/d sub3a:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1b/d sub1b/d sub2c/d sub3b:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1b/d sub1b/d sub2c/d sub3c:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1b/d sub2a:
-d sub3b/
-
-./d_sub1b/d sub2a/d sub3b:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1c:
-d sub2a/
-d sub2b/
-d sub2c/
-
-./d_sub1c/d sub2a:
-d sub3a/
-d sub3b/
-d sub3c/
-
-./d_sub1c/d sub2a/d sub3a:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1c/d sub2a/d sub3b:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1c/d sub2a/d sub3c:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1c/d sub2b:
-d sub3a/
-d sub3b/
-d sub3c/
-
-./d_sub1c/d sub2b/d sub3a:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1c/d sub2b/d sub3b:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1c/d sub2b/d sub3c:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1c/d sub2c:
-d sub3a/
-d sub3b/
-d sub3c/
-
-./d_sub1c/d sub2c/d sub3a:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1c/d sub2c/d sub3b:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1c/d sub2c/d sub3c:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
+./d {sub*1_b/d }sub?2_b/d \sub3_c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
 
 ----- Test 55 -+- dir: ddir -+- ./.undo.files.rm-spaces -----
-mv: cannot stat './d sub1b/d sub2c/d sub3b/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2c/d sub3b/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2c/d sub3b/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2c/d_sub3b': No such file or directory
-mv: cannot stat './d sub1b/d sub2c/d sub3a/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2c/d sub3a/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2c/d sub3a/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2c/d_sub3a': No such file or directory
-mv: cannot stat './d sub1b/d sub2c/d sub3c/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2c/d sub3c/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2c/d sub3c/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2c/d_sub3c': No such file or directory
-mv: cannot stat './d sub1b/d_sub2c': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d sub3b/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d sub3b/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d sub3b/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d_sub3b': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d sub3a/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d sub3a/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d sub3a/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d_sub3a': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d sub3c/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d sub3c/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d sub3c/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d sub1b/d sub2b/d_sub3c': No such file or directory
-mv: cannot stat './d sub1b/d_sub2b': No such file or directory
-mv: cannot stat './d sub*1b/d sub2a/d sub3a/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d sub*1b/d sub2a/d sub3a/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d sub*1b/d sub2a/d sub3a/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d sub*1b/d sub2a/d_sub3a': No such file or directory
-mv: cannot stat './d sub*1b/d_sub2a': No such file or directory
-mv: cannot stat './d_sub1b': No such file or directory
-mv: cannot stat './d sub**1b/d sub2a/d sub3c/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d sub**1b/d sub2a/d sub3c/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d sub**1b/d sub2a/d sub3c/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d sub**1b/d sub2a/d_sub3c': No such file or directory
-mv: cannot stat './d sub**1b/d_sub2a': No such file or directory
-mv: cannot stat './d_sub1b': No such file or directory
-mv: cannot stat './d "sub1a/d sub2a/d sub3c/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d "sub1a/d sub2a/d sub3c/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d "sub1a/d sub2a/d sub3c/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d "sub1a/d sub2a/d_sub3c': No such file or directory
-mv: cannot stat './d "sub1a/d_sub2a': No such file or directory
-mv: cannot stat "./d 'sub1a/d sub2a/d sub3a/tmp04_zzz.txt": No such file or directory
-mv: cannot stat "./d 'sub1a/d sub2a/d sub3a/tmp04_xxx.txt": No such file or directory
-mv: cannot stat "./d 'sub1a/d sub2a/d sub3a/tmp04_yyy.txt": No such file or directory
-mv: cannot stat "./d 'sub1a/d sub2a/d_sub3a": No such file or directory
-mv: cannot stat "./d 'sub1a/d_sub2a": No such file or directory
-mv: cannot stat './d_sub1a': No such file or directory
-mv: cannot stat './d sub1a/d (sub2c)/d sub3b/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d sub1a/d (sub2c)/d sub3b/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d sub1a/d (sub2c)/d sub3b/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d sub1a/d (sub2c)/d_sub3b': No such file or directory
-mv: cannot stat './d sub1a/d_sub2c': No such file or directory
-mv: cannot stat './d sub1a/d `sub2c`/d sub3c/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d sub1a/d `sub2c`/d_sub3c': No such file or directory
-mv: cannot stat './d sub1a/d_sub2c': No such file or directory
-mv: cannot stat './d sub1a/d "sub2c"/d sub3c/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d sub1a/d "sub2c"/d_sub3c': No such file or directory
-mv: cannot stat './d sub1a/d_sub2c': No such file or directory
-mv: cannot stat "./d sub1a/d 'sub2c'/d sub3c/tmp04_xxx.txt": No such file or directory
-mv: cannot stat "./d sub1a/d 'sub2c'/d_sub3c": No such file or directory
-mv: cannot stat './d sub1a/d_sub2c': No such file or directory
-mv: cannot stat './d sub1a/d [sub2c]/d sub3a/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d sub1a/d [sub2c]/d sub3a/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d sub1a/d [sub2c]/d sub3a/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d sub1a/d [sub2c]/d_sub3a': No such file or directory
-mv: cannot stat './d sub1a/d_sub2c': No such file or directory
-mv: cannot stat './d_sub1a': No such file or directory
-mv: cannot stat './d \sub1a/d sub2b/d sub3c/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d \sub1a/d sub2b/d sub3c/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d \sub1a/d sub2b/d sub3c/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d \sub1a/d sub2b/d_sub3c': No such file or directory
-mv: cannot stat './d \sub1a/d_sub2b': No such file or directory
-mv: cannot stat './d (sub1a/d sub2b/d) sub3b/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d (sub1a/d sub2b/d) sub3b/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d (sub1a/d sub2b/d) sub3b/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d (sub1a/d sub2b/d_sub3b': No such file or directory
-mv: cannot stat './d (sub1a/d_sub2b': No such file or directory
-mv: cannot stat './d_sub1a': No such file or directory
-mv: cannot stat './d `sub1a/d sub2a/d sub3b/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d `sub1a/d sub2a/d sub3b/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d `sub1a/d sub2a/d sub3b/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d `sub1a/d sub2a/d_sub3b': No such file or directory
-mv: cannot stat './d `sub1a/d_sub2a': No such file or directory
-mv: cannot stat './d_sub1a': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d sub3b/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d sub3b/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d sub3b/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d_sub3b': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d sub3a/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d sub3a/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d sub3a/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d_sub3a': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d sub3c/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d sub3c/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d sub3c/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2a/d_sub3c': No such file or directory
-mv: cannot stat './d sub1c/d_sub2a': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d sub3b/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d sub3b/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d sub3b/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d_sub3b': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d sub3a/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d sub3a/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d sub3a/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d_sub3a': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d sub3c/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d sub3c/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d sub3c/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2c/d_sub3c': No such file or directory
-mv: cannot stat './d sub1c/d_sub2c': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d sub3b/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d sub3b/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d sub3b/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d_sub3b': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d sub3a/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d sub3a/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d sub3a/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d_sub3a': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d sub3c/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d sub3c/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d sub3c/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d sub1c/d sub2b/d_sub3c': No such file or directory
-mv: cannot stat './d sub1c/d_sub2b': No such file or directory
-mv: cannot stat './d sub?1b/d sub2a/d sub3b/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d sub?1b/d sub2a/d sub3b/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d sub?1b/d sub2a/d sub3b/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d sub?1b/d sub2a/d_sub3b': No such file or directory
-mv: cannot stat './d sub?1b/d_sub2a': No such file or directory
-mv: cannot stat './d_sub1b': No such file or directory
-mv: cannot stat './d [sub1a/d ]sub2b/d sub3a/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d [sub1a/d ]sub2b/d sub3a/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d [sub1a/d ]sub2b/d sub3a/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d [sub1a/d ]sub2b/d_sub3a': No such file or directory
-mv: cannot stat './d [sub1a/d_sub2b': No such file or directory
-mv: cannot stat './d_sub1a': No such file or directory
---+--  ./.undo.files.rm-spaces returned non-zero error code: 1  --+--
 
 ----- Test 56 -+- dir: ddir -+- rm-spaces -q -r --directories -----
 
 ----- Test 57 -+- dir: ddir -+- cat ./.rename.dirs.rm-spaces -----
 #!/bin/bash
-mv './d "sub1a/d `sub1a/d sub2a/d sub3b' './d "sub1a/d `sub1a/d sub2a/d_sub3b'
-mv './d "sub1a/d (sub1a/d sub2b/d) sub3b' './d "sub1a/d (sub1a/d sub2b/d_sub3b'
-mv './d "sub1a/d sub1a/d [sub2c]/d sub3a' './d "sub1a/d sub1a/d [sub2c]/d_sub3a'
-mv './d "sub1a/d sub1a/d '"'"'sub2c'"'"'/d sub3c' './d "sub1a/d sub1a/d '"'"'sub2c'"'"'/d_sub3c'
-mv './d "sub1a/d sub1a/d "sub2c"/d sub3c' './d "sub1a/d sub1a/d "sub2c"/d_sub3c'
-mv './d "sub1a/d sub1a/d `sub2c`/d sub3c' './d "sub1a/d sub1a/d `sub2c`/d_sub3c'
-mv './d "sub1a/d sub1a/d (sub2c)/d sub3b' './d "sub1a/d sub1a/d (sub2c)/d_sub3b'
-mv './d "sub1a/d '"'"'sub1a/d sub2a/d sub3a' './d "sub1a/d '"'"'sub1a/d sub2a/d_sub3a'
-mv './d "sub1a/d "sub1a/d sub2a/d sub3c' './d "sub1a/d "sub1a/d sub2a/d_sub3c'
-mv './d sub1b/d sub**1b/d sub2a/d sub3c' './d sub1b/d sub**1b/d sub2a/d_sub3c'
-mv './d sub1b/d sub*1b/d sub2a/d sub3a' './d sub1b/d sub*1b/d sub2a/d_sub3a'
-mv './d sub1b/d sub1b/d sub2b/d sub3c' './d sub1b/d sub1b/d sub2b/d_sub3c'
-mv './d sub1b/d sub1b/d sub2b/d sub3a' './d sub1b/d sub1b/d sub2b/d_sub3a'
-mv './d sub1b/d sub1b/d sub2b/d sub3b' './d sub1b/d sub1b/d sub2b/d_sub3b'
-mv './d sub1b/d sub1b/d sub2c/d sub3c' './d sub1b/d sub1b/d sub2c/d_sub3c'
-mv './d sub1b/d sub1b/d sub2c/d sub3a' './d sub1b/d sub1b/d sub2c/d_sub3a'
-mv './d sub1b/d sub1b/d sub2c/d sub3b' './d sub1b/d sub1b/d sub2c/d_sub3b'
-mv './d sub1c/d sub2b/d sub3c' './d sub1c/d sub2b/d_sub3c'
-mv './d sub1c/d sub2b/d sub3a' './d sub1c/d sub2b/d_sub3a'
-mv './d sub1c/d sub2b/d sub3b' './d sub1c/d sub2b/d_sub3b'
-mv './d sub1c/d sub2c/d sub3c' './d sub1c/d sub2c/d_sub3c'
-mv './d sub1c/d sub2c/d sub3a' './d sub1c/d sub2c/d_sub3a'
-mv './d sub1c/d sub2c/d sub3b' './d sub1c/d sub2c/d_sub3b'
-mv './d sub1c/d sub2a/d sub3c' './d sub1c/d sub2a/d_sub3c'
-mv './d sub1c/d sub2a/d sub3a' './d sub1c/d sub2a/d_sub3a'
-mv './d sub1c/d sub2a/d sub3b' './d sub1c/d sub2a/d_sub3b'
-mv './d \sub1a/d sub2b/d sub3c' './d \sub1a/d sub2b/d_sub3c'
-mv './d "sub1a/d `sub1a/d sub2a' './d "sub1a/d `sub1a/d_sub2a'
-mv './d "sub1a/d (sub1a/d sub2b' './d "sub1a/d (sub1a/d_sub2b'
-mv './d "sub1a/d sub1a/d [sub2c]' './d "sub1a/d sub1a/d_sub2c'
-mv './d "sub1a/d sub1a/d '"'"'sub2c'"'"'' './d "sub1a/d sub1a/d_sub2c'
-mv './d "sub1a/d sub1a/d "sub2c"' './d "sub1a/d sub1a/d_sub2c'
-mv './d "sub1a/d sub1a/d `sub2c`' './d "sub1a/d sub1a/d_sub2c'
-mv './d "sub1a/d sub1a/d (sub2c)' './d "sub1a/d sub1a/d_sub2c'
-mv './d "sub1a/d '"'"'sub1a/d sub2a' './d "sub1a/d '"'"'sub1a/d_sub2a'
-mv './d "sub1a/d "sub1a/d sub2a' './d "sub1a/d "sub1a/d_sub2a'
-mv './d "sub1a/d ]sub2b/d sub3a' './d "sub1a/d ]sub2b/d_sub3a'
-mv './d sub1b/d sub**1b/d sub2a' './d sub1b/d sub**1b/d_sub2a'
-mv './d sub1b/d sub2a/d sub3b' './d sub1b/d sub2a/d_sub3b'
-mv './d sub1b/d sub*1b/d sub2a' './d sub1b/d sub*1b/d_sub2a'
-mv './d sub1b/d sub1b/d sub2b' './d sub1b/d sub1b/d_sub2b'
-mv './d sub1b/d sub1b/d sub2c' './d sub1b/d sub1b/d_sub2c'
-mv './d sub1c/d sub2b' './d sub1c/d_sub2b'
-mv './d sub1c/d sub2c' './d sub1c/d_sub2c'
-mv './d sub1c/d sub2a' './d sub1c/d_sub2a'
-mv './d \sub1a/d sub2b' './d \sub1a/d_sub2b'
-mv './d "sub1a/d `sub1a' './d "sub1a/d_sub1a'
-mv './d "sub1a/d (sub1a' './d "sub1a/d_sub1a'
-mv './d "sub1a/d sub1a' './d "sub1a/d_sub1a'
-mv './d "sub1a/d '"'"'sub1a' './d "sub1a/d_sub1a'
-mv './d "sub1a/d "sub1a' './d "sub1a/d_sub1a'
-mv './d "sub1a/d ]sub2b' './d "sub1a/d_sub2b'
-mv './d sub1b/d sub**1b' './d sub1b/d_sub1b'
-mv './d sub1b/d sub2a' './d sub1b/d_sub2a'
-mv './d sub1b/d sub*1b' './d sub1b/d_sub1b'
-mv './d sub1b/d sub1b' './d sub1b/d_sub1b'
-mv './d sub1c' './d_sub1c'
-mv './d \sub1a' './d\sub1a'
-mv './d "sub1a' './d_sub1a'
-mv './d sub1b' './d_sub1b'
+mv './d '"'"'sub1_a/d `sub2_a/d "sub3_a' './d '"'"'sub1_a/d `sub2_a/d_sub3_a'
+mv './d '"'"'sub1_a/d `sub2_a/d [sub3_b' './d '"'"'sub1_a/d `sub2_a/d_sub3_b'
+mv './d '"'"'sub1_a/d `sub2_a/d ]sub3_c' './d '"'"'sub1_a/d `sub2_a/d_sub3_c'
+mv './d '"'"'sub1_a/d }sub?2_b/d (sub**3_a' './d '"'"'sub1_a/d }sub?2_b/d_sub3_a'
+mv './d '"'"'sub1_a/d }sub?2_b/d \sub3_c' './d '"'"'sub1_a/d }sub?2_b/d\sub3_c'
+mv './d '"'"'sub1_a/d }sub?2_b/d )sub3_b' './d '"'"'sub1_a/d }sub?2_b/d_sub3_b'
+mv './d '"'"'sub1_a/d \sub*2_c/d }sub3_b' './d '"'"'sub1_a/d \sub*2_c/d_sub3_b'
+mv './d '"'"'sub1_a/d \sub*2_c/d {sub**3_a' './d '"'"'sub1_a/d \sub*2_c/d_sub3_a'
+mv './d '"'"'sub1_a/d \sub*2_c/d sub3_c' './d '"'"'sub1_a/d \sub*2_c/d_sub3_c'
+mv './d {sub*1_b/d }sub?2_b/d (sub**3_a' './d {sub*1_b/d }sub?2_b/d_sub3_a'
+mv './d {sub*1_b/d }sub?2_b/d \sub3_c' './d {sub*1_b/d }sub?2_b/d\sub3_c'
+mv './d {sub*1_b/d }sub?2_b/d )sub3_b' './d {sub*1_b/d }sub?2_b/d_sub3_b'
+mv './d sub1_c/d sub2_a/d sub3_a' './d sub1_c/d sub2_a/d_sub3_a'
+mv './d sub1_c/d sub2_a/d sub3_c' './d sub1_c/d sub2_a/d_sub3_c'
+mv './d sub1_c/d sub2_a/d sub3_b' './d sub1_c/d sub2_a/d_sub3_b'
+mv './d sub1_c/d sub2_c/d sub3_a' './d sub1_c/d sub2_c/d_sub3_a'
+mv './d sub1_c/d sub2_c/d sub3_c' './d sub1_c/d sub2_c/d_sub3_c'
+mv './d sub1_c/d sub2_c/d sub3_b' './d sub1_c/d sub2_c/d_sub3_b'
+mv './d sub1_c/d sub2_b/d sub3_a' './d sub1_c/d sub2_b/d_sub3_a'
+mv './d sub1_c/d sub2_b/d sub3_c' './d sub1_c/d sub2_b/d_sub3_c'
+mv './d sub1_c/d sub2_b/d sub3_b' './d sub1_c/d sub2_b/d_sub3_b'
+mv './d '"'"'sub1_a/d `sub2_a' './d '"'"'sub1_a/d_sub2_a'
+mv './d '"'"'sub1_a/d }sub?2_b' './d '"'"'sub1_a/d_sub2_b'
+mv './d '"'"'sub1_a/d \sub*2_c' './d '"'"'sub1_a/d\sub2_c'
+mv './d {sub*1_b/d }sub?2_b' './d {sub*1_b/d_sub2_b'
+mv './d sub1_c/d sub2_a' './d sub1_c/d_sub2_a'
+mv './d sub1_c/d sub2_c' './d sub1_c/d_sub2_c'
+mv './d sub1_c/d sub2_b' './d sub1_c/d_sub2_b'
+mv './d '"'"'sub1_a' './d_sub1_a'
+mv './d {sub*1_b' './d_sub1_b'
+mv './d sub1_c' './d_sub1_c'
 
 
 ----- Test 58 -+- dir: ddir -+- ./.rename.dirs.rm-spaces -----
@@ -2846,49 +2262,6 @@ mv './d sub1b' './d_sub1b'
 ----- Test 59 -+- dir: ddir -+- rm-spaces -q -r --regular-files -----
 
 ----- Test 60 -+- dir: ddir -+- ./.rename.files.rm-spaces -----
-mv: cannot stat './d_sub1b/d_sub1b/d sub*1b/d_sub2a/d_sub3a/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub*1b/d_sub2a/d_sub3a/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub*1b/d_sub2a/d_sub3a/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2b/d_sub3a/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2b/d_sub3a/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2b/d_sub3a/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2b/d_sub3c/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2b/d_sub3c/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2b/d_sub3c/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2b/d_sub3b/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2b/d_sub3b/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2b/d_sub3b/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2c/d_sub3a/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2c/d_sub3a/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2c/d_sub3a/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2c/d_sub3c/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2c/d_sub3c/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2c/d_sub3c/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2c/d_sub3b/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2c/d_sub3b/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2c/d_sub3b/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d (sub1a/d_sub2b/d_sub3b/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d (sub1a/d_sub2b/d_sub3b/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d (sub1a/d_sub2b/d_sub3b/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d sub1a/d_sub2c/d_sub3a/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d sub1a/d_sub2c/d_sub3a/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d sub1a/d_sub2c/d_sub3a/tmp04 zzz.txt': No such file or directory
-mv: cannot stat "./d_sub1a/d_sub1a/d sub1a/d_sub2c/d 'sub2c'": No such file or directory
-mv: cannot stat "./d_sub1a/d_sub1a/d sub1a/d_sub2c/d 'sub2c'/d_sub3c/tmp04 xxx.txt": No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d sub1a/d_sub2c/d "sub2c"': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d sub1a/d_sub2c/d "sub2c"/d_sub3c/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d sub1a/d_sub2c/d `sub2c`': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d sub1a/d_sub2c/d `sub2c`/d_sub3c/tmp04 zzz.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d sub1a/d_sub2c/d (sub2c)': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d sub1a/d_sub2c/d (sub2c)/d_sub3b/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d sub1a/d_sub2c/d (sub2c)/d_sub3b/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d sub1a/d_sub2c/d (sub2c)/d_sub3b/tmp04 zzz.txt': No such file or directory
-mv: cannot stat "./d_sub1a/d_sub1a/d 'sub1a/d_sub2a/d_sub3a/tmp04 yyy.txt": No such file or directory
-mv: cannot stat "./d_sub1a/d_sub1a/d 'sub1a/d_sub2a/d_sub3a/tmp04 xxx.txt": No such file or directory
-mv: cannot stat "./d_sub1a/d_sub1a/d 'sub1a/d_sub2a/d_sub3a/tmp04 zzz.txt": No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d "sub1a/d_sub2a/d_sub3c/tmp04 yyy.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d "sub1a/d_sub2a/d_sub3c/tmp04 xxx.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d "sub1a/d_sub2a/d_sub3c/tmp04 zzz.txt': No such file or directory
 
 ----- Test 61 -+- dir: ddir -+- lsseq -a -R -n -F -----
 .:
@@ -2896,354 +2269,166 @@ mv: cannot stat './d_sub1a/d_sub1a/d "sub1a/d_sub2a/d_sub3c/tmp04 zzz.txt': No s
 .rename.files.rm-spaces*
 .undo.dirs.rm-spaces*
 .undo.files.rm-spaces*
-d\sub1a/
-d_sub1a/
-d_sub1b/
-d_sub1c/
+d_sub1_a/
+d_sub1_b/
+d_sub1_c/
 
-./d\sub1a:
-d_sub2b/
+./d_sub1_a:
+d\sub2_c/
+d_sub2_a/
+d_sub2_b/
 
-./d\sub1a/d_sub2b:
-d_sub3c/
+./d_sub1_a/d\sub2_c:
+d_sub3_a/
+d_sub3_b/
+d_sub3_c/
 
-./d\sub1a/d_sub2b/d_sub3c:
+./d_sub1_a/d\sub2_c/d_sub3_a:
 tmp04_xxx.txt
 tmp04_yyy.txt
 tmp04_zzz.txt
 
-./d_sub1a:
-d_sub1a/
-d_sub2b/
-
-./d_sub1a/d_sub1a:
-d_sub1a/
-d_sub2a/
-
-./d_sub1a/d_sub1a/d_sub1a:
-d "sub1a/
-d 'sub1a/
-d sub1a/
-d_sub2b/
-
-./d_sub1a/d_sub1a/d_sub1a/d "sub1a:
-d_sub2a/
-
-./d_sub1a/d_sub1a/d_sub1a/d "sub1a/d_sub2a:
-d_sub3c/
-
-./d_sub1a/d_sub1a/d_sub1a/d "sub1a/d_sub2a/d_sub3c:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1a/d_sub1a/d_sub1a/d 'sub1a:
-d_sub2a/
-
-./d_sub1a/d_sub1a/d_sub1a/d 'sub1a/d_sub2a:
-d_sub3a/
-
-./d_sub1a/d_sub1a/d_sub1a/d 'sub1a/d_sub2a/d_sub3a:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1a/d_sub1a/d_sub1a/d sub1a:
-d_sub2c/
-
-./d_sub1a/d_sub1a/d_sub1a/d sub1a/d_sub2c:
-d "sub2c"/
-d 'sub2c'/
-d (sub2c)/
-d `sub2c`/
-d_sub3a/
-
-./d_sub1a/d_sub1a/d_sub1a/d sub1a/d_sub2c/d "sub2c":
-d_sub3c/
-
-./d_sub1a/d_sub1a/d_sub1a/d sub1a/d_sub2c/d "sub2c"/d_sub3c:
-tmp04 yyy.txt
-
-./d_sub1a/d_sub1a/d_sub1a/d sub1a/d_sub2c/d 'sub2c':
-d_sub3c/
-
-./d_sub1a/d_sub1a/d_sub1a/d sub1a/d_sub2c/d 'sub2c'/d_sub3c:
-tmp04 xxx.txt
-
-./d_sub1a/d_sub1a/d_sub1a/d sub1a/d_sub2c/d (sub2c):
-d_sub3b/
-
-./d_sub1a/d_sub1a/d_sub1a/d sub1a/d_sub2c/d (sub2c)/d_sub3b:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1a/d_sub1a/d_sub1a/d sub1a/d_sub2c/d `sub2c`:
-d_sub3c/
-
-./d_sub1a/d_sub1a/d_sub1a/d sub1a/d_sub2c/d `sub2c`/d_sub3c:
-tmp04 zzz.txt
-
-./d_sub1a/d_sub1a/d_sub1a/d sub1a/d_sub2c/d_sub3a:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1a/d_sub1a/d_sub1a/d_sub2b:
-d_sub3b/
-
-./d_sub1a/d_sub1a/d_sub1a/d_sub2b/d_sub3b:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1a/d_sub1a/d_sub2a:
-d_sub3b/
-
-./d_sub1a/d_sub1a/d_sub2a/d_sub3b:
+./d_sub1_a/d\sub2_c/d_sub3_b:
 tmp04_xxx.txt
 tmp04_yyy.txt
 tmp04_zzz.txt
 
-./d_sub1a/d_sub2b:
-d_sub3a/
-
-./d_sub1a/d_sub2b/d_sub3a:
+./d_sub1_a/d\sub2_c/d_sub3_c:
 tmp04_xxx.txt
 tmp04_yyy.txt
 tmp04_zzz.txt
 
-./d_sub1b:
-d_sub1b/
-d_sub2a/
+./d_sub1_a/d_sub2_a:
+d_sub3_a/
+d_sub3_b/
+d_sub3_c/
 
-./d_sub1b/d_sub1b:
-d_sub1b/
-d_sub2a/
-
-./d_sub1b/d_sub1b/d_sub1b:
-d sub1b/
-d_sub2a/
-
-./d_sub1b/d_sub1b/d_sub1b/d sub1b:
-d_sub2b/
-d_sub2c/
-
-./d_sub1b/d_sub1b/d_sub1b/d sub1b/d_sub2b:
-d_sub3a/
-d_sub3b/
-d_sub3c/
-
-./d_sub1b/d_sub1b/d_sub1b/d sub1b/d_sub2b/d_sub3a:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1b/d_sub1b/d_sub1b/d sub1b/d_sub2b/d_sub3b:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1b/d_sub1b/d_sub1b/d sub1b/d_sub2b/d_sub3c:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1b/d_sub1b/d_sub1b/d sub1b/d_sub2c:
-d_sub3a/
-d_sub3b/
-d_sub3c/
-
-./d_sub1b/d_sub1b/d_sub1b/d sub1b/d_sub2c/d_sub3a:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1b/d_sub1b/d_sub1b/d sub1b/d_sub2c/d_sub3b:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1b/d_sub1b/d_sub1b/d sub1b/d_sub2c/d_sub3c:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1b/d_sub1b/d_sub1b/d_sub2a:
-d_sub3a/
-
-./d_sub1b/d_sub1b/d_sub1b/d_sub2a/d_sub3a:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d_sub1b/d_sub1b/d_sub2a:
-d_sub3c/
-
-./d_sub1b/d_sub1b/d_sub2a/d_sub3c:
+./d_sub1_a/d_sub2_a/d_sub3_a:
 tmp04_xxx.txt
 tmp04_yyy.txt
 tmp04_zzz.txt
 
-./d_sub1b/d_sub2a:
-d_sub3b/
-
-./d_sub1b/d_sub2a/d_sub3b:
+./d_sub1_a/d_sub2_a/d_sub3_b:
 tmp04_xxx.txt
 tmp04_yyy.txt
 tmp04_zzz.txt
 
-./d_sub1c:
-d_sub2a/
-d_sub2b/
-d_sub2c/
-
-./d_sub1c/d_sub2a:
-d_sub3a/
-d_sub3b/
-d_sub3c/
-
-./d_sub1c/d_sub2a/d_sub3a:
+./d_sub1_a/d_sub2_a/d_sub3_c:
 tmp04_xxx.txt
 tmp04_yyy.txt
 tmp04_zzz.txt
 
-./d_sub1c/d_sub2a/d_sub3b:
+./d_sub1_a/d_sub2_b:
+d\sub3_c/
+d_sub3_a/
+d_sub3_b/
+
+./d_sub1_a/d_sub2_b/d\sub3_c:
 tmp04_xxx.txt
 tmp04_yyy.txt
 tmp04_zzz.txt
 
-./d_sub1c/d_sub2a/d_sub3c:
+./d_sub1_a/d_sub2_b/d_sub3_a:
 tmp04_xxx.txt
 tmp04_yyy.txt
 tmp04_zzz.txt
 
-./d_sub1c/d_sub2b:
-d_sub3a/
-d_sub3b/
-d_sub3c/
-
-./d_sub1c/d_sub2b/d_sub3a:
+./d_sub1_a/d_sub2_b/d_sub3_b:
 tmp04_xxx.txt
 tmp04_yyy.txt
 tmp04_zzz.txt
 
-./d_sub1c/d_sub2b/d_sub3b:
+./d_sub1_b:
+d_sub2_b/
+
+./d_sub1_b/d_sub2_b:
+d\sub3_c/
+d_sub3_a/
+d_sub3_b/
+
+./d_sub1_b/d_sub2_b/d\sub3_c:
 tmp04_xxx.txt
 tmp04_yyy.txt
 tmp04_zzz.txt
 
-./d_sub1c/d_sub2b/d_sub3c:
+./d_sub1_b/d_sub2_b/d_sub3_a:
 tmp04_xxx.txt
 tmp04_yyy.txt
 tmp04_zzz.txt
 
-./d_sub1c/d_sub2c:
-d_sub3a/
-d_sub3b/
-d_sub3c/
-
-./d_sub1c/d_sub2c/d_sub3a:
+./d_sub1_b/d_sub2_b/d_sub3_b:
 tmp04_xxx.txt
 tmp04_yyy.txt
 tmp04_zzz.txt
 
-./d_sub1c/d_sub2c/d_sub3b:
+./d_sub1_c:
+d_sub2_a/
+d_sub2_b/
+d_sub2_c/
+
+./d_sub1_c/d_sub2_a:
+d_sub3_a/
+d_sub3_b/
+d_sub3_c/
+
+./d_sub1_c/d_sub2_a/d_sub3_a:
 tmp04_xxx.txt
 tmp04_yyy.txt
 tmp04_zzz.txt
 
-./d_sub1c/d_sub2c/d_sub3c:
+./d_sub1_c/d_sub2_a/d_sub3_b:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./d_sub1_c/d_sub2_a/d_sub3_c:
+tmp04_xxx.txt
+tmp04_yyy.txt
+tmp04_zzz.txt
+
+./d_sub1_c/d_sub2_b:
+d_sub3_a/
+d_sub3_b/
+d_sub3_c/
+
+./d_sub1_c/d_sub2_b/d_sub3_a:
+tmp04\xxx.txt
+tmp04\yyy.txt
+tmp04\zzz.txt
+
+./d_sub1_c/d_sub2_b/d_sub3_b:
+tmp_04_xxx.txt
+tmp_04_yyy.txt
+tmp_04_zzz.txt
+
+./d_sub1_c/d_sub2_b/d_sub3_c:
+tmp\04_zzz.txt
+tmp_04_xxx.txt
+tmp_04_yyy.txt
+
+./d_sub1_c/d_sub2_c:
+d_sub3_a/
+d_sub3_b/
+d_sub3_c/
+
+./d_sub1_c/d_sub2_c/d_sub3_a:
+tmp_04_xxx.txt
+tmp_04_yyy.txt
+tmp_04_zzz.txt
+
+./d_sub1_c/d_sub2_c/d_sub3_b:
+tmp_04_xxx.txt
+tmp_04_yyy.txt
+tmp_04_zzz.txt
+
+./d_sub1_c/d_sub2_c/d_sub3_c:
 tmp04_xxx.txt
 tmp04_yyy.txt
 tmp04_zzz.txt
 
 ----- Test 62 -+- dir: ddir -+- ./.undo.files.rm-spaces -----
-mv: cannot stat './d_sub1a/d_sub1a/d "sub1a/d_sub2a/d_sub3c/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d "sub1a/d_sub2a/d_sub3c/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d "sub1a/d_sub2a/d_sub3c/tmp04_yyy.txt': No such file or directory
-mv: cannot stat "./d_sub1a/d_sub1a/d 'sub1a/d_sub2a/d_sub3a/tmp04_zzz.txt": No such file or directory
-mv: cannot stat "./d_sub1a/d_sub1a/d 'sub1a/d_sub2a/d_sub3a/tmp04_xxx.txt": No such file or directory
-mv: cannot stat "./d_sub1a/d_sub1a/d 'sub1a/d_sub2a/d_sub3a/tmp04_yyy.txt": No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d_sub1a': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d sub1a/d_sub2c/d (sub2c)/d_sub3b/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d sub1a/d_sub2c/d (sub2c)/d_sub3b/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d sub1a/d_sub2c/d (sub2c)/d_sub3b/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d sub1a/d_sub2c/d_sub2c': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d sub1a/d_sub2c/d `sub2c`/d_sub3c/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d sub1a/d_sub2c/d_sub2c': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d sub1a/d_sub2c/d "sub2c"/d_sub3c/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d sub1a/d_sub2c/d_sub2c': No such file or directory
-mv: cannot stat "./d_sub1a/d_sub1a/d sub1a/d_sub2c/d 'sub2c'/d_sub3c/tmp04_xxx.txt": No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d sub1a/d_sub2c/d_sub2c': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d sub1a/d_sub2c/d_sub3a/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d sub1a/d_sub2c/d_sub3a/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d sub1a/d_sub2c/d_sub3a/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d_sub1a': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d (sub1a/d_sub2b/d_sub3b/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d (sub1a/d_sub2b/d_sub3b/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d (sub1a/d_sub2b/d_sub3b/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d_sub1a/d_sub1a/d_sub1a': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2c/d_sub3b/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2c/d_sub3b/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2c/d_sub3b/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2c/d_sub3c/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2c/d_sub3c/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2c/d_sub3c/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2c/d_sub3a/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2c/d_sub3a/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2c/d_sub3a/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2b/d_sub3b/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2b/d_sub3b/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2b/d_sub3b/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2b/d_sub3c/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2b/d_sub3c/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2b/d_sub3c/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2b/d_sub3a/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2b/d_sub3a/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub1b/d_sub2b/d_sub3a/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub*1b/d_sub2a/d_sub3a/tmp04_zzz.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub*1b/d_sub2a/d_sub3a/tmp04_xxx.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d sub*1b/d_sub2a/d_sub3a/tmp04_yyy.txt': No such file or directory
-mv: cannot stat './d_sub1b/d_sub1b/d_sub1b': No such file or directory
 
 ----- Test 63 -+- dir: ddir -+- ./.undo.dirs.rm-spaces -----
-mv: cannot stat './d sub1b/d_sub1b': No such file or directory
-mv: cannot stat './d sub1b/d_sub1b': No such file or directory
-mv: cannot stat './d "sub1a/d_sub1a': No such file or directory
-mv: cannot stat './d "sub1a/d_sub1a': No such file or directory
-mv: cannot stat './d "sub1a/d_sub1a': No such file or directory
-mv: cannot stat './d "sub1a/d_sub1a': No such file or directory
-mv: cannot stat './d sub1b/d sub1b/d_sub2c': No such file or directory
-mv: cannot stat './d sub1b/d sub1b/d_sub2b': No such file or directory
-mv: cannot stat './d sub1b/d sub*1b/d_sub2a': No such file or directory
-mv: cannot stat './d sub1b/d sub**1b/d_sub2a': No such file or directory
-mv: cannot stat './d "sub1a/d '\''sub1a/d_sub2a': No such file or directory
-mv: cannot stat './d "sub1a/d sub1a/d_sub2c': No such file or directory
-mv: cannot stat './d "sub1a/d sub1a/d_sub2c': No such file or directory
-mv: cannot stat './d "sub1a/d sub1a/d_sub2c': No such file or directory
-mv: cannot stat './d "sub1a/d sub1a/d_sub2c': No such file or directory
-mv: cannot stat './d "sub1a/d sub1a/d_sub2c': No such file or directory
-mv: cannot stat './d "sub1a/d (sub1a/d_sub2b': No such file or directory
-mv: cannot stat './d "sub1a/d `sub1a/d_sub2a': No such file or directory
-mv: cannot stat './d sub1b/d sub1b/d sub2c/d_sub3b': No such file or directory
-mv: cannot stat './d sub1b/d sub1b/d sub2c/d_sub3a': No such file or directory
-mv: cannot stat './d sub1b/d sub1b/d sub2c/d_sub3c': No such file or directory
-mv: cannot stat './d sub1b/d sub1b/d sub2b/d_sub3b': No such file or directory
-mv: cannot stat './d sub1b/d sub1b/d sub2b/d_sub3a': No such file or directory
-mv: cannot stat './d sub1b/d sub1b/d sub2b/d_sub3c': No such file or directory
-mv: cannot stat './d sub1b/d sub*1b/d sub2a/d_sub3a': No such file or directory
-mv: cannot stat './d sub1b/d sub**1b/d sub2a/d_sub3c': No such file or directory
-mv: cannot stat './d "sub1a/d "sub1a/d sub2a/d_sub3c': No such file or directory
-mv: cannot stat './d "sub1a/d '\''sub1a/d sub2a/d_sub3a': No such file or directory
-mv: cannot stat './d "sub1a/d sub1a/d (sub2c)/d_sub3b': No such file or directory
-mv: cannot stat './d "sub1a/d sub1a/d `sub2c`/d_sub3c': No such file or directory
-mv: cannot stat './d "sub1a/d sub1a/d "sub2c"/d_sub3c': No such file or directory
-mv: cannot stat './d "sub1a/d sub1a/d '\''sub2c'\''/d_sub3c': No such file or directory
-mv: cannot stat './d "sub1a/d sub1a/d [sub2c]/d_sub3a': No such file or directory
-mv: cannot stat './d "sub1a/d (sub1a/d sub2b/d_sub3b': No such file or directory
-mv: cannot stat './d "sub1a/d `sub1a/d sub2a/d_sub3b': No such file or directory
---+--  ./.undo.dirs.rm-spaces returned non-zero error code: 1  --+--
 
 ----- Test 64 -+- dir: ddir -+- lsseq -a -R -n -F -----
 .:
@@ -3251,264 +2436,159 @@ mv: cannot stat './d "sub1a/d `sub1a/d sub2a/d_sub3b': No such file or directory
 .rename.files.rm-spaces*
 .undo.dirs.rm-spaces*
 .undo.files.rm-spaces*
-d "sub1a/
-d \sub1a/
-d sub1b/
-d sub1c/
+d 'sub1_a/
+d sub1_c/
+d {sub*1_b/
 
-./d "sub1a:
-d "sub1a/
-d ]sub2b/
+./d 'sub1_a:
+d \sub*2_c/
+d `sub2_a/
+d }sub?2_b/
 
-./d "sub1a/d "sub1a:
-d "sub1a/
-d sub2a/
+./d 'sub1_a/d \sub*2_c:
+d sub3_c/
+d {sub**3_a/
+d }sub3_b/
 
-./d "sub1a/d "sub1a/d "sub1a:
-d "sub1a/
-d 'sub1a/
-d sub1a/
-d_sub2b/
-
-./d "sub1a/d "sub1a/d "sub1a/d "sub1a:
-d_sub2a/
-
-./d "sub1a/d "sub1a/d "sub1a/d "sub1a/d_sub2a:
-d_sub3c/
-
-./d "sub1a/d "sub1a/d "sub1a/d "sub1a/d_sub2a/d_sub3c:
+./d 'sub1_a/d \sub*2_c/d sub3_c:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
 
-./d "sub1a/d "sub1a/d "sub1a/d 'sub1a:
-d_sub2a/
-
-./d "sub1a/d "sub1a/d "sub1a/d 'sub1a/d_sub2a:
-d_sub3a/
-
-./d "sub1a/d "sub1a/d "sub1a/d 'sub1a/d_sub2a/d_sub3a:
+./d 'sub1_a/d \sub*2_c/d {sub**3_a:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
 
-./d "sub1a/d "sub1a/d "sub1a/d sub1a:
-d_sub2c/
-
-./d "sub1a/d "sub1a/d "sub1a/d sub1a/d_sub2c:
-d "sub2c"/
-d 'sub2c'/
-d (sub2c)/
-d `sub2c`/
-d_sub3a/
-
-./d "sub1a/d "sub1a/d "sub1a/d sub1a/d_sub2c/d "sub2c":
-d_sub3c/
-
-./d "sub1a/d "sub1a/d "sub1a/d sub1a/d_sub2c/d "sub2c"/d_sub3c:
-tmp04 yyy.txt
-
-./d "sub1a/d "sub1a/d "sub1a/d sub1a/d_sub2c/d 'sub2c':
-d_sub3c/
-
-./d "sub1a/d "sub1a/d "sub1a/d sub1a/d_sub2c/d 'sub2c'/d_sub3c:
-tmp04 xxx.txt
-
-./d "sub1a/d "sub1a/d "sub1a/d sub1a/d_sub2c/d (sub2c):
-d_sub3b/
-
-./d "sub1a/d "sub1a/d "sub1a/d sub1a/d_sub2c/d (sub2c)/d_sub3b:
+./d 'sub1_a/d \sub*2_c/d }sub3_b:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
 
-./d "sub1a/d "sub1a/d "sub1a/d sub1a/d_sub2c/d `sub2c`:
-d_sub3c/
+./d 'sub1_a/d `sub2_a:
+d "sub3_a/
+d [sub3_b/
+d ]sub3_c/
 
-./d "sub1a/d "sub1a/d "sub1a/d sub1a/d_sub2c/d `sub2c`/d_sub3c:
-tmp04 zzz.txt
-
-./d "sub1a/d "sub1a/d "sub1a/d sub1a/d_sub2c/d_sub3a:
+./d 'sub1_a/d `sub2_a/d "sub3_a:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
 
-./d "sub1a/d "sub1a/d "sub1a/d_sub2b:
-d_sub3b/
-
-./d "sub1a/d "sub1a/d "sub1a/d_sub2b/d_sub3b:
+./d 'sub1_a/d `sub2_a/d [sub3_b:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
 
-./d "sub1a/d "sub1a/d sub2a:
-d_sub3b/
-
-./d "sub1a/d "sub1a/d sub2a/d_sub3b:
+./d 'sub1_a/d `sub2_a/d ]sub3_c:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
 
-./d "sub1a/d ]sub2b:
-d sub3a/
+./d 'sub1_a/d }sub?2_b:
+d (sub**3_a/
+d )sub3_b/
+d \sub3_c/
 
-./d "sub1a/d ]sub2b/d sub3a:
+./d 'sub1_a/d }sub?2_b/d (sub**3_a:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
 
-./d \sub1a:
-d sub2b/
-
-./d \sub1a/d sub2b:
-d sub3c/
-
-./d \sub1a/d sub2b/d sub3c:
+./d 'sub1_a/d }sub?2_b/d )sub3_b:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
 
-./d sub1b:
-d sub1b/
-d sub2a/
-
-./d sub1b/d sub1b:
-d sub1b/
-d_sub2a/
-
-./d sub1b/d sub1b/d sub1b:
-d sub1b/
-d_sub2a/
-
-./d sub1b/d sub1b/d sub1b/d sub1b:
-d_sub2b/
-d_sub2c/
-
-./d sub1b/d sub1b/d sub1b/d sub1b/d_sub2b:
-d_sub3a/
-d_sub3b/
-d_sub3c/
-
-./d sub1b/d sub1b/d sub1b/d sub1b/d_sub2b/d_sub3a:
+./d 'sub1_a/d }sub?2_b/d \sub3_c:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
 
-./d sub1b/d sub1b/d sub1b/d sub1b/d_sub2b/d_sub3b:
+./d sub1_c:
+d sub2_a/
+d sub2_b/
+d sub2_c/
+
+./d sub1_c/d sub2_a:
+d sub3_a/
+d sub3_b/
+d sub3_c/
+
+./d sub1_c/d sub2_a/d sub3_a:
+tmp04 "zzz.txt
+tmp04 'xxx.txt
+tmp04 `yyy.txt
+
+./d sub1_c/d sub2_a/d sub3_b:
+tmp04 [xxx.txt
+tmp04 ]yyy.txt
+tmp04 }zzz.txt
+
+./d sub1_c/d sub2_a/d sub3_c:
+tmp04 (yyy.txt
+tmp04 )zzz.txt
+tmp04 {xxx.txt
+
+./d sub1_c/d sub2_b:
+d sub3_a/
+d sub3_b/
+d sub3_c/
+
+./d sub1_c/d sub2_b/d sub3_a:
+tmp04 \xxx.txt
+tmp04 \yyy.txt
+tmp04 \zzz.txt
+
+./d sub1_c/d sub2_b/d sub3_b:
+tmp"04 zzz.txt
+tmp'04 xxx.txt
+tmp`04 yyy.txt
+
+./d sub1_c/d sub2_b/d sub3_c:
+tmp[04 xxx.txt
+tmp\04 zzz.txt
+tmp]04 yyy.txt
+
+./d sub1_c/d sub2_c:
+d sub3_a/
+d sub3_b/
+d sub3_c/
+
+./d sub1_c/d sub2_c/d sub3_a:
+tmp(04 zzz.txt
+tmp{04 xxx.txt
+tmp}04 yyy.txt
+
+./d sub1_c/d sub2_c/d sub3_b:
+tmp)04 xxx.txt
+tmp{04 yyy.txt
+tmp}04 zzz.txt
+
+./d sub1_c/d sub2_c/d sub3_c:
+tmp**04 xxx.txt
+tmp*?04 zzz.txt
+tmp??04 yyy.txt
+
+./d {sub*1_b:
+d }sub?2_b/
+
+./d {sub*1_b/d }sub?2_b:
+d (sub**3_a/
+d )sub3_b/
+d \sub3_c/
+
+./d {sub*1_b/d }sub?2_b/d (sub**3_a:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
 
-./d sub1b/d sub1b/d sub1b/d sub1b/d_sub2b/d_sub3c:
+./d {sub*1_b/d }sub?2_b/d )sub3_b:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
 
-./d sub1b/d sub1b/d sub1b/d sub1b/d_sub2c:
-d_sub3a/
-d_sub3b/
-d_sub3c/
-
-./d sub1b/d sub1b/d sub1b/d sub1b/d_sub2c/d_sub3a:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1b/d sub1b/d sub1b/d sub1b/d_sub2c/d_sub3b:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1b/d sub1b/d sub1b/d sub1b/d_sub2c/d_sub3c:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1b/d sub1b/d sub1b/d_sub2a:
-d_sub3a/
-
-./d sub1b/d sub1b/d sub1b/d_sub2a/d_sub3a:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1b/d sub1b/d_sub2a:
-d_sub3c/
-
-./d sub1b/d sub1b/d_sub2a/d_sub3c:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1b/d sub2a:
-d sub3b/
-
-./d sub1b/d sub2a/d sub3b:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1c:
-d sub2a/
-d sub2b/
-d sub2c/
-
-./d sub1c/d sub2a:
-d sub3a/
-d sub3b/
-d sub3c/
-
-./d sub1c/d sub2a/d sub3a:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1c/d sub2a/d sub3b:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1c/d sub2a/d sub3c:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1c/d sub2b:
-d sub3a/
-d sub3b/
-d sub3c/
-
-./d sub1c/d sub2b/d sub3a:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1c/d sub2b/d sub3b:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1c/d sub2b/d sub3c:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1c/d sub2c:
-d sub3a/
-d sub3b/
-d sub3c/
-
-./d sub1c/d sub2c/d sub3a:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1c/d sub2c/d sub3b:
-tmp04 xxx.txt
-tmp04 yyy.txt
-tmp04 zzz.txt
-
-./d sub1c/d sub2c/d sub3c:
+./d {sub*1_b/d }sub?2_b/d \sub3_c:
 tmp04 xxx.txt
 tmp04 yyy.txt
 tmp04 zzz.txt
