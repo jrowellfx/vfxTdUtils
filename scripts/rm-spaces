@@ -610,22 +610,24 @@ if [ "$OPT_DO_DIRECTORIES" = true ] ; then
     # Find depth of tree - we need to rename directories starting out at
     # the leaves of the directory tree structure.
     #
-    if [ "$OPT_RECURSIVE" = true ] ; then
-        treeDepth=`find . -type d -printf "%d\n" | sort -n -r | head -n 1`
-    else
-        treeDepth=1
-    fi
+    ## if [ "$OPT_RECURSIVE" = true ] ; then
+    ##     treeDepth=`find . -type d -printf "%d\n" | sort -n -r | head -n 1`
+    ## else
+    ##     treeDepth=1
+    ## fi
 
     # JPR - may be able to simplify the following by using -depth find option?
     #
-    while [ $treeDepth -gt 0 ]
-    do
-        # echo "# Depth $treeDepth" >> .rename.dirs.$cmdName
-        # echo "# End of Depth $treeDepth" >> .undo.dirs.$cmdName
-        ### JPR - Add fix to remove quotes like for reg files above. TBD next line vvv
-        find . -maxdepth $treeDepth -mindepth $treeDepth -name '* *' -type d -exec /tmp/tmp.$cmdName.$$ {} `pwd` dirs \;
-        treeDepth=$(expr $treeDepth - 1)
-    done
+    ## while [ $treeDepth -gt 0 ]
+    ## do
+    ##     # echo "# Depth $treeDepth" >> .rename.dirs.$cmdName
+    ##     # echo "# End of Depth $treeDepth" >> .undo.dirs.$cmdName
+    ##     ### JPR - Add fix to remove quotes like for reg files above. TBD next line vvv
+    ##     find . -maxdepth $treeDepth -mindepth $treeDepth -name '* *' -type d -exec /tmp/tmp.$cmdName.$$ {} `pwd` dirs \;
+    ##     treeDepth=$(expr $treeDepth - 1)
+    ## done
+
+    find . -depth -name '* *' -type d -exec /tmp/tmp.$cmdName.$$ {} `pwd` dirs \;
 
     echo '' >> .rename.dirs.$cmdName
     echo '#!/bin/bash' >> .undo.dirs.$cmdName
