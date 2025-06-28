@@ -171,48 +171,54 @@ $ ./rm-spaces -h
 
 usage: rm-spaces [-h | --help] [OPTIONS]
 
-rm-spaces is a util to help remove spaces from filenames. rm-spaces operates on files
-in the current working directory (and/or below).
+rm-spaces is a util to help remove spaces from filenames. rm-spaces operates
+on files in the current working directory (and/or below).
 
 Options:
  -h, --help           display this help and exit
+ --not-recursive      only remove spaces from files in the current working
+                        directory [default]
  -r, --recursive      remove spaces from filenames from the current working
-                        directory and down into subdirectories (not default)
- -d, --directories    only remove spaces from directory names
+                        directory and down into subdirectories (note:
+                        rm-spaces does not follow symbolic-links.)
  -f, --regular-files  only remove spaces from regular files (and links)
+                        [default]
+ -d, --directories    only remove spaces from directory names. -f and -d are
+                        mutually exclusive.
+ --no-execute         Create executable files containing the commands to
+                        rename any files to remove spaces from their names
+                        [default]
  -x, --execute        make the changes on the fly
- -q, --remove-quotes  also strip '`?"[](){} characters.
- -c, --camel-case     converts words to camel case when possible (not default).
+ -q, --remove-quotes  also strip {}[]()'`"?* characters.
+ --no-camel-case      replace spaces with underscores [default]
+ -c, --camel-case     converts words to camel case when possible
  --dates              replaces spaces before or after dates (eg 2023-03-27) with
                         underscores. (default)
- --noDates            don't try to match dates in filenames as in --dates.
+ --no-dates           don't try to match dates in filenames as in --dates.
  --version            print out the version number and exit
 
 rm-spaces takes spaces out of filenames while maintaining filename readability.
-It removes trailing and leading spaces, removes spaces after or before dots (.),
-pluses (+) etc.
+It removes trailing and leading spaces, removes spaces before and/or after
+dots (.), pluses (+) etc.
 
 rm-spaces then replaces all spaces with underscores (_) unless --camel-case is
-specified, in which case words are converted to 'camel case" unless readability
+specified, in which case words are converted to 'camelCase' unless readability
 would suffer.
 
-rm-spaces creates the following executable files in the current working directory:
+rm-spaces creates one or more of the following executable files in the current
+working directory:
 
  - .rename.files.rm-spaces
-     Run this to rename regular files (must run before directories below).
-     (not necessary with -x option).
+     Run this to rename regular-files.
  - .undo.files.rm-spaces
-     Run this to undo the above changes
+     Run this to undo regular-file name changes
  - .failed.files.rm-spaces
      List of renames that would have failed due to name conflict
-     (hand edit to taste then run it).
 
  - .rename.dirs.rm-spaces
-     Run this to rename directories (must run after changing names on regular files
-     with the .rename.files.rm-spaces script).  (not necessary with -x option).
+     Run this to rename directories.
  - .undo.dirs.rm-spaces
-     Run this to undo the above changes
+     Run this to undo directory name changes
  - .failed.dirs.rm-spaces
      List of renames that would have failed due to name conflict
-     (hand edit to taste then run it).
 ```
