@@ -60,6 +60,7 @@ trap cleanup INT
 usageExit() {
     echo "usage: $1 [-h | --help] [OPTIONS]"
     if [ "$2" = help ]; then
+        set -f
         cat - <<EOF1
 
 $cmdName is a util to help remove spaces from filenames. $cmdName operates
@@ -80,7 +81,7 @@ Options:
                         rename any files to remove spaces from their names
                         [default]
  -x, --execute        make the changes on the fly
- -q, --remove-quotes  also strip '\`?"[](){} characters.
+ -q, --remove-quotes  also strip '\`?"[](){}\\ characters.
  --no-camel-case      replace spaces with underscores [default]
  -c, --camel-case     converts words to camel case when possible
  --dates              replaces spaces before or after dates (eg 2023-03-27) with
@@ -114,6 +115,7 @@ working directory:
      List of renames that would have failed due to name conflict
 
 EOF1
+        set +f
         exit 0
     fi
     exit 1
