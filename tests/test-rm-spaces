@@ -289,8 +289,9 @@ while true; do
     cmd=${cmdLine[1]}
 
     # Strip out the first two words from $tmpLine to get the test args.
+    # -E for extended regular expressions
     #
-    sed -e 's/^\S*\s*\S*\s*//' < $tmpLine > $tmpArgs
+    sed -E 's/^[^[:space:]]+[[:space:]]+[^[:space:]]+[[:space:]]*//' < $tmpLine > $tmpArgs
 
     declare -a testArgs="($(< "$tmpArgs"))"
 
