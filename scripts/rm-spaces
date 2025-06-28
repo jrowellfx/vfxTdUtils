@@ -70,7 +70,8 @@ Options:
  --not-recursive      only remove spaces from files in the current working
                         directory [default]
  -r, --recursive      remove spaces from filenames from the current working
-                        directory and down into subdirectories
+                        directory and down into subdirectories (note:
+                        $cmdName does not follow symbolic-links.)
  -f, --regular-files  only remove spaces from regular files (and links)
                         [default]
  -d, --directories    only remove spaces from directory names. -f and -d are
@@ -208,7 +209,7 @@ cat /dev/null > /tmp/tmp.$cmdName.sed.script.$$
 #
 # The next section removes:
 #   - the "'" from apostrophe-s words.
-#   - then replaces these characters: [ ] ( ) ' \ ` " 
+#   - then replaces these characters: { } [ ] ( ) ' \ ` " 
 #     with a space.
 #   - Totally removes question-marks.
 #   - Totally removes stars "*".
@@ -514,6 +515,10 @@ cat <<EOF3 > /tmp/tmp.$cmdName.$$
     dName=\`dirname  "\$1"\`
     bName=\`basename "\$1"\`
 
+    # Since the .rename and .undo files enclose filenames in single quotes
+    # so as to be able to handle spaces and special characters, then we have
+    # to be careful in the case that filenames contains single quotes.
+    #
     safe_dName=\`echo "\$dName" | sed -e "s/'/'\"'\"'/g"\`
     safe_bName=\`echo "\$bName" | sed -e "s/'/'\"'\"'/g"\`
     safe_srcName="\$safe_dName/\$safe_bName"
@@ -553,14 +558,16 @@ if [ "$OPT_DO_REGFILES" = true ] ; then
     if [ "$OPT_REMOVE_QUOTES" = true ] ; then
         find . $findOptions \
             \( -name '* *' \
-                -or -name '*\[*' -or -name '*\]*' \
-                -or -name '*(*' -or -name '*)*' \
-                -or -name '*{*' -or -name '*}*' \
-                -or -name "*'*" \
-                -or -name '*"*' \) \
+                -o -name '*\[*' -o -name '*\]*' \
+                -o -name '*(*' -o -name '*)*' \
+                -o -name '*{*' -o -name '*}*' \
+                -o -name "*'*" \
+                -o -name '*"*' \) \
+            \( -type f -o -type l \) \
             -exec /tmp/tmp.$cmdName.$$ {} `pwd` files \;
     else
-        find . $findOptions -name '* *' \( -type f -o -type l \) -exec /tmp/tmp.$cmdName.$$ {} `pwd` files \;
+        find . $findOptions -name '* *' \( -type f -o -type l \) \
+            -exec /tmp/tmp.$cmdName.$$ {} `pwd` files \;
     fi
 
     echo '' >> .rename.files.$cmdName

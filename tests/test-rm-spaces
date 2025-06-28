@@ -36,7 +36,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# test_rm-spaces - Run the rm-spaces regression tests.
+# test-rm-spaces - Run the rm-spaces regression tests.
 
 tmpArgs=/tmp/tmpARGS_RMSPACES.$$
 tmpTestCmdFile=/tmp/tmpTESTCMDFILE_RMSPACES.$$
@@ -50,7 +50,7 @@ cleanupExit() {
     /bin/rm $tmpLine > /dev/null 2>&1
     exit $1
 }
-#
+
 trap cleanupExit INT
 
 usage_exit() {
@@ -111,6 +111,7 @@ fi
 
 export REPO_DIR=`dirname $TEST_DIR`
 
+unalias lsseq > /dev/null 2>&1
 unalias rm-spaces > /dev/null 2>&1
 unalias rm > /dev/null 2>&1
 
@@ -144,17 +145,18 @@ elif [[ `basename $REPO_DIR` != 'vfxTdUtils' ]]; then
     echo $0: error: REPO_DIR might not be set to vfxTdUtils repo, dangerous recursive rm avoided.
     cleanupExit 1
 fi
-rm -rf $TEST_DIR/$HERO_TESTDIR/*
-mkdir $TEST_DIR/$HERO_TESTDIR > /dev/null 2>&1
+rm -rf $REPO_DIR/tests/$HERO_TESTDIR/*
+mkdir $REPO_DIR/tests/$HERO_TESTDIR > /dev/null 2>&1
 
 # Create list of test directories needed.
 # Then touch the file names to make testfiles.
+# Note: pwd should still be $TEST_DIR
 # Note: This can create files and/or dirs with spaces in filenames
 #
 cd $TEST_DIR/$HERO_TESTDIR
 cat $TEST_DIR/$HERO_CREATEDATADIR/create.?Test.files \
     | sed -e '/^[[:space:]]*$/d' \
-    | sed -e '1,$ s/\/[^\/]*$//' \
+    | sed -e '1,$ s/\/[^/]*$//' \
     | sort -u \
     | tr '\n' '\0' \
     > $tmpFile

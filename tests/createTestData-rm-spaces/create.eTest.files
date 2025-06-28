@@ -1,0 +1,101 @@
+edir/e 'sub1a/e sub2a/e sub3a/tmp04 xxx.txt
+edir/e 'sub1a/e sub2a/e sub3a/tmp04 yyy.txt
+edir/e 'sub1a/e sub2a/e sub3a/tmp04 zzz.txt
+edir/e `sub1a/e sub2a/e sub3b/tmp04 xxx.txt
+edir/e `sub1a/e sub2a/e sub3b/tmp04 yyy.txt
+edir/e `sub1a/e sub2a/e sub3b/tmp04 zzz.txt
+edir/e "sub1a/e sub2a/e sub3c/tmp04 xxx.txt
+edir/e "sub1a/e sub2a/e sub3c/tmp04 yyy.txt
+edir/e "sub1a/e sub2a/e sub3c/tmp04 zzz.txt
+
+
+edir/e [sub1a/e ]sub2b/e sub3a/tmp04 xxx.txt
+edir/e [sub1a/e ]sub2b/e sub3a/tmp04 yyy.txt
+edir/e [sub1a/e ]sub2b/e sub3a/tmp04 zzz.txt
+edir/e (sub1a/e sub2b/d) sub3b/tmp04 xxx.txt
+edir/e (sub1a/e sub2b/d) sub3b/tmp04 yyy.txt
+edir/e (sub1a/e sub2b/d) sub3b/tmp04 zzz.txt
+edir/e \sub1a/e sub2b/e sub3c/tmp04 xxx.txt
+edir/e \sub1a/e sub2b/e sub3c/tmp04 yyy.txt
+edir/e \sub1a/e sub2b/e sub3c/tmp04 zzz.txt
+
+
+edir/e sub1a/e [sub2c]/e sub3a/tmp04 xxx.txt
+edir/e sub1a/e [sub2c]/e sub3a/tmp04 yyy.txt
+edir/e sub1a/e [sub2c]/e sub3a/tmp04 zzz.txt
+edir/e sub1a/e (sub2c)/e sub3b/tmp04 xxx.txt
+edir/e sub1a/e (sub2c)/e sub3b/tmp04 yyy.txt
+edir/e sub1a/e (sub2c)/e sub3b/tmp04 zzz.txt
+edir/e sub1a/e 'sub2c'/e sub3c/tmp04 xxx.txt
+edir/e sub1a/e "sub2c"/e sub3c/tmp04 yyy.txt
+edir/e sub1a/e `sub2c`/e sub3c/tmp04 zzz.txt
+
+
+
+
+edir/e sub*1b/e sub2a/e sub3a/tmp04 xxx.txt
+edir/e sub*1b/e sub2a/e sub3a/tmp04 yyy.txt
+edir/e sub*1b/e sub2a/e sub3a/tmp04 zzz.txt
+edir/e sub?1b/e sub2a/e sub3b/tmp04 xxx.txt
+edir/e sub?1b/e sub2a/e sub3b/tmp04 yyy.txt
+edir/e sub?1b/e sub2a/e sub3b/tmp04 zzz.txt
+edir/e sub**1b/e sub2a/e sub3c/tmp04 xxx.txt
+edir/e sub**1b/e sub2a/e sub3c/tmp04 yyy.txt
+edir/e sub**1b/e sub2a/e sub3c/tmp04 zzz.txt
+
+
+edir/e sub1b/e sub2b/e sub3a/tmp04 xxx.txt
+edir/e sub1b/e sub2b/e sub3a/tmp04 yyy.txt
+edir/e sub1b/e sub2b/e sub3a/tmp04 zzz.txt
+edir/e sub1b/e sub2b/e sub3b/tmp04 xxx.txt
+edir/e sub1b/e sub2b/e sub3b/tmp04 yyy.txt
+edir/e sub1b/e sub2b/e sub3b/tmp04 zzz.txt
+edir/e sub1b/e sub2b/e sub3c/tmp04 xxx.txt
+edir/e sub1b/e sub2b/e sub3c/tmp04 yyy.txt
+edir/e sub1b/e sub2b/e sub3c/tmp04 zzz.txt
+
+
+edir/e sub1b/e sub2c/e sub3a/tmp04 xxx.txt
+edir/e sub1b/e sub2c/e sub3a/tmp04 yyy.txt
+edir/e sub1b/e sub2c/e sub3a/tmp04 zzz.txt
+edir/e sub1b/e sub2c/e sub3b/tmp04 xxx.txt
+edir/e sub1b/e sub2c/e sub3b/tmp04 yyy.txt
+edir/e sub1b/e sub2c/e sub3b/tmp04 zzz.txt
+edir/e sub1b/e sub2c/e sub3c/tmp04 xxx.txt
+edir/e sub1b/e sub2c/e sub3c/tmp04 yyy.txt
+edir/e sub1b/e sub2c/e sub3c/tmp04 zzz.txt
+
+
+
+
+edir/e sub1c/e sub2a/e sub3a/tmp04 xxx.txt
+edir/e sub1c/e sub2a/e sub3a/tmp04 yyy.txt
+edir/e sub1c/e sub2a/e sub3a/tmp04 zzz.txt
+edir/e sub1c/e sub2a/e sub3b/tmp04 xxx.txt
+edir/e sub1c/e sub2a/e sub3b/tmp04 yyy.txt
+edir/e sub1c/e sub2a/e sub3b/tmp04 zzz.txt
+edir/e sub1c/e sub2a/e sub3c/tmp04 xxx.txt
+edir/e sub1c/e sub2a/e sub3c/tmp04 yyy.txt
+edir/e sub1c/e sub2a/e sub3c/tmp04 zzz.txt
+
+
+edir/e sub1c/e sub2b/e sub3a/tmp04 xxx.txt
+edir/e sub1c/e sub2b/e sub3a/tmp04 yyy.txt
+edir/e sub1c/e sub2b/e sub3a/tmp04 zzz.txt
+edir/e sub1c/e sub2b/e sub3b/tmp04 xxx.txt
+edir/e sub1c/e sub2b/e sub3b/tmp04 yyy.txt
+edir/e sub1c/e sub2b/e sub3b/tmp04 zzz.txt
+edir/e sub1c/e sub2b/e sub3c/tmp04 xxx.txt
+edir/e sub1c/e sub2b/e sub3c/tmp04 yyy.txt
+edir/e sub1c/e sub2b/e sub3c/tmp04 zzz.txt
+
+
+edir/e sub1c/e sub2c/e sub3a/tmp04 xxx.txt
+edir/e sub1c/e sub2c/e sub3a/tmp04 yyy.txt
+edir/e sub1c/e sub2c/e sub3a/tmp04 zzz.txt
+edir/e sub1c/e sub2c/e sub3b/tmp04 xxx.txt
+edir/e sub1c/e sub2c/e sub3b/tmp04 yyy.txt
+edir/e sub1c/e sub2c/e sub3b/tmp04 zzz.txt
+edir/e sub1c/e sub2c/e sub3c/tmp04 xxx.txt
+edir/e sub1c/e sub2c/e sub3c/tmp04 yyy.txt
+edir/e sub1c/e sub2c/e sub3c/tmp04 zzz.txt
