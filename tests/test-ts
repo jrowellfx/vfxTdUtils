@@ -1,22 +1,278 @@
-../ts -x
-../ts --xxx
-../ts -h
-../ts --help
-date
-../ts 
-../ts --no-seconds
-../ts --no-minutes
-../ts --round-quarter
-../ts --round-half
-../ts --only-time
-../ts --only-time --round-quarter
-../ts --only-time --round-half
-../ts --short
-../ts --only-date
-../ts --full-year
-../ts --full-year --round-quarter
-../ts --full-year --round-half
-../ts --full-year --short
-../ts --full-year --no-seconds
-../ts --full-year --no-minutes
-../ts --version
+#!/bin/bash
+
+# 3-Clause BSD License
+#
+# Copyright (c) 2008-2025, James Philip Rowell,
+# Alpha Eleven Incorporated
+# www.alpha-eleven.com
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
+#     the documentation and/or other materials provided with the
+#     distribution.
+#
+#  3. Neither the name of the copyright holder, "Alpha Eleven, Inc.",
+#     nor the names of its contributors may be used to endorse or
+#     promote products derived from this software without specific prior
+#     written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+# HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+# test-time-stamp - Run the time-stamp regression tests.
+
+tmpArgs=/tmp/tmpARGS_TIMESTAMP.$$
+tmpTestCmdFile=/tmp/tmpTESTCMDFILE_TIMESTAMP.$$
+tmpFile=/tmp/tmpFILE_TIMESTAMP.$$
+tmpLine=/tmp/tmpLINE_TIMESTAMP.$$
+#
+cleanupExit() {
+    /bin/rm $tmpArgs > /dev/null 2>&1
+    /bin/rm $tmpTestCmdFile > /dev/null 2>&1
+    /bin/rm $tmpFile > /dev/null 2>&1
+    /bin/rm $tmpLine > /dev/null 2>&1
+    exit $1
+}
+
+trap cleanupExit INT
+
+usage_exit() {
+    echo "Usage: ${0##*/} [-h | --help] [--test-system-time-stamp]"
+    if [ "$1" = help ]; then
+	cat - <<@eof
+
+${0##*/} Run regression tests on time-stamp. Must be run in the
+<vfxTdUtils-repository>/tests directory.
+
+Options:
+
+ -h, --help         show this help and exit
+ --test-system-time-stamp run the regression tests on the version of
+                    time-stamp installed on the system. Output test
+                    results to appropriatly named file.
+
+@eof
+        exit 0
+    fi
+    exit 1
+}
+
+TEST_SYSTEM_TIMESTAMP=no
+
+#
+# Parse options.
+#
+shopt -s extglob
+while :
+do
+    case "$1" in
+        -h|--help) usage_exit help
+        ;;
+
+        --test-system-time-stamp) TEST_SYSTEM_TIMESTAMP=yes
+             shift
+        ;;
+
+        --*|-*) usage_exit
+        ;;
+
+        *) break # We're done processing arguments, so let's get on with it. :-)
+    esac
+done
+
+export LC_ALL=POSIX
+
+# !!! This script MUST be run from the 'tests'
+# !!! directory in the vfxTdUtils git repo for this to work.
+#
+export TEST_DIR=`pwd`
+
+if [[ `basename $TEST_DIR` != 'tests' ]]; then
+    echo $0: error: not running from tests directory, aborted.
+    cleanupExit 1
+fi
+
+export REPO_DIR=`dirname $TEST_DIR`
+
+unalias time-stamp > /dev/null 2>&1
+unalias rm > /dev/null 2>&1
+
+TEST_OUT_FILENAME=test-time-stamp.out.`uname`.new
+
+if [ "$TEST_SYSTEM_TIMESTAMP" = no ]; then
+    ln -sf ../scripts/time-stamp  time-stamp
+
+    if [[ ! ":$PATH:" == *":$TEST_DIR:"* ]]; then
+        export PATH="$TEST_DIR:$PATH"
+    fi
+else
+    /bin/rm time-stamp > /dev/null 2>&1 # In case softlink is in this dir.
+    TEST_OUT_FILENAME=test-time-stamp.out.`uname`.installed.new
+fi
+
+echo "Test is using " `which time-stamp`
+
+export HERO_TESTDIR=test-time-stamp-dir
+export HERO_CREATEDATADIR=createTestData-time-stamp
+
+# Double check sensible REPO_DIR value before removing old $HERO_TESTDIR
+#
+if [ -z "$REPO_DIR" ]; then
+    echo $0: error: REPO_DIR was empty, dangerous recursive rm avoided.
+    cleanupExit 1
+elif [[ "$REPO_DIR" == "/" ]]; then
+    echo $0: error: REPO_DIR set to root, dangerous recursive rm avoided.
+    cleanupExit 1
+elif [[ `basename $REPO_DIR` != 'vfxTdUtils' ]]; then
+    echo $0: error: REPO_DIR might not be set to vfxTdUtils repo, dangerous recursive rm avoided.
+    cleanupExit 1
+fi
+rm -rf $REPO_DIR/tests/$HERO_TESTDIR/*
+mkdir $REPO_DIR/tests/$HERO_TESTDIR > /dev/null 2>&1
+
+# Create list of test directories needed.
+# Then touch the file names to make testfiles.
+# Note: pwd should still be $TEST_DIR
+# Note: This can create files and/or dirs with spaces in filenames
+#
+cd $TEST_DIR/$HERO_TESTDIR
+cat $TEST_DIR/$HERO_CREATEDATADIR/create.?Test.files \
+    | sed -e '/^[[:space:]]*$/d' \
+    | sed -e '1,$ s/\/[^/]*$//' \
+    | sort -u \
+    | tr '\n' '\0' \
+    > $tmpFile
+cat $tmpFile | xargs -0 mkdir -p
+#
+cat $TEST_DIR/$HERO_CREATEDATADIR/create.?Test.files \
+    | sed -e '/^[[:space:]]*$/d' \
+    | tr '\n' '\0' \
+    > $tmpFile
+cat $tmpFile | xargs -0 touch
+cat $tmpFile | xargs -0 chmod 666
+cd $TEST_DIR
+
+# The following are tests. One test per line.
+# The first item on a line is the directory relative to
+#     $TEST_DIR/$HERO_TESTDIR to run the test in.
+# The second is the command to run.
+# The rest are args to the command.
+# Note: use single quotes (') around args with spaces in the name
+#
+cat << EOF > $tmpTestCmdFile
+. time-stamp -x
+. time-stamp --xxx
+. time-stamp -h
+. time-stamp --help
+. date
+. time-stamp
+. time-stamp --no-seconds
+. time-stamp --no-minutes
+. time-stamp --round-quarter
+. time-stamp --round-half
+. time-stamp --only-time
+. time-stamp --only-time --round-quarter
+. time-stamp --only-time --round-half
+. time-stamp --short
+. time-stamp --only-date
+. time-stamp --full-year
+. time-stamp --full-year --round-quarter
+. time-stamp --full-year --round-half
+. time-stamp --full-year --short
+. time-stamp --full-year --no-seconds
+. time-stamp --full-year --no-minutes
+. time-stamp --version
+EOF
+
+export NUM_TESTS=`wc -l < $tmpTestCmdFile`
+
+echo ------ Begin Tests ------ > $TEST_DIR/$TEST_OUT_FILENAME
+
+i=1
+#
+set -f # Turn off globbing.
+while true; do
+
+    sed -n -e "$i p" $tmpTestCmdFile | sed -e 's/#.*//' > $tmpLine
+
+    declare -a cmdLine=(`cat $tmpLine`)
+    if [ ${#cmdLine[@]} -eq 0 ]; then
+        break;
+    fi
+
+    # Note: Does not properly handle case when "workingDir" has spaces in the name.
+    # Could be fixed, but for now just avoid doing tests with a "workingDir"
+    # with spaces in the name.
+    #
+    workingDir=${cmdLine[0]}
+    cmd=${cmdLine[1]}
+
+    # Strip out the first two words from $tmpLine to get the test args.
+    # -E for extended regular expressions
+    #
+    sed -E 's/^[^[:space:]]+[[:space:]]+[^[:space:]]+[[:space:]]*//' < $tmpLine > $tmpArgs
+
+    declare -a testArgs="($(< "$tmpArgs"))"
+
+    echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
+    echo --- Test $i of $NUM_TESTS ---
+    echo ----- Test $i -+- dir: $workingDir -+- $cmd `cat $tmpArgs` ----- >> $TEST_DIR/$TEST_OUT_FILENAME
+    cd $TEST_DIR/$HERO_TESTDIR/$workingDir
+
+    # Rewrite $tmpArgs with one arg per line.
+    #
+    cat /dev/null > $tmpArgs
+    NUM_ELEMENTS=${#testArgs[@]}
+    for (( elemIndex=0;elemIndex<$NUM_ELEMENTS;elemIndex++ )); do
+        # DO NOT USE 'echo' NEXT LINE! doesn't handle a '-n' being passed to it.
+        printf '%s\n' "${testArgs[${elemIndex}]}" >> $tmpArgs
+    done
+
+    # On Linux, use 'mapfile' to allow us to pass args with spaces in the names
+    # to the test $cmd being run. Otherwise, on MacOS with only bash v3.x
+    # (and no 'mapfile' command) use older technique.
+    #
+    if [ `uname` = Darwin ]; then
+        MAPFILE=()
+        while IFS= read -r line; do
+            MAPFILE+=("$line")
+        done < "$tmpArgs"
+    else
+        mapfile -t < "$tmpArgs"
+    fi
+    if [ "$cmd" = find ]; then
+        $cmd "${MAPFILE[@]}" | sort >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+    else
+        $cmd "${MAPFILE[@]}" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+    fi
+    retVal=$?
+    if [ $retVal -ne 0 ]; then
+        echo "--+--  $cmd returned non-zero error code: $retVal  --+--" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+    fi
+    i=$((i + 1))
+done
+
+set +f # Turn globbing back on
+
+sed -e "1,$ s-$TEST_DIR-/...absPathToRepo.../tests-g" < $TEST_DIR/$TEST_OUT_FILENAME | \
+    sed -e "1,$ s/$USER/testUser/g" > $tmpFile
+expand < $tmpFile | sed -e '1,$ s/ *$//' > $TEST_DIR/$TEST_OUT_FILENAME
+
+cleanupExit
