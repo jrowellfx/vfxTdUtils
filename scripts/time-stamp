@@ -54,22 +54,26 @@ usage_exit() {
 
 ${0##*/} prints out a string suitable for a time stamp as YYMMDD-hhmmss.
 
-Output from ${0##*/} is suitable for embedding in filenames that need to
-be tagged with a time stamp. Any such filenames will sort properly because
-the date order is echoed as YYYYMMDD.
+Output from ${0##*/} is suitable for embedding in filenames that need to be
+tagged with a time stamp. Any such filenames will sort properly because the
+date order is 'year' then 'month' then 'day' which will sort across years
+properly. (As opposed to US date convention of MM-DD-YYYY, which does not.)
 
 optional arguments:
 
- -h, --help      show this help and exit
- --only-date     skip printing the time, only print the date
- --short         skip printing the time, only print the date with year as YY
- --full-year     print year as YYYY instead of just YY
- --no-seconds    print time as hhmm only
- --no-minutes    print time as hh only
- --only-time     skip printing the date, only print the time
- --round-quarter round minutes down to the nearest 15 
- --round-half    round minutes down to the nearst half hour
- --version       print out the version number and exit
+ -h, --help        show this help and exit
+ --only-date       skip printing the time, only print the date
+ --short           skip printing the time, only print the date
+                     with year as YY
+ --full-year       print year as YYYY instead of just YY
+ --no-seconds      print time as hhmm only
+ --no-minutes      print time as hh only
+ --only-time       skip printing the date, only print the time
+ --round-seconds   round seconds down to zero
+ --round-quarter   round minutes down to the nearest 15 
+ --round-half      round minutes down to the nearst half hour
+ --underscore-all  special format as YYYY_MM_DD_hhmmss
+ --version         print out the version number and exit
 
 @eof
         exit 0
@@ -82,7 +86,10 @@ isFullYear=no
 printSeconds=yes
 printMinutes=yes
 roundDown=no
+roundSeconds=no
 onlyTime=no
+dateSeparator=''
+timeSeparator='-'
 
 #
 # Parse options.
@@ -118,15 +125,23 @@ do
              shift
         ;;
 
-        --round-quarter) roundDown=quarter; printSeconds=no; printMinutes=yes
+        --round-quarter) roundDown=quarter; roundSeconds=yes; printMinutes=yes
              shift
         ;;
 
-        --round-half) roundDown=half; printSeconds=no; printMinutes=yes
+        --round-half) roundDown=half; roundSeconds=yes; printMinutes=yes
+             shift
+        ;;
+
+        --round-seconds) roundSeconds=yes
              shift
         ;;
 
         --only-time) onlyTime=yes; onlyDate=no
+             shift
+        ;;
+
+        --underscore-all) dateSeparator='_'; timeSeparator='_'
              shift
         ;;
 
@@ -147,7 +162,7 @@ day=`date '+%d'`
 hour=`date '+%H'`
 minute=`date '+%M'`
 second=`date '+%S'`
-separator=-
+timeSeparator=-
 
 if [ "$roundDown" = quarter ]; then
     set -f
@@ -177,14 +192,15 @@ if [ "$onlyDate" = yes ]; then
     hour=
     minute=
     second=
-    separator=
+    timeSeparator=
 fi
 
 if [ "$onlyTime" = yes ]; then
     year=
     month=
     day=
-    separator=
+    timeSeparator=
+    dateSeparator=
 fi
 
-echo ${year}${month}${day}${separator}${hour}${minute}${second}
+echo ${year}${dateSeparator}${month}${dateSeparator}${day}${timeSeparator}${hour}${minute}${second}

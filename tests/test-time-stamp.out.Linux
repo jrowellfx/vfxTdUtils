@@ -15,22 +15,26 @@ usage: time-stamp [-h | --help] [OPTION]...
 
 time-stamp prints out a string suitable for a time stamp as YYMMDD-hhmmss.
 
-Output from time-stamp is suitable for embedding in filenames that need to
-be tagged with a time stamp. Any such filenames will sort properly because
-the date order is echoed as YYYYMMDD.
+Output from time-stamp is suitable for embedding in filenames that need to be
+tagged with a time stamp. Any such filenames will sort properly because the
+date order is 'year' then 'month' then 'day' which will sort across years
+properly. (As opposed to US date convention of MM-DD-YYYY, which does not.)
 
 optional arguments:
 
- -h, --help      show this help and exit
- --only-date     skip printing the time, only print the date
- --short         skip printing the time, only print the date with year as YY
- --full-year     print year as YYYY instead of just YY
- --no-seconds    print time as hhmm only
- --no-minutes    print time as hh only
- --only-time     skip printing the date, only print the time
- --round-quarter round minutes down to the nearest 15
- --round-half    round minutes down to the nearst half hour
- --version       print out the version number and exit
+ -h, --help        show this help and exit
+ --only-date       skip printing the time, only print the date
+ --short           skip printing the time, only print the date
+                     with year as YY
+ --full-year       print year as YYYY instead of just YY
+ --no-seconds      print time as hhmm only
+ --no-minutes      print time as hh only
+ --only-time       skip printing the date, only print the time
+ --round-seconds   round seconds down to zero
+ --round-quarter   round minutes down to the nearest 15
+ --round-half      round minutes down to the nearst half hour
+ --underscore-all  special format as YYYY_MM_DD_hhmmss
+ --version         print out the version number and exit
 
 
 ----- Test 4 -+- dir: . -+- time-stamp --help -----
@@ -38,50 +42,54 @@ usage: time-stamp [-h | --help] [OPTION]...
 
 time-stamp prints out a string suitable for a time stamp as YYMMDD-hhmmss.
 
-Output from time-stamp is suitable for embedding in filenames that need to
-be tagged with a time stamp. Any such filenames will sort properly because
-the date order is echoed as YYYYMMDD.
+Output from time-stamp is suitable for embedding in filenames that need to be
+tagged with a time stamp. Any such filenames will sort properly because the
+date order is 'year' then 'month' then 'day' which will sort across years
+properly. (As opposed to US date convention of MM-DD-YYYY, which does not.)
 
 optional arguments:
 
- -h, --help      show this help and exit
- --only-date     skip printing the time, only print the date
- --short         skip printing the time, only print the date with year as YY
- --full-year     print year as YYYY instead of just YY
- --no-seconds    print time as hhmm only
- --no-minutes    print time as hh only
- --only-time     skip printing the date, only print the time
- --round-quarter round minutes down to the nearest 15
- --round-half    round minutes down to the nearst half hour
- --version       print out the version number and exit
+ -h, --help        show this help and exit
+ --only-date       skip printing the time, only print the date
+ --short           skip printing the time, only print the date
+                     with year as YY
+ --full-year       print year as YYYY instead of just YY
+ --no-seconds      print time as hhmm only
+ --no-minutes      print time as hh only
+ --only-time       skip printing the date, only print the time
+ --round-seconds   round seconds down to zero
+ --round-quarter   round minutes down to the nearest 15
+ --round-half      round minutes down to the nearst half hour
+ --underscore-all  special format as YYYY_MM_DD_hhmmss
+ --version         print out the version number and exit
 
 
 ----- Test 5 -+- dir: . -+- date -----
-Tue Jul  1 18:12:26 CDT 2025
+Tue Jul  1 18:47:14 CDT 2025
 
 ----- Test 6 -+- dir: . -+- time-stamp -----
-250701-181226
+250701-184714
 
 ----- Test 7 -+- dir: . -+- time-stamp --no-seconds -----
-250701-1812
+250701-1847
 
 ----- Test 8 -+- dir: . -+- time-stamp --no-minutes -----
 250701-18
 
------ Test 9 -+- dir: . -+- time-stamp --round-quarter -----
-250701-1800
+----- Test 9 -+- dir: . -+- time-stamp --round-quarter --no-seconds -----
+250701-1845
 
------ Test 10 -+- dir: . -+- time-stamp --round-half -----
-250701-1800
+----- Test 10 -+- dir: . -+- time-stamp --round-half --no-seconds -----
+250701-1830
 
 ----- Test 11 -+- dir: . -+- time-stamp --only-time -----
-181227
+184714
 
------ Test 12 -+- dir: . -+- time-stamp --only-time --round-quarter -----
-1800
+----- Test 12 -+- dir: . -+- time-stamp --only-time --round-quarter --no-seconds -----
+1845
 
------ Test 13 -+- dir: . -+- time-stamp --only-time --round-half -----
-1800
+----- Test 13 -+- dir: . -+- time-stamp --only-time --round-half --no-seconds -----
+1830
 
 ----- Test 14 -+- dir: . -+- time-stamp --short -----
 250701
@@ -90,19 +98,19 @@ Tue Jul  1 18:12:26 CDT 2025
 250701
 
 ----- Test 16 -+- dir: . -+- time-stamp --full-year -----
-20250701-181227
+20250701-184714
 
------ Test 17 -+- dir: . -+- time-stamp --full-year --round-quarter -----
-20250701-1800
+----- Test 17 -+- dir: . -+- time-stamp --full-year --round-quarter --no-seconds -----
+20250701-1845
 
------ Test 18 -+- dir: . -+- time-stamp --full-year --round-half -----
-20250701-1800
+----- Test 18 -+- dir: . -+- time-stamp --full-year --round-half --no-seconds -----
+20250701-1830
 
 ----- Test 19 -+- dir: . -+- time-stamp --full-year --short -----
 250701
 
 ----- Test 20 -+- dir: . -+- time-stamp --full-year --no-seconds -----
-20250701-1812
+20250701-1847
 
 ----- Test 21 -+- dir: . -+- time-stamp --full-year --no-minutes -----
 20250701-18

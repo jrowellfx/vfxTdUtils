@@ -185,16 +185,16 @@ cat << EOF > $tmpTestCmdFile
 . time-stamp
 . time-stamp --no-seconds
 . time-stamp --no-minutes
-. time-stamp --round-quarter
-. time-stamp --round-half
+. time-stamp --round-quarter --no-seconds
+. time-stamp --round-half --no-seconds
 . time-stamp --only-time
-. time-stamp --only-time --round-quarter
-. time-stamp --only-time --round-half
+. time-stamp --only-time --round-quarter --no-seconds
+. time-stamp --only-time --round-half --no-seconds
 . time-stamp --short
 . time-stamp --only-date
 . time-stamp --full-year
-. time-stamp --full-year --round-quarter
-. time-stamp --full-year --round-half
+. time-stamp --full-year --round-quarter --no-seconds
+. time-stamp --full-year --round-half --no-seconds
 . time-stamp --full-year --short
 . time-stamp --full-year --no-seconds
 . time-stamp --full-year --no-minutes
