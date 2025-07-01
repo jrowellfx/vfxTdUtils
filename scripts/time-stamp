@@ -45,7 +45,7 @@
 # MINOR version for added functionality in a backwards compatible manner
 # PATCH version for backwards compatible bug fixes
 #
-VERSION=2.0.0
+VERSION=2.1.0
 
 usage_exit() {
     echo "usage: ${0##*/} [-h | --help] [OPTION]..."
@@ -72,6 +72,7 @@ optional arguments:
  --version       print out the version number and exit
 
 @eof
+        exit 0
     fi
     exit 1
 }
