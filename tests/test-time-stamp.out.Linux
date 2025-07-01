@@ -65,13 +65,13 @@ optional arguments:
 
 
 ----- Test 5 -+- dir: . -+- date -----
-Tue Jul  1 18:47:14 CDT 2025
+Tue Jul  1 18:57:54 CDT 2025
 
 ----- Test 6 -+- dir: . -+- time-stamp -----
-250701-184714
+250701-185754
 
 ----- Test 7 -+- dir: . -+- time-stamp --no-seconds -----
-250701-1847
+250701-1857
 
 ----- Test 8 -+- dir: . -+- time-stamp --no-minutes -----
 250701-18
@@ -83,7 +83,7 @@ Tue Jul  1 18:47:14 CDT 2025
 250701-1830
 
 ----- Test 11 -+- dir: . -+- time-stamp --only-time -----
-184714
+185754
 
 ----- Test 12 -+- dir: . -+- time-stamp --only-time --round-quarter --no-seconds -----
 1845
@@ -98,7 +98,7 @@ Tue Jul  1 18:47:14 CDT 2025
 250701
 
 ----- Test 16 -+- dir: . -+- time-stamp --full-year -----
-20250701-184714
+20250701-185754
 
 ----- Test 17 -+- dir: . -+- time-stamp --full-year --round-quarter --no-seconds -----
 20250701-1845
@@ -110,10 +110,34 @@ Tue Jul  1 18:47:14 CDT 2025
 250701
 
 ----- Test 20 -+- dir: . -+- time-stamp --full-year --no-seconds -----
-20250701-1847
+20250701-1857
 
 ----- Test 21 -+- dir: . -+- time-stamp --full-year --no-minutes -----
 20250701-18
 
------ Test 22 -+- dir: . -+- time-stamp --version -----
+----- Test 22 -+- dir: . -+- time-stamp --round-quarter -----
+250701-184500
+
+----- Test 23 -+- dir: . -+- time-stamp --round-half -----
+250701-183000
+
+----- Test 24 -+- dir: . -+- time-stamp --only-time --round-quarter -----
+184500
+
+----- Test 25 -+- dir: . -+- time-stamp --only-time --round-half -----
+183000
+
+----- Test 26 -+- dir: . -+- time-stamp --full-year --round-quarter -----
+20250701-184500
+
+----- Test 27 -+- dir: . -+- time-stamp --full-year --round-half -----
+20250701-183000
+
+----- Test 28 -+- dir: . -+- time-stamp --full-year --underscore-all -----
+2025_07_01_185755
+
+----- Test 29 -+- dir: . -+- time-stamp --underscore-all -----
+25_07_01_185755
+
+----- Test 30 -+- dir: . -+- time-stamp --version -----
 2.1.0

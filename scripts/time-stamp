@@ -162,7 +162,6 @@ day=`date '+%d'`
 hour=`date '+%H'`
 minute=`date '+%M'`
 second=`date '+%S'`
-timeSeparator=-
 
 if [ "$roundDown" = quarter ]; then
     set -f
@@ -178,6 +177,10 @@ elif [ "$roundDown" = half ]; then
         minute=00
     fi
     set +f
+fi
+
+if [ "$roundSeconds" = yes ]; then
+    second=00
 fi
 
 if [ "$printMinutes" = no ]; then
