@@ -1,12 +1,21 @@
-../ts: no such option -x
-usage: ts [-h | --help] [OPTION]...
-../ts: no such option --xxx
-usage: ts [-h | --help] [OPTION]...
-usage: ts [-h | --help] [OPTION]...
+------ Begin Tests ------
 
-ts prints out a string suitable for a time stamp as YYMMDD-hhmmss.
+----- Test 1 -+- dir: . -+- time-stamp -x -----
+/...absPathToRepo.../tests/time-stamp: no such option -x
+usage: time-stamp [-h | --help] [OPTION]...
+--+--  time-stamp returned non-zero error code: 1  --+--
 
-Output from ts is suitable for embedding in filenames that need to
+----- Test 2 -+- dir: . -+- time-stamp --xxx -----
+/...absPathToRepo.../tests/time-stamp: no such option --xxx
+usage: time-stamp [-h | --help] [OPTION]...
+--+--  time-stamp returned non-zero error code: 1  --+--
+
+----- Test 3 -+- dir: . -+- time-stamp -h -----
+usage: time-stamp [-h | --help] [OPTION]...
+
+time-stamp prints out a string suitable for a time stamp as YYMMDD-hhmmss.
+
+Output from time-stamp is suitable for embedding in filenames that need to
 be tagged with a time stamp. Any such filenames will sort properly because
 the date order is echoed as YYYYMMDD.
 
@@ -14,20 +23,23 @@ optional arguments:
 
  -h, --help      show this help and exit
  --only-date     skip printing the time, only print the date
- --short         same as --only-date
+ --short         skip printing the time, only print the date with year as YY
  --full-year     print year as YYYY instead of just YY
  --no-seconds    print time as hhmm only
  --no-minutes    print time as hh only
  --only-time     skip printing the date, only print the time
- --round-quarter round minutes down to the nearest 15 
+ --round-quarter round minutes down to the nearest 15
  --round-half    round minutes down to the nearst half hour
  --version       print out the version number and exit
 
-usage: ts [-h | --help] [OPTION]...
+--+--  time-stamp returned non-zero error code: 1  --+--
 
-ts prints out a string suitable for a time stamp as YYMMDD-hhmmss.
+----- Test 4 -+- dir: . -+- time-stamp --help -----
+usage: time-stamp [-h | --help] [OPTION]...
 
-Output from ts is suitable for embedding in filenames that need to
+time-stamp prints out a string suitable for a time stamp as YYMMDD-hhmmss.
+
+Output from time-stamp is suitable for embedding in filenames that need to
 be tagged with a time stamp. Any such filenames will sort properly because
 the date order is echoed as YYYYMMDD.
 
@@ -35,30 +47,67 @@ optional arguments:
 
  -h, --help      show this help and exit
  --only-date     skip printing the time, only print the date
- --short         same as --only-date
+ --short         skip printing the time, only print the date with year as YY
  --full-year     print year as YYYY instead of just YY
  --no-seconds    print time as hhmm only
  --no-minutes    print time as hh only
  --only-time     skip printing the date, only print the time
- --round-quarter round minutes down to the nearest 15 
+ --round-quarter round minutes down to the nearest 15
  --round-half    round minutes down to the nearst half hour
  --version       print out the version number and exit
 
-Mon Feb  3 14:46:47 CST 2025
-250203-144647
-250203-1446
-250203-14
-250203-1445
-250203-1430
-144647
-1445
-1430
-250203
-250203
-20250203-144647
-20250203-1445
-20250203-1430
-20250203
-20250203-1446
-20250203-14
+--+--  time-stamp returned non-zero error code: 1  --+--
+
+----- Test 5 -+- dir: . -+- date -----
+Tue Jul  1 18:06:26 CDT 2025
+
+----- Test 6 -+- dir: . -+- time-stamp -----
+250701-180626
+
+----- Test 7 -+- dir: . -+- time-stamp --no-seconds -----
+250701-1806
+
+----- Test 8 -+- dir: . -+- time-stamp --no-minutes -----
+250701-18
+
+----- Test 9 -+- dir: . -+- time-stamp --round-quarter -----
+250701-1800
+
+----- Test 10 -+- dir: . -+- time-stamp --round-half -----
+250701-1800
+
+----- Test 11 -+- dir: . -+- time-stamp --only-time -----
+180626
+
+----- Test 12 -+- dir: . -+- time-stamp --only-time --round-quarter -----
+1800
+
+----- Test 13 -+- dir: . -+- time-stamp --only-time --round-half -----
+1800
+
+----- Test 14 -+- dir: . -+- time-stamp --short -----
+250701
+
+----- Test 15 -+- dir: . -+- time-stamp --only-date -----
+250701
+
+----- Test 16 -+- dir: . -+- time-stamp --full-year -----
+20250701-180626
+
+----- Test 17 -+- dir: . -+- time-stamp --full-year --round-quarter -----
+20250701-1800
+
+----- Test 18 -+- dir: . -+- time-stamp --full-year --round-half -----
+20250701-1800
+
+----- Test 19 -+- dir: . -+- time-stamp --full-year --short -----
+250701
+
+----- Test 20 -+- dir: . -+- time-stamp --full-year --no-seconds -----
+20250701-1806
+
+----- Test 21 -+- dir: . -+- time-stamp --full-year --no-minutes -----
+20250701-18
+
+----- Test 22 -+- dir: . -+- time-stamp --version -----
 2.0.0
