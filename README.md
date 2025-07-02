@@ -115,7 +115,7 @@ Other ***essential*** TD tools don't need to be installed, just mastered. Namely
 
 ## More detailed descriptions of the utilities in `vfxTdUtils`.
 
-### About runsed
+### About `runsed`
 
 `runsed` is an unbelievably useful script that been in heavy use for 30+ years
 to batch run sed-scripts on files. Quite robust! Easy to back out changes!
@@ -164,11 +164,9 @@ optional arguments:
 ```
 
 
-### About rm-spaces
+### About `rm-spaces`
 
 ```
-$ ./rm-spaces -h
-
 usage: rm-spaces [-h | --help] [OPTIONS]
 
 rm-spaces is a util to help remove spaces from filenames. rm-spaces operates
@@ -221,4 +219,33 @@ working directory:
      Run this to undo directory name changes
  - .failed.dirs.rm-spaces
      List of renames that would have failed due to name conflict
+```
+
+### About `time-stamp`
+
+```
+usage: time-stamp [-h | --help] [OPTION]...
+
+time-stamp prints out a string suitable for a time stamp as YYMMDD-hhmmss.
+
+Output from time-stamp is suitable for embedding in filenames that need to be
+tagged with a time stamp. Any such filenames will sort properly because the
+date order is 'year' then 'month' then 'day' which will sort across years
+properly. (As opposed to US date convention of MM-DD-YYYY, which does not.)
+
+optional arguments:
+
+ -h, --help        show this help and exit
+ --only-date       skip printing the time, only print the date
+ --short           skip printing the time, only print the date
+                     with year as YY
+ --full-year       print year as YYYY instead of just YY
+ --no-seconds      print time as hhmm only
+ --no-minutes      print time as hh only
+ --only-time       skip printing the date, only print the time
+ --round-seconds   round seconds down to zero
+ --round-quarter   round minutes down to the nearest 15
+ --round-half      round minutes down to the nearst half hour
+ --underscore-all  special format as YYYY_MM_DD_hhmmss
+ --version         print out the version number and exit
 ```
