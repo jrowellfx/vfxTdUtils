@@ -206,6 +206,14 @@ cat << EOF > $tmpTestCmdFile
 . time-stamp --full-year --round-half
 . time-stamp --full-year --underscore-all
 . time-stamp --underscore-all
+. time-stamp --full-year --round-quarter --underscore-all
+. time-stamp --full-year --round-half --underscore-all
+. time-stamp --full-year --only-date --underscore-all
+. time-stamp --only-date --underscore-all
+. time-stamp --only-time --underscore-all
+. time-stamp --only-time --underscore-all --no-seconds
+. time-stamp --only-time --underscore-all --round-quarter --no-seconds
+. time-stamp --only-time --underscore-all --round-half --no-seconds
 . time-stamp --version
 EOF
 
