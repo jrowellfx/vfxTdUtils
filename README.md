@@ -77,7 +77,7 @@ rm-spaces   : v2.1.0
 runsed      : v1.0.1
 spaces2tabs : v1.0.0
 tabs2spaces : v1.0.0
-time-stamp  : v2.0.0
+time-stamp  : v2.1.0
 ```
 ## The most essential VFX-TD-Utils are in [`jrowellfx`](https://github.com/jrowellfx)'s other repos.
 
