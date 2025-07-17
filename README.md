@@ -77,7 +77,7 @@ rm-spaces   : v2.1.0
 runsed      : v1.0.1
 spaces2tabs : v1.0.0
 tabs2spaces : v1.0.0
-time-stamp  : v2.1.0
+time-stamp  : v2.2.0
 ```
 ## The most essential VFX-TD-Utils are in [`jrowellfx`](https://github.com/jrowellfx)'s other repos.
 
@@ -231,14 +231,16 @@ time-stamp prints out a string suitable for a time stamp as YYMMDD-hhmmss.
 Output from time-stamp is suitable for embedding in filenames that need to be
 tagged with a time stamp. Any such filenames will sort properly because the
 date order is 'year' then 'month' then 'day' which will sort across years
-properly. (As opposed to US date convention of MM-DD-YYYY, which does not.)
+properly. (As opposed to US date convention of MMDDYYYY, which does not.)
 
 optional arguments:
 
  -h, --help        show this help and exit
+ --default-stamp   print the time-stamp as YYMMDD-hhmmss [default]
  --only-date       skip printing the time, only print the date
  --short           skip printing the time, only print the date
                      with year as YY
+ --short-year      print year as YY instead of YYYY [default]
  --full-year       print year as YYYY instead of just YY
  --no-seconds      print time as hhmm only
  --no-minutes      print time as hh only

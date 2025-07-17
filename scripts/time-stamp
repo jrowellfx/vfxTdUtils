@@ -45,7 +45,7 @@
 # MINOR version for added functionality in a backwards compatible manner
 # PATCH version for backwards compatible bug fixes
 #
-VERSION=2.1.0
+VERSION=2.2.0
 
 usage_exit() {
     echo "usage: ${0##*/} [-h | --help] [OPTION]..."
@@ -57,14 +57,16 @@ ${0##*/} prints out a string suitable for a time stamp as YYMMDD-hhmmss.
 Output from ${0##*/} is suitable for embedding in filenames that need to be
 tagged with a time stamp. Any such filenames will sort properly because the
 date order is 'year' then 'month' then 'day' which will sort across years
-properly. (As opposed to US date convention of MM-DD-YYYY, which does not.)
+properly. (As opposed to US date convention of MMDDYYYY, which does not.)
 
 optional arguments:
 
  -h, --help        show this help and exit
+ --default-stamp   print the time-stamp as YYMMDD-hhmmss [default]
  --only-date       skip printing the time, only print the date
  --short           skip printing the time, only print the date
                      with year as YY
+ --short-year      print year as YY instead of YYYY [default]
  --full-year       print year as YYYY instead of just YY
  --no-seconds      print time as hhmm only
  --no-minutes      print time as hh only
@@ -81,15 +83,19 @@ optional arguments:
     exit 1
 }
 
-onlyDate=no
-isFullYear=no
-printSeconds=yes
-printMinutes=yes
-roundDown=no
-roundSeconds=no
-onlyTime=no
-dateSeparator=''
-timeSeparator='-'
+set_default() {
+    onlyDate=no
+    isFullYear=no
+    printSeconds=yes
+    printMinutes=yes
+    roundDown=no
+    roundSeconds=no
+    onlyTime=no
+    dateSeparator=''
+    timeSeparator='-'
+}
+
+set_default
 
 #
 # Parse options.
@@ -105,11 +111,19 @@ do
             exit 0
         ;;
 
+        --default-stamp) set_default
+             shift
+        ;;
+
         --only-date) onlyDate=yes; onlyTime=no
              shift
         ;;
 
         --short) onlyDate=yes; onlyTime=no; isFullYear=no
+             shift
+        ;;
+
+        --short-year) isFullYear=no
              shift
         ;;
 

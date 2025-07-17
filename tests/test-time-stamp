@@ -177,6 +177,7 @@ cd $TEST_DIR
 # Note: use single quotes (') around args with spaces in the name
 #
 cat << EOF > $tmpTestCmdFile
+. time-stamp --version
 . time-stamp -x
 . time-stamp --xxx
 . time-stamp -h
@@ -214,7 +215,9 @@ cat << EOF > $tmpTestCmdFile
 . time-stamp --only-time --underscore-all --no-seconds
 . time-stamp --only-time --underscore-all --round-quarter --no-seconds
 . time-stamp --only-time --underscore-all --round-half --no-seconds
-. time-stamp --version
+. time-stamp --short --default-stamp
+. time-stamp --full-year --underscore-all --default-stamp
+. time-stamp --full-year --only-date --short-year
 EOF
 
 export NUM_TESTS=`wc -l < $tmpTestCmdFile`
