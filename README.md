@@ -68,7 +68,7 @@ will install into `/usr/local/bin`, otherwise in `$HOME/bin`.
 
 ## Version numbers of utilities in latest RELEASE.
 
-`vfxTdUtils-2.2.0.tar.gz` contains the above mentioned utilities with
+`vfxTdUtils-2.3.0.tar.gz` contains the above mentioned utilities with
 the following versions each:
 
 ```
