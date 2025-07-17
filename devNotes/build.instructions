@@ -1,0 +1,24 @@
+Update whatever scripts need updating.
+
+Make sure to up the version number of the script appropriately.
+
+Run the tests, if they pass then also make sure to version up
+number in the top-level makefile, that is, bump up the version number
+of the new tarball appropriatedly.
+
+Made sure to update the README.md to reflect the latest version
+number of the tarball, as well as any script version numbers updated.
+
+Make the tarball with the top-level makefile (i.e. 'make tarball').
+
+Test the installation. cd into the new dist/vfxTdUtils-x.y.z directory
+that was made when creating the dist/vfxTdUtils-x.y.z.tar.gz file. Then
+'make install'.
+
+Test the newly installed commands, to at least check for the correct
+version number.
+
+checkin and commit all the files.
+
+Send up to github - make a new release with the same new version number
+of the latest new tarball.
