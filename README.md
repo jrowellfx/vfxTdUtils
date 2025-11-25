@@ -8,7 +8,7 @@ utilities for VFX "Technical Directors"
 
 ### Some backstory.
 
-In the early days, VFX-artists were often given the title of
+In the early days VFX-artists were often given the title of
 "Technical Director", whether lighting, compositing,
 rigging characters, creating particle-simulations, render-wrangling, etc.,
 or most likely all of the above.
