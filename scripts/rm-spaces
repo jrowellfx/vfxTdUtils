@@ -215,6 +215,7 @@ cat /dev/null > /tmp/tmp.$cmdName.sed.script.$$
 #     with a space.
 #   - Totally removes question-marks.
 #   - Totally removes stars "*".
+#   - Replaces hash-marks (#) with a space.
 #
 if [ "$OPT_REMOVE_QUOTES" = true ] ; then
 cat <<EOF2a >> /tmp/tmp.$cmdName.sed.script.$$
@@ -227,6 +228,8 @@ s/?//g
 s/\\*//g
 EOF2a
 fi
+### JPR can't get this to work yet -> s/#/ /g
+### but needs to go into the above remove_quotes section.
 
 # Replaces white-space (includes tabs) with a single space.
 #

@@ -250,6 +250,9 @@ ddir find . -type f
 ddir ./.undo.files.rm-spaces
 ddir ./.undo.dirs.rm-spaces
 ddir find . -type f
+fdir find . -type f
+fdir rm-spaces -x -r
+fdir find . -type f
 EOF
 
 ### cat << EOFdebug > $tmpTestCmdFile
