@@ -187,7 +187,7 @@ Options:
                         rename any files to remove spaces from their names
                         [default]
  -x, --execute        make the changes on the fly
- -q, --remove-quotes  also strip {}[]()'`"?* characters.
+ -q, --remove-quotes  also strip {}[]()'`"?*# characters.
  --no-camel-case      replace spaces with underscores [default]
  -c, --camel-case     converts words to camel case when possible
  --dates              replaces spaces before or after dates (eg 2023-03-27) with
