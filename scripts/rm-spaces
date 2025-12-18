@@ -226,14 +226,13 @@ s/\\]/ /g
 s/[(){}'\`"]/ /g
 s/?//g
 s/\\*//g
+s/#/ /g
 EOF2a
 fi
-### JPR can't get this to work yet -> s/#/ /g
-### but needs to go into the above remove_quotes section.
 
 # Replaces white-space (includes tabs) with a single space.
 #
-echo -e '1,$ s/[ \t][ \t]*/ /g' >> /tmp/tmp.$cmdName.sed.script.$$
+echo -e 's/[ \t][ \t]*/ /g' >> /tmp/tmp.$cmdName.sed.script.$$
 
 # Remove spaces from front and back of filename.
 # Replace multiple-spaces with single-space.

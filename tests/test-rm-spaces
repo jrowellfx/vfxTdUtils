@@ -251,7 +251,9 @@ ddir ./.undo.files.rm-spaces
 ddir ./.undo.dirs.rm-spaces
 ddir find . -type f
 fdir find . -type f
-fdir rm-spaces -x -r
+fdir rm-spaces -x -r -q
+fdir find . -type f
+fdir ./.undo.files.rm-spaces
 fdir find . -type f
 EOF
 
@@ -264,16 +266,7 @@ export NUM_TESTS=`wc -l < $tmpTestCmdFile`
 echo ------ Begin Tests ------ > $TEST_DIR/$TEST_OUT_FILENAME
 
 i=1
-#
-# NOTE: We do not want globbing at all in rm-spaces tests since the tests
-# use a lot of square brackets. No need to test other glob wildcards
-# for rm-spaces as, say '*', is unlikely to be needed by the user
-# since they need to fully specify the sequence being worked on
-# so wildcards don't help.
-#
-# See test_lsseq in lsseq repo for how to allow globbing in test arguments.
-# for test-code such as this.
-#
+
 set -f # Turn off globbing.
 while true; do
 

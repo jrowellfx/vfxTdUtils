@@ -4,7 +4,7 @@
 Linux
 
 ----- Test 2 -+- dir: . -+- lsseq --version -----
-4.0.1
+4.1.0
 
 ----- Test 3 -+- dir: . -+- rm-spaces -----
 
@@ -1642,3 +1642,18 @@ mv './d sub1_c/d sub2_b/d sub3_b/tmp`04 yyy.txt' './d sub1_c/d sub2_b/d sub3_b/t
 ./d {sub*1_b/d }sub?2_b/d ?sub3_c/tmp04 xxx.txt
 ./d {sub*1_b/d }sub?2_b/d ?sub3_c/tmp04 yyy.txt
 ./d {sub*1_b/d }sub?2_b/d ?sub3_c/tmp04 zzz.txt
+
+----- Test 65 -+- dir: fdir -+- find . -type f -----
+./f_01/Academy_SUBWAY_#1018-25_CS_DAY 1
+
+----- Test 66 -+- dir: fdir -+- rm-spaces -x -r -q -----
+
+----- Test 67 -+- dir: fdir -+- find . -type f -----
+./.undo.files.rm-spaces
+./f_01/Academy_SUBWAY_1018-25_CS_DAY_1
+
+----- Test 68 -+- dir: fdir -+- ./.undo.files.rm-spaces -----
+
+----- Test 69 -+- dir: fdir -+- find . -type f -----
+./.undo.files.rm-spaces
+./f_01/Academy_SUBWAY_#1018-25_CS_DAY 1
