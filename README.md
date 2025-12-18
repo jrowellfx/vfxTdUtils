@@ -68,12 +68,12 @@ will install into `/usr/local/bin`, otherwise in `$HOME/bin`.
 
 ## Version numbers of utilities in latest RELEASE.
 
-`vfxTdUtils-2.3.0.tar.gz` contains the above mentioned utilities with
+`vfxTdUtils-2.4.0.tar.gz` contains the above mentioned utilities with
 the following versions each:
 
 ```
 mod-tstamp  : v1.0.0
-rm-spaces   : v2.1.0
+rm-spaces   : v2.2.0
 runsed      : v1.0.1
 spaces2tabs : v1.0.0
 tabs2spaces : v1.0.0
