@@ -53,7 +53,7 @@ trap cleanup INT
 # MINOR version for added functionality in a backwards compatible manner
 # PATCH version for backwards compatible bug fixes
 #
-VERSION=1.0.1
+VERSION=1.2.0
 
 usageExit() {
     echo "usage: runsed [-h | --help | --version] [FILE]..."
