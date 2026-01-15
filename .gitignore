@@ -5,4 +5,10 @@ build
 *.bak
 .*.runsed
 __pycache__
-tests/test-rm-spaces-dir
+tests/test-*-dir
+tests/rm-spaces
+tests/runsed
+tests/spaces2tabs
+tests/tabs2spaces
+tests/time-stamp
+
