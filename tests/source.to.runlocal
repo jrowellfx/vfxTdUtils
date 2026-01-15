@@ -3,9 +3,11 @@
 #
 export TEST_DIR=`pwd`
 
-ln -sf ../scripts/rm-spaces  rm-spaces
-ln -sf ../scripts/time-stamp time-stamp
-ln -sf ../scripts/runsed     runsed
+ln -sf ../scripts/rm-spaces   rm-spaces
+ln -sf ../scripts/runsed      runsed
+ln -sf ../scripts/spaces2tabs spaces2tabs
+ln -sf ../scripts/tabs2spaces tabs2spaces
+ln -sf ../scripts/time-stamp  time-stamp
 
 if [[ ! ":$PATH:" == *":$TEST_DIR:"* ]]; then
     export PATH="$TEST_DIR:$PATH"
