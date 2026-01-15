@@ -1,0 +1,180 @@
+------ Begin Tests ------
+
+----- Test 1 -+- dir: . -+- time-stamp --version -----
+2.2.0
+
+----- Test 2 -+- dir: . -+- time-stamp -x -----
+/...absPathToRepo.../tests/time-stamp: no such option -x
+usage: time-stamp [-h | --help] [OPTION]...
+--+--  time-stamp returned non-zero error code: 1  --+--
+
+----- Test 3 -+- dir: . -+- time-stamp --xxx -----
+/...absPathToRepo.../tests/time-stamp: no such option --xxx
+usage: time-stamp [-h | --help] [OPTION]...
+--+--  time-stamp returned non-zero error code: 1  --+--
+
+----- Test 4 -+- dir: . -+- time-stamp -h -----
+usage: time-stamp [-h | --help] [OPTION]...
+
+time-stamp prints out a string suitable for a time stamp as YYMMDD-hhmmss.
+
+Output from time-stamp is suitable for embedding in filenames that need to be
+tagged with a time stamp. Any such filenames will sort properly because the
+date order is 'year' then 'month' then 'day' which will sort across years
+properly. (As opposed to US date convention of MMDDYYYY, which does not.)
+
+optional arguments:
+
+ -h, --help        show this help and exit
+ --default-stamp   print the time-stamp as YYMMDD-hhmmss [default]
+ --only-date       skip printing the time, only print the date
+ --short           skip printing the time, only print the date
+                     with year as YY
+ --short-year      print year as YY instead of YYYY [default]
+ --full-year       print year as YYYY instead of just YY
+ --no-seconds      print time as hhmm only
+ --no-minutes      print time as hh only
+ --only-time       skip printing the date, only print the time
+ --round-seconds   round seconds down to zero
+ --round-quarter   round minutes down to the nearest 15
+ --round-half      round minutes down to the nearst half hour
+ --underscore-all  special format as YYYY_MM_DD_hhmmss
+ --version         print out the version number and exit
+
+
+----- Test 5 -+- dir: . -+- time-stamp --help -----
+usage: time-stamp [-h | --help] [OPTION]...
+
+time-stamp prints out a string suitable for a time stamp as YYMMDD-hhmmss.
+
+Output from time-stamp is suitable for embedding in filenames that need to be
+tagged with a time stamp. Any such filenames will sort properly because the
+date order is 'year' then 'month' then 'day' which will sort across years
+properly. (As opposed to US date convention of MMDDYYYY, which does not.)
+
+optional arguments:
+
+ -h, --help        show this help and exit
+ --default-stamp   print the time-stamp as YYMMDD-hhmmss [default]
+ --only-date       skip printing the time, only print the date
+ --short           skip printing the time, only print the date
+                     with year as YY
+ --short-year      print year as YY instead of YYYY [default]
+ --full-year       print year as YYYY instead of just YY
+ --no-seconds      print time as hhmm only
+ --no-minutes      print time as hh only
+ --only-time       skip printing the date, only print the time
+ --round-seconds   round seconds down to zero
+ --round-quarter   round minutes down to the nearest 15
+ --round-half      round minutes down to the nearst half hour
+ --underscore-all  special format as YYYY_MM_DD_hhmmss
+ --version         print out the version number and exit
+
+
+----- Test 6 -+- dir: . -+- date -----
+Wed Jan 14 20:16:18 CST 2026
+
+----- Test 7 -+- dir: . -+- time-stamp -----
+260114-201618
+
+----- Test 8 -+- dir: . -+- time-stamp --no-seconds -----
+260114-2016
+
+----- Test 9 -+- dir: . -+- time-stamp --no-minutes -----
+260114-20
+
+----- Test 10 -+- dir: . -+- time-stamp --round-quarter --no-seconds -----
+260114-2015
+
+----- Test 11 -+- dir: . -+- time-stamp --round-half --no-seconds -----
+260114-2000
+
+----- Test 12 -+- dir: . -+- time-stamp --only-time -----
+201618
+
+----- Test 13 -+- dir: . -+- time-stamp --only-time --round-quarter --no-seconds -----
+2015
+
+----- Test 14 -+- dir: . -+- time-stamp --only-time --round-half --no-seconds -----
+2000
+
+----- Test 15 -+- dir: . -+- time-stamp --short -----
+260114
+
+----- Test 16 -+- dir: . -+- time-stamp --only-date -----
+260114
+
+----- Test 17 -+- dir: . -+- time-stamp --full-year -----
+20260114-201618
+
+----- Test 18 -+- dir: . -+- time-stamp --full-year --round-quarter --no-seconds -----
+20260114-2015
+
+----- Test 19 -+- dir: . -+- time-stamp --full-year --round-half --no-seconds -----
+20260114-2000
+
+----- Test 20 -+- dir: . -+- time-stamp --full-year --short -----
+260114
+
+----- Test 21 -+- dir: . -+- time-stamp --full-year --no-seconds -----
+20260114-2016
+
+----- Test 22 -+- dir: . -+- time-stamp --full-year --no-minutes -----
+20260114-20
+
+----- Test 23 -+- dir: . -+- time-stamp --round-quarter -----
+260114-201500
+
+----- Test 24 -+- dir: . -+- time-stamp --round-half -----
+260114-200000
+
+----- Test 25 -+- dir: . -+- time-stamp --only-time --round-quarter -----
+201500
+
+----- Test 26 -+- dir: . -+- time-stamp --only-time --round-half -----
+200000
+
+----- Test 27 -+- dir: . -+- time-stamp --full-year --round-quarter -----
+20260114-201500
+
+----- Test 28 -+- dir: . -+- time-stamp --full-year --round-half -----
+20260114-200000
+
+----- Test 29 -+- dir: . -+- time-stamp --full-year --underscore-all -----
+2026_01_14_201618
+
+----- Test 30 -+- dir: . -+- time-stamp --underscore-all -----
+26_01_14_201618
+
+----- Test 31 -+- dir: . -+- time-stamp --full-year --round-quarter --underscore-all -----
+2026_01_14_201500
+
+----- Test 32 -+- dir: . -+- time-stamp --full-year --round-half --underscore-all -----
+2026_01_14_200000
+
+----- Test 33 -+- dir: . -+- time-stamp --full-year --only-date --underscore-all -----
+2026_01_14
+
+----- Test 34 -+- dir: . -+- time-stamp --only-date --underscore-all -----
+26_01_14
+
+----- Test 35 -+- dir: . -+- time-stamp --only-time --underscore-all -----
+201618
+
+----- Test 36 -+- dir: . -+- time-stamp --only-time --underscore-all --no-seconds -----
+2016
+
+----- Test 37 -+- dir: . -+- time-stamp --only-time --underscore-all --round-quarter --no-seconds -----
+2015
+
+----- Test 38 -+- dir: . -+- time-stamp --only-time --underscore-all --round-half --no-seconds -----
+2000
+
+----- Test 39 -+- dir: . -+- time-stamp --short --default-stamp -----
+260114-201619
+
+----- Test 40 -+- dir: . -+- time-stamp --full-year --underscore-all --default-stamp -----
+260114-201619
+
+----- Test 41 -+- dir: . -+- time-stamp --full-year --only-date --short-year -----
+260114
