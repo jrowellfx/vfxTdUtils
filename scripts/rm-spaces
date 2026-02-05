@@ -40,7 +40,7 @@
 # MINOR version for added functionality in a backwards compatible manner
 # PATCH version for backwards compatible bug fixes
 #
-VERSION=2.2.0
+VERSION=2.2.1
 
 set +o noclobber
 cmdName=`basename "$0"`
@@ -58,7 +58,7 @@ tac() {
 trap cleanup INT
 
 usageExit() {
-    echo "usage: $1 [-h | --help] [OPTIONS]"
+    echo "usage: $1 [-h | --help] [OPTION]..."
     if [ "$2" = help ]; then
         set -f
         cat - <<EOF1
@@ -66,7 +66,7 @@ usageExit() {
 $cmdName is a util to help remove spaces from filenames. $cmdName operates
 on files in the current working directory (and/or below).
 
-Options:
+optional arguments:
  -h, --help           display this help and exit
  --not-recursive      only remove spaces from files in the current working
                         directory [default]

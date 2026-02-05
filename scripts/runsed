@@ -53,7 +53,7 @@ trap cleanup INT
 # MINOR version for added functionality in a backwards compatible manner
 # PATCH version for backwards compatible bug fixes
 #
-VERSION=1.2.0
+VERSION=1.1.0
 
 usageExit() {
     echo "usage: runsed [-h | --help] [OPTION]... [FILE]..."
@@ -90,7 +90,6 @@ positional arguments:
     FILE            file names to run the sed.script on
 
 optional arguments:
-
  -h, --help         show this help and exit
  --version          print out the version number and exit
  -f SCRIPT-FILE     use the file SCRIPT-FILE instead of the default
