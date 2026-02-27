@@ -71,7 +71,7 @@ optional arguments:
   --no-minutes      print time as hh only
   --only-time       skip printing the date, only print the time
   --round-seconds   round seconds down to zero
-  --round-quarter   round minutes down to the nearest 15 
+  --round-quarter   round minutes down to the nearest 15
   --round-half      round minutes down to the nearst half hour
   --underscore-all  special format as YYYY_MM_DD_hhmmss
   --version         print out the version number and exit
