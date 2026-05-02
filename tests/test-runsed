@@ -132,7 +132,7 @@ echo "Test is using " `which runsed`
 export HERO_TESTDIR=test-runsed-dir
 export HERO_CREATEDATADIR=createTestData-runsed
 
-# Double check sensible REPO_DIR value before removing old $HERO_TESTDIR
+# Double check sensible REPO_DIR value ### (before removing old $HERO_TESTDIR)
 #
 if [ -z "$REPO_DIR" ]; then
     echo $0: error: REPO_DIR was empty, dangerous recursive rm avoided.
@@ -144,30 +144,30 @@ elif [[ `basename $REPO_DIR` != 'vfxTdUtils' ]]; then
     echo $0: error: REPO_DIR might not be set to vfxTdUtils repo, dangerous recursive rm avoided.
     cleanupExit 1
 fi
-rm -rf $REPO_DIR/tests/$HERO_TESTDIR/*
-mkdir $REPO_DIR/tests/$HERO_TESTDIR > /dev/null 2>&1
+### rm -rf $REPO_DIR/tests/$HERO_TESTDIR/*
+### mkdir $REPO_DIR/tests/$HERO_TESTDIR > /dev/null 2>&1
 
 # Create list of test directories needed.
 # Then touch the file names to make testfiles.
 # Note: pwd should still be $TEST_DIR
 # Note: This can create files and/or dirs with spaces in filenames
 #
-cd $TEST_DIR/$HERO_TESTDIR
-cat $TEST_DIR/$HERO_CREATEDATADIR/create.?Test.files \
-    | sed -e '/^[[:space:]]*$/d' \
-    | sed -e '1,$ s/\/[^/]*$//' \
-    | sort -u \
-    | tr '\n' '\0' \
-    > $tmpFile
-cat $tmpFile | xargs -0 mkdir -p
+### cd $TEST_DIR/$HERO_TESTDIR
+### cat $TEST_DIR/$HERO_CREATEDATADIR/create.?Test.files \
+###     | sed -e '/^[[:space:]]*$/d' \
+###     | sed -e '1,$ s/\/[^/]*$//' \
+###     | sort -u \
+###     | tr '\n' '\0' \
+###     > $tmpFile
+### cat $tmpFile | xargs -0 mkdir -p
 #
-cat $TEST_DIR/$HERO_CREATEDATADIR/create.?Test.files \
-    | sed -e '/^[[:space:]]*$/d' \
-    | tr '\n' '\0' \
-    > $tmpFile
-cat $tmpFile | xargs -0 touch
-cat $tmpFile | xargs -0 chmod 666
-cd $TEST_DIR
+### cat $TEST_DIR/$HERO_CREATEDATADIR/create.?Test.files \
+###     | sed -e '/^[[:space:]]*$/d' \
+###     | tr '\n' '\0' \
+###     > $tmpFile
+### cat $tmpFile | xargs -0 touch
+### cat $tmpFile | xargs -0 chmod 666
+### cd $TEST_DIR
 
 # Timestamp all the test files to be a fixed date so that their file times are 
 # not dependent upon the date set when running the test. This gives us
