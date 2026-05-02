@@ -55,6 +55,9 @@ trap cleanup INT
 #
 VERSION=1.1.0
 
+SED_SCRIPT_FILENAME=sed.script
+OPT_EXTENDED_REGEX=""
+
 usageExit() {
     echo "usage: runsed [-h | --help] [OPTION]... [FILE]..."
     if [ "$1" = help ]; then
@@ -90,12 +93,11 @@ positional arguments:
     FILE            file names to run the sed.script on
 
 optional arguments:
- -h, --help         show this help and exit
- --version          print out the version number and exit
- -f SCRIPT-FILE     use the file SCRIPT-FILE instead of the default
-                        ./sed.script file
- -E                 use extended regular expressions in the script
- --silent, --quiet  suppress error and warning messages
+ -h, --help             show this help and exit
+ --version              print out the version number and exit
+ -f|--file SCRIPT-FILE  use the file SCRIPT-FILE instead of the default
+                           ./sed.script file
+ -E                     use extended regular expressions in the script
 
 EOF
     fi
@@ -115,6 +117,16 @@ do
             exit 0
         ;;
 
+        -f|--file)
+            shift
+            SED_SCRIPT_FILENAME=$1
+            shift
+        ;;
+
+        -E) OPT_EXTENDED_REGEX="-E"
+            shift
+        ;;
+
         -*) echo "runsed: ERROR: Invalid option '$1'."
              usageExit
         ;;
@@ -123,8 +135,9 @@ do
     esac
 done
 
-if [ ! -e sed.script ]; then
-    echo runsed: Error: no sed.script file exists in current directory
+if [ ! -e $SED_SCRIPT_FILENAME ]; then
+    echo runsed: Error: the $SED_SCRIPT_FILENAME file does not exist.
+    echo "               hint: try making a file called sed.script in the current directory."
     exit 1
 fi
 
@@ -139,8 +152,8 @@ while  [ $# -ne 0 ]
 do
     i="$1"
 
-    if [ "$i" != "sed.script" ] && [ -f "$i" ] && [ -w "$i" ] ; then
-        sed -f sed.script "$i" > /tmp/runsed$$
+    if [ "$i" != $SED_SCRIPT_FILENAME ] && [ -f "$i" ] && [ -w "$i" ] ; then
+        sed $OPT_EXTENDED_REGEX -f $SED_SCRIPT_FILENAME "$i" > /tmp/runsed$$
         if [ $? -ne 0 ]; then
             /bin/rm .runsed.undo.runsed
             /bin/rm .runsed.diff.runsed

@@ -185,11 +185,23 @@ find $TEST_DIR/$HERO_TESTDIR -type f -exec touch -t 199201121330 \{\} \;
 # Note: use single quotes (') around args with spaces in the name
 #
 cat << EOF > $tmpTestCmdFile
-.    uname
-.    runsed                                # Run with no args - should do nothing
-.    runsed --version                      # MUST increment with each update/bug fix, corresp w/ release.
-.    runsed --help                         # To keep track of changes with help, plus check if correct
-.    runsed --noSuchArg                    # To check error checking of args
+.        uname
+emptyDir runsed                                # Run with no args - should do nothing
+.        runsed --version                      # MUST increment with each update/bug fix, corresp w/ release.
+.        runsed --help                         # To keep track of changes with help, plus check if correct
+.        runsed --noSuchArg                    # To check error checking of args
+.        cat macbeth.txt
+.        cat sed.script
+.        runsed macbeth.txt
+.        .runsed.diff.runsed
+.        .runsed.undo.runsed
+.        cat macbeth.txt
+aaa      runsed -f sed.script.alt macbeth.txt
+aaa      .runsed.diff.runsed
+aaa      .runsed.undo.runsed
+aaa      runsed -E -f sed.script.alt macbeth.txt
+aaa      .runsed.diff.runsed
+aaa      .runsed.undo.runsed
 EOF
 
 export NUM_TESTS=`wc -l < $tmpTestCmdFile`

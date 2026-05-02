@@ -1,0 +1,7 @@
+1,$ s/When/WHEN/g
+1,$ s/and/\&/g
+1,$ s/foul/nasty/g
+1,$ s/is/==/g
+1,$ s/meet/reunite/
+1,$ s/of/de/
+1,$ s/the/t'/g
