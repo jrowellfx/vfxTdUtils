@@ -117,62 +117,55 @@ Other ***essential*** TD tools don't need to be installed, just mastered. Namely
 
 ### About `runsed`
 
-`runsed` is an unbelievably useful script that been in heavy use for 30+ years
-to batch run sed-scripts on files. Quite robust! Easy to back out changes!
+```
+usage: runsed [-h | --help] [OPTION]... [FILE]...
 
-`runsed` is a wrapper for the command "`sed -f sed.script [FILE]...`".
+runsed is a wrapper for the command "sed -f sed.script [FILE]...".
 
-`runsed` runs a script-file called `sed.script` (that must exist in the current directory)
-with [`sed`](https://man7.org/linux/man-pages/man1/sed.1p.html)
-on each `FILE` listed on the command line.
+runsed runs a SCRIPT-FILE called "sed.script" that needs to exist
+in the current directory on each FILE listed on the command line.
+Override the name of the SCRIPT-FILE with the -f or --file option.
 
-  `runsed` changes the files in place,
-that is, it replaces the existing `FILE` with a stream-edited copy of itself.
+runsed changes the files in place, that is, it replaces the existing
+FILE with a stream-edited copy of itself.
 
-A backup copy of each original `FILE` is created called "`.FILE.runsed`" in the directory
-that `FILE` resides.
+A backup copy of each original FILE is created called ".FILE.runsed" in the
+directory that FILE resides.
 
 Two special files are also created in the current directory to allow you
 to review all the changes made as well as undo the changes if the results
-weren't what you expected.  Namely, the files "`.runsed.diff.runsed`" and
-"`.runsed.undo.runsed`" which are executable.
+weren't what you expected.  Namely, the files ".runsed.diff.runsed" and
+".runsed.undo.runsed" which are executable.
 
-When you are eventually satisfied simply remove all files called "`.*.runsed`"
+When you are eventually satisfied simply remove the ".*.runsed" files
 with the command:
-
-```
     rm .*.runsed
-```
 
-If you changed files in subdirectories, this is a better way to get rid
-of all the crufty leftovers, plus it handles files with spaces in
-their names properly:
+...or including all subdirectories and safely dealing with files with spaces
+in their names with the command:
 
-```
     find . -name '.*.runsed' -type f -print0 | xargs -0 /bin/rm -f
-```
 
-Ultimately it's up to you to clean up the crufty leftover files.
-
-```
-Usage: runsed [-h | --help | --version] [FILE]...
+positional arguments:
+    FILE            file names to run the sed.script on
 
 optional arguments:
-
- -h, --help      show the help and exit
- --version       print out the version number and exit
+ -h, --help             show this help and exit
+ --version              print out the version number and exit
+ -f|--file SCRIPT-FILE  use the file SCRIPT-FILE instead of the default
+                           ./sed.script file
+ -E                     use extended regular expressions in the script
 ```
-
 
 ### About `rm-spaces`
 
 ```
-usage: rm-spaces [-h | --help] [OPTIONS]
+usage: rm-spaces [-h | --help] [OPTION]...
 
 rm-spaces is a util to help remove spaces from filenames. rm-spaces operates
 on files in the current working directory (and/or below).
 
-Options:
+optional arguments:
  -h, --help           display this help and exit
  --not-recursive      only remove spaces from files in the current working
                         directory [default]
