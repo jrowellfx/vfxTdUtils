@@ -4,20 +4,20 @@
 Linux
 
 ----- Test 2 -+- dir: . -+- lsseq --version -----
-4.1.0
+4.2.0
 
 ----- Test 3 -+- dir: . -+- rm-spaces -----
 
 ----- Test 4 -+- dir: . -+- rm-spaces --version -----
-2.2.0
+2.2.1
 
 ----- Test 5 -+- dir: . -+- rm-spaces --help -----
-usage: rm-spaces [-h | --help] [OPTIONS]
+usage: rm-spaces [-h | --help] [OPTION]...
 
 rm-spaces is a util to help remove spaces from filenames. rm-spaces operates
 on files in the current working directory (and/or below).
 
-Options:
+optional arguments:
  -h, --help           display this help and exit
  --not-recursive      only remove spaces from files in the current working
                         directory [default]
@@ -68,7 +68,7 @@ working directory:
 
 ----- Test 6 -+- dir: . -+- rm-spaces --noSuchArg -----
 rm-spaces: ERROR: Invalid option '--noSuchArg'.
-usage: rm-spaces [-h | --help] [OPTIONS]
+usage: rm-spaces [-h | --help] [OPTION]...
 --+--  rm-spaces returned non-zero error code: 1  --+--
 
 ----- Test 7 -+- dir: adir -+- lsseq -a -R -n -F -----
