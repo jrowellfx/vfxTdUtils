@@ -68,7 +68,7 @@ will install into `/usr/local/bin`, otherwise in `$HOME/bin`.
 
 ## Version numbers of utilities in latest RELEASE.
 
-`vfxTdUtils-2.4.0.tar.gz` contains the above mentioned utilities with
+`vfxTdUtils-2.5.0.tar.gz` contains the above mentioned utilities with
 the following versions each:
 
 ```
@@ -77,7 +77,7 @@ rm-spaces   : v2.2.0
 runsed      : v1.0.1
 spaces2tabs : v1.0.0
 tabs2spaces : v1.0.0
-time-stamp  : v2.2.0
+time-stamp  : v2.2.2
 ```
 ## The most essential VFX-TD-Utils are in [`jrowellfx`](https://github.com/jrowellfx)'s other repos.
 
@@ -249,5 +249,6 @@ optional arguments:
  --round-quarter   round minutes down to the nearest 15
  --round-half      round minutes down to the nearst half hour
  --underscore-all  special format as YYYY_MM_DD_hhmmss
+ --dash-all        special format as YYYY-MM-DD-hhmmss
  --version         print out the version number and exit
 ```

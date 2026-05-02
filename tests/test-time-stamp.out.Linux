@@ -1,7 +1,7 @@
 ------ Begin Tests ------
 
 ----- Test 1 -+- dir: . -+- time-stamp --version -----
-2.2.0
+2.2.2
 
 ----- Test 2 -+- dir: . -+- time-stamp -x -----
 /...absPathToRepo.../tests/time-stamp: no such option -x
@@ -24,22 +24,22 @@ date order is 'year' then 'month' then 'day' which will sort across years
 properly. (As opposed to US date convention of MMDDYYYY, which does not.)
 
 optional arguments:
-
- -h, --help        show this help and exit
- --default-stamp   print the time-stamp as YYMMDD-hhmmss [default]
- --only-date       skip printing the time, only print the date
- --short           skip printing the time, only print the date
-                     with year as YY
- --short-year      print year as YY instead of YYYY [default]
- --full-year       print year as YYYY instead of just YY
- --no-seconds      print time as hhmm only
- --no-minutes      print time as hh only
- --only-time       skip printing the date, only print the time
- --round-seconds   round seconds down to zero
- --round-quarter   round minutes down to the nearest 15
- --round-half      round minutes down to the nearst half hour
- --underscore-all  special format as YYYY_MM_DD_hhmmss
- --version         print out the version number and exit
+  -h, --help        show this help and exit
+  --default-stamp   print the time-stamp as YYMMDD-hhmmss [default]
+  --only-date       skip printing the time, only print the date
+  --short           skip printing the time, only print the date
+                      with year as YY
+  --short-year      print year as YY instead of YYYY [default]
+  --full-year       print year as YYYY instead of just YY
+  --no-seconds      print time as hhmm only
+  --no-minutes      print time as hh only
+  --only-time       skip printing the date, only print the time
+  --round-seconds   round seconds down to zero
+  --round-quarter   round minutes down to the nearest 15
+  --round-half      round minutes down to the nearst half hour
+  --underscore-all  special format as YYYY_MM_DD_hhmmss
+  --dash-all        special format as YYYY-MM-DD-hhmmss
+  --version         print out the version number and exit
 
 
 ----- Test 5 -+- dir: . -+- time-stamp --help -----
@@ -53,128 +53,158 @@ date order is 'year' then 'month' then 'day' which will sort across years
 properly. (As opposed to US date convention of MMDDYYYY, which does not.)
 
 optional arguments:
-
- -h, --help        show this help and exit
- --default-stamp   print the time-stamp as YYMMDD-hhmmss [default]
- --only-date       skip printing the time, only print the date
- --short           skip printing the time, only print the date
-                     with year as YY
- --short-year      print year as YY instead of YYYY [default]
- --full-year       print year as YYYY instead of just YY
- --no-seconds      print time as hhmm only
- --no-minutes      print time as hh only
- --only-time       skip printing the date, only print the time
- --round-seconds   round seconds down to zero
- --round-quarter   round minutes down to the nearest 15
- --round-half      round minutes down to the nearst half hour
- --underscore-all  special format as YYYY_MM_DD_hhmmss
- --version         print out the version number and exit
+  -h, --help        show this help and exit
+  --default-stamp   print the time-stamp as YYMMDD-hhmmss [default]
+  --only-date       skip printing the time, only print the date
+  --short           skip printing the time, only print the date
+                      with year as YY
+  --short-year      print year as YY instead of YYYY [default]
+  --full-year       print year as YYYY instead of just YY
+  --no-seconds      print time as hhmm only
+  --no-minutes      print time as hh only
+  --only-time       skip printing the date, only print the time
+  --round-seconds   round seconds down to zero
+  --round-quarter   round minutes down to the nearest 15
+  --round-half      round minutes down to the nearst half hour
+  --underscore-all  special format as YYYY_MM_DD_hhmmss
+  --dash-all        special format as YYYY-MM-DD-hhmmss
+  --version         print out the version number and exit
 
 
 ----- Test 6 -+- dir: . -+- date -----
-Thu Jul 17 15:47:57 CDT 2025
+Sat May  2 18:31:32 GMT 2026
 
 ----- Test 7 -+- dir: . -+- time-stamp -----
-250717-154757
+260502-183132
 
 ----- Test 8 -+- dir: . -+- time-stamp --no-seconds -----
-250717-1547
+260502-1831
 
 ----- Test 9 -+- dir: . -+- time-stamp --no-minutes -----
-250717-15
+260502-18
 
 ----- Test 10 -+- dir: . -+- time-stamp --round-quarter --no-seconds -----
-250717-1545
+260502-1830
 
 ----- Test 11 -+- dir: . -+- time-stamp --round-half --no-seconds -----
-250717-1530
+260502-1830
 
 ----- Test 12 -+- dir: . -+- time-stamp --only-time -----
-154757
+183132
 
 ----- Test 13 -+- dir: . -+- time-stamp --only-time --round-quarter --no-seconds -----
-1545
+1830
 
 ----- Test 14 -+- dir: . -+- time-stamp --only-time --round-half --no-seconds -----
-1530
+1830
 
 ----- Test 15 -+- dir: . -+- time-stamp --short -----
-250717
+260502
 
 ----- Test 16 -+- dir: . -+- time-stamp --only-date -----
-250717
+260502
 
 ----- Test 17 -+- dir: . -+- time-stamp --full-year -----
-20250717-154757
+20260502-183132
 
 ----- Test 18 -+- dir: . -+- time-stamp --full-year --round-quarter --no-seconds -----
-20250717-1545
+20260502-1830
 
 ----- Test 19 -+- dir: . -+- time-stamp --full-year --round-half --no-seconds -----
-20250717-1530
+20260502-1830
 
 ----- Test 20 -+- dir: . -+- time-stamp --full-year --short -----
-250717
+260502
 
 ----- Test 21 -+- dir: . -+- time-stamp --full-year --no-seconds -----
-20250717-1547
+20260502-1831
 
 ----- Test 22 -+- dir: . -+- time-stamp --full-year --no-minutes -----
-20250717-15
+20260502-18
 
 ----- Test 23 -+- dir: . -+- time-stamp --round-quarter -----
-250717-154500
+260502-183000
 
 ----- Test 24 -+- dir: . -+- time-stamp --round-half -----
-250717-153000
+260502-183000
 
 ----- Test 25 -+- dir: . -+- time-stamp --only-time --round-quarter -----
-154500
+183000
 
 ----- Test 26 -+- dir: . -+- time-stamp --only-time --round-half -----
-153000
+183000
 
 ----- Test 27 -+- dir: . -+- time-stamp --full-year --round-quarter -----
-20250717-154500
+20260502-183000
 
 ----- Test 28 -+- dir: . -+- time-stamp --full-year --round-half -----
-20250717-153000
+20260502-183000
 
 ----- Test 29 -+- dir: . -+- time-stamp --full-year --underscore-all -----
-2025_07_17_154757
+2026_05_02_183132
 
 ----- Test 30 -+- dir: . -+- time-stamp --underscore-all -----
-25_07_17_154757
+26_05_02_183132
 
 ----- Test 31 -+- dir: . -+- time-stamp --full-year --round-quarter --underscore-all -----
-2025_07_17_154500
+2026_05_02_183000
 
 ----- Test 32 -+- dir: . -+- time-stamp --full-year --round-half --underscore-all -----
-2025_07_17_153000
+2026_05_02_183000
 
 ----- Test 33 -+- dir: . -+- time-stamp --full-year --only-date --underscore-all -----
-2025_07_17
+2026_05_02
 
 ----- Test 34 -+- dir: . -+- time-stamp --only-date --underscore-all -----
-25_07_17
+26_05_02
 
 ----- Test 35 -+- dir: . -+- time-stamp --only-time --underscore-all -----
-154757
+183132
 
 ----- Test 36 -+- dir: . -+- time-stamp --only-time --underscore-all --no-seconds -----
-1547
+1831
 
 ----- Test 37 -+- dir: . -+- time-stamp --only-time --underscore-all --round-quarter --no-seconds -----
-1545
+1830
 
 ----- Test 38 -+- dir: . -+- time-stamp --only-time --underscore-all --round-half --no-seconds -----
-1530
+1830
 
------ Test 39 -+- dir: . -+- time-stamp --short --default-stamp -----
-250717-154757
+----- Test 39 -+- dir: . -+- time-stamp --full-year --dash-all -----
+2026-05-02-183132
 
------ Test 40 -+- dir: . -+- time-stamp --full-year --underscore-all --default-stamp -----
-250717-154757
+----- Test 40 -+- dir: . -+- time-stamp --dash-all -----
+26-05-02-183132
 
------ Test 41 -+- dir: . -+- time-stamp --full-year --only-date --short-year -----
-250717
+----- Test 41 -+- dir: . -+- time-stamp --full-year --round-quarter --dash-all -----
+2026-05-02-183000
+
+----- Test 42 -+- dir: . -+- time-stamp --full-year --round-half --dash-all -----
+2026-05-02-183000
+
+----- Test 43 -+- dir: . -+- time-stamp --full-year --only-date --dash-all -----
+2026-05-02
+
+----- Test 44 -+- dir: . -+- time-stamp --only-date --dash-all -----
+26-05-02
+
+----- Test 45 -+- dir: . -+- time-stamp --only-time --dash-all -----
+183132
+
+----- Test 46 -+- dir: . -+- time-stamp --only-time --dash-all --no-seconds -----
+1831
+
+----- Test 47 -+- dir: . -+- time-stamp --only-time --dash-all --round-quarter --no-seconds -----
+1830
+
+----- Test 48 -+- dir: . -+- time-stamp --only-time --dash-all --round-half --no-seconds -----
+1830
+
+----- Test 49 -+- dir: . -+- time-stamp --short --default-stamp -----
+260502-183132
+
+----- Test 50 -+- dir: . -+- time-stamp --full-year --underscore-all --default-stamp -----
+260502-183132
+
+----- Test 51 -+- dir: . -+- time-stamp --full-year --only-date --short-year -----
+260502

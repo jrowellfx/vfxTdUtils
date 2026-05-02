@@ -53,6 +53,8 @@ cleanupExit() {
 
 trap cleanupExit INT
 
+export TZ=GMT
+
 usage_exit() {
     echo "Usage: ${0##*/} [-h | --help] [--test-system-time-stamp]"
     if [ "$1" = help ]; then
@@ -215,6 +217,16 @@ cat << EOF > $tmpTestCmdFile
 . time-stamp --only-time --underscore-all --no-seconds
 . time-stamp --only-time --underscore-all --round-quarter --no-seconds
 . time-stamp --only-time --underscore-all --round-half --no-seconds
+. time-stamp --full-year --dash-all
+. time-stamp --dash-all
+. time-stamp --full-year --round-quarter --dash-all
+. time-stamp --full-year --round-half --dash-all
+. time-stamp --full-year --only-date --dash-all
+. time-stamp --only-date --dash-all
+. time-stamp --only-time --dash-all
+. time-stamp --only-time --dash-all --no-seconds
+. time-stamp --only-time --dash-all --round-quarter --no-seconds
+. time-stamp --only-time --dash-all --round-half --no-seconds
 . time-stamp --short --default-stamp
 . time-stamp --full-year --underscore-all --default-stamp
 . time-stamp --full-year --only-date --short-year

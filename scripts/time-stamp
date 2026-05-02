@@ -45,7 +45,7 @@
 # MINOR version for added functionality in a backwards compatible manner
 # PATCH version for backwards compatible bug fixes
 #
-VERSION=2.2.1
+VERSION=2.2.2
 
 usage_exit() {
     echo "usage: ${0##*/} [-h | --help] [OPTION]..."
@@ -74,6 +74,7 @@ optional arguments:
   --round-quarter   round minutes down to the nearest 15
   --round-half      round minutes down to the nearst half hour
   --underscore-all  special format as YYYY_MM_DD_hhmmss
+  --dash-all        special format as YYYY-MM-DD-hhmmss
   --version         print out the version number and exit
 
 @eof
@@ -155,6 +156,10 @@ do
         ;;
 
         --underscore-all) dateSeparator='_'; timeSeparator='_'
+             shift
+        ;;
+
+        --dash-all) dateSeparator='-'; timeSeparator='-'
              shift
         ;;
 
