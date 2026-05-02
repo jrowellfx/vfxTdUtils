@@ -1,0 +1,165 @@
+------ Begin Tests ------
+
+----- Test 1 -+- dir: . -+- uname -----
+Darwin
+
+----- Test 2 -+- dir: emptyDir -+- runsed -----
+runsed: Error: the sed.script file does not exist.
+               hint: try making a file called sed.script in the current directory.
+--+--  runsed returned non-zero error code: 1  --+--
+
+----- Test 3 -+- dir: . -+- runsed --version -----
+1.1.0
+
+----- Test 4 -+- dir: . -+- runsed --help -----
+usage: runsed [-h | --help] [OPTION]... [FILE]...
+
+runsed is a wrapper for the command "sed -f sed.script [FILE]...".
+
+runsed runs a SCRIPT-FILE called "sed.script" that needs to exist
+in the current directory on each FILE listed on the command line.
+Override the name of the SCRIPT-FILE with the -f or --file option.
+
+runsed changes the files in place, that is, it replaces the existing
+FILE with a stream-edited copy of itself.
+
+A backup copy of each original FILE is created called ".FILE.runsed" in the
+directory that FILE resides.
+
+Two special files are also created in the current directory to allow you
+to review all the changes made as well as undo the changes if the results
+weren't what you expected.  Namely, the files ".runsed.diff.runsed" and
+".runsed.undo.runsed" which are executable.
+
+When you are eventually satisfied simply remove the ".*.runsed" files
+with the command:
+    rm .*.runsed
+
+...or including all subdirectories and safely dealing with files with spaces
+in their names with the command:
+
+    find . -name '.*.runsed' -type f -print0 | xargs -0 /bin/rm -f
+
+positional arguments:
+    FILE            file names to run the sed.script on
+
+optional arguments:
+ -h, --help             show this help and exit
+ --version              print out the version number and exit
+ -f|--file SCRIPT-FILE  use the file SCRIPT-FILE instead of the default
+                           ./sed.script file
+ -E                     use extended regular expressions in the script
+
+--+--  runsed returned non-zero error code: 1  --+--
+
+----- Test 5 -+- dir: . -+- runsed --noSuchArg -----
+runsed: ERROR: Invalid option '--noSuchArg'.
+usage: runsed [-h | --help] [OPTION]... [FILE]...
+--+--  runsed returned non-zero error code: 1  --+--
+
+----- Test 6 -+- dir: . -+- cat macbeth.txt -----
+    When shall we three meet again
+    In thunder, lightning, or in rain?
+        When the hurlyburly's done,
+        When the battle's lost and won.
+            That will be ere the set of sun.
+    Where the place?
+        Upon the heath.
+            There to meet with Macbeth.
+    I come, Graymalkin!
+        Paddock calls.
+            Anon.
+                Fair is foul, and foul is fair:
+                Hover through the fog and filthy air.
+
+----- Test 7 -+- dir: . -+- cat sed.script -----
+1,$ s/When/WHEN/g
+1,$ s/and/\&/g
+1,$ s/foul/nasty/g
+1,$ s/is/==/g
+1,$ s/meet/reunite/
+1,$ s/of/de/
+1,$ s/the/t'/g
+
+----- Test 8 -+- dir: . -+- runsed macbeth.txt -----
+
+----- Test 9 -+- dir: . -+- .runsed.diff.runsed -----
++ /usr/bin/diff ./.macbeth.txt.runsed macbeth.txt
+1c1
+<     When shall we three meet again
+---
+>     WHEN shall we three reunite again
+3,8c3,8
+<         When the hurlyburly's done,
+<         When the battle's lost and won.
+<             That will be ere the set of sun.
+<     Where the place?
+<         Upon the heath.
+<             There to meet with Macbeth.
+---
+>         WHEN t' hurlyburly's done,
+>         WHEN t' battle's lost & won.
+>             That will be ere t' set de sun.
+>     Where t' place?
+>         Upon t' heath.
+>             There to reunite with Macbeth.
+12,13c12,13
+<                 Fair is foul, and foul is fair:
+<                 Hover through the fog and filthy air.
+---
+>                 Fair == nasty, & nasty == fair:
+>                 Hover through t' fog & filthy air.
+
+
+----- Test 10 -+- dir: . -+- .runsed.undo.runsed -----
+
+----- Test 11 -+- dir: . -+- cat macbeth.txt -----
+    When shall we three meet again
+    In thunder, lightning, or in rain?
+        When the hurlyburly's done,
+        When the battle's lost and won.
+            That will be ere the set of sun.
+    Where the place?
+        Upon the heath.
+            There to meet with Macbeth.
+    I come, Graymalkin!
+        Paddock calls.
+            Anon.
+                Fair is foul, and foul is fair:
+                Hover through the fog and filthy air.
+
+----- Test 12 -+- dir: aaa -+- runsed -f sed.script.alt macbeth.txt -----
+
+----- Test 13 -+- dir: aaa -+- .runsed.diff.runsed -----
++ /usr/bin/diff ./.macbeth.txt.runsed macbeth.txt
+4c4
+<         When the battle's lost and won.
+---
+>         When the battle's lost & won.
+12,13c12,13
+<                 Fair is foul, and foul is fair:
+<                 Hover through the fog and filthy air.
+---
+>                 Fair == foul, & foul == fair:
+>                 Hover through the fog & filthy air.
+
+
+----- Test 14 -+- dir: aaa -+- .runsed.undo.runsed -----
+
+----- Test 15 -+- dir: aaa -+- runsed -E -f sed.script.alt macbeth.txt -----
+
+----- Test 16 -+- dir: aaa -+- .runsed.diff.runsed -----
++ /usr/bin/diff ./.macbeth.txt.runsed macbeth.txt
+4c4
+<         When the battle's lost and won.
+---
+>         When the battle's lost & won.
+12,13c12,13
+<                 Fair is foul, and foul is fair:
+<                 Hover through the fog and filthy air.
+---
+>                 Fair == foul, & foul == fair:
+>                 Hover through the fog & filthy air.
+
+
+----- Test 17 -+- dir: aaa -+- .runsed.undo.runsed -----
