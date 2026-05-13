@@ -73,7 +73,7 @@ the following versions each:
 
 ```
 mod-tstamp  : v1.0.1
-rm-spaces   : v2.2.1
+rm-spaces   : v2.2.2
 runsed      : v1.1.0
 spaces2tabs : v1.0.1
 tabs2spaces : v1.0.1
