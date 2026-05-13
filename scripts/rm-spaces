@@ -57,7 +57,6 @@ tac() {
 
 trap cleanup INT
 
-### -U, --convert-utf-8  convert various UTF-8 characters to ascii equivalents
 usageExit() {
     echo "usage: $1 [-h | --help] [OPTION]..."
     if [ "$2" = help ]; then
@@ -129,7 +128,6 @@ OPT_DO_REGFILES=true
 OPT_EXECUTE=false
 OPT_CAMELCASE=false
 OPT_REMOVE_QUOTES=false
-### OPT_CONVERT_UTF8=false
 OPT_MATCH_DATES=true
 
 while :
@@ -178,10 +176,6 @@ do
             shift
         ;;
 
-        ### -U|--convert-utf-8) OPT_CONVERT_UTF8=true
-        ###     shift
-        ### ;;
-
         -q|--remove-quotes) OPT_REMOVE_QUOTES=true
             shift
         ;;
@@ -215,18 +209,6 @@ cat /dev/null > /tmp/tmp.$cmdName.sed.script.$$
 # heuristics for removing spaces or a few special (to the shell)
 # characters (like quotes etc.) from filenames while keeping the
 # filename as true to the original as possible.
-
-### Replace a few "smart" dashes with minus sign.
-###
-### –     : E2 80 93  : En Dash
-### —     : E2 80 94  : Em Dash
-###
-### if [ "$OPT_CONVERT_UTF8" = true ] ; then
-### cat <<EOF2u >> /tmp/tmp.$cmdName.sed.script.$$
-### s/\\xe2\\x80\\x94/-/g
-### s/\\xe2\\x80\\x93/-/g
-### EOF2u
-### fi
 
 # The next section removes:
 #   - the "'" from apostrophe-s words.
@@ -579,7 +561,13 @@ if [ "$OPT_DO_REGFILES" = true ] ; then
     cp /dev/null .undo.files.$cmdName
     echo '#!/bin/bash' > .failed.files.$cmdName
 
-    ### if [ "$OPT_REMOVE_QUOTES" = true -o "$OPT_CONVERT_UTF8" = true ] ; then
+    # Note: we're also matching on utf-8 em and en dashes,
+    # which means rm-spaces will replace them with ascii-dashes
+    # even if there are no spaces in the filename. This is
+    # admittedly kind of a hack, but seems desireable given
+    # that rm-spaces will always replace utf-8 em/en dashes
+    # with ascii-dashes when there are spaces in the filename.
+    #
     if [ "$OPT_REMOVE_QUOTES" = true ] ; then
         find . $findOptions \
             \( -name '* *' \
@@ -597,6 +585,12 @@ if [ "$OPT_DO_REGFILES" = true ] ; then
             \( -type f -o -type l \) \
             -exec /tmp/tmp.$cmdName.$$ {} `pwd` files \;
     else
+        # Note below we're matching 'find' with regular ascii spaces and UTF-8
+        # non-breaking spaces.  I cut/paste the non-breaking space into
+        # the second -name pattern match below.  I.e., it contains hex C2 A0.
+        # This is also in the above set of name matches in the OPT_REMOVE_QUOTES case,
+        # as well as below for directory names.
+        #
         find . $findOptions \( -name '* *' -o -name '* *' \) \( -type f -o -type l \) \
             -exec /tmp/tmp.$cmdName.$$ {} `pwd` files \;
     fi
@@ -636,7 +630,6 @@ if [ "$OPT_DO_DIRECTORIES" = true ] ; then
     cp /dev/null .undo.dirs.$cmdName
     echo '#!/bin/bash' > .failed.dirs.$cmdName
 
-    ### if [ "$OPT_REMOVE_QUOTES" = true -o "$OPT_CONVERT_UTF8" = true ] ; then
     if [ "$OPT_REMOVE_QUOTES" = true ] ; then
         find . -depth \
             \( -name '* *' \
