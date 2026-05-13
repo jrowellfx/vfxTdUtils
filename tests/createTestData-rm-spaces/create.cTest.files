@@ -1,1 +1,13 @@
 cdir/c_01/charlie's file.txt
+cdir/c_01/non breaking space
+cdir/c_02/dash01 - dash01.txt
+cdir/c_02/dash02 -dash02.txt
+cdir/c_02/dash03- dash03.txt
+cdir/c_02/dash04–dash04.txt
+cdir/c_02/dash05—dash05.txt
+cdir/c_02/dash06 – dash06.txt
+cdir/c_02/dash07 — dash07.txt
+cdir/c_02/dash08 –dash08.txt
+cdir/c_02/dash09 —dash09.txt
+cdir/c_02/dash10– dash10.txt
+cdir/c_02/dash11— dash11.txt

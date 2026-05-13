@@ -42,7 +42,7 @@
 # MINOR version for added functionality in a backwards compatible manner
 # PATCH version for backwards compatible bug fixes
 #
-VERSION := 2.5.0
+VERSION := 2.5.1
 REPO := vfxTdUtils
 SHELL := /bin/bash
 TARBALL_NAME := $(REPO)-$(VERSION)

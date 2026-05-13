@@ -234,6 +234,11 @@ cdir ./.rename.files.rm-spaces
 cdir lsseq     -a -R -n -F
 cdir ./.undo.files.rm-spaces
 cdir lsseq     -a -R -n -F
+cdir/c_02 find . -type f
+cdir/c_02 rm-spaces --execute --remove-quotes
+cdir/c_02 find . -type f
+cdir/c_02 ./.undo.files.rm-spaces
+cdir/c_02 find . -type f
 ddir pwd
 ddir find . -type f
 ddir rm-spaces -q -r --regular-files
