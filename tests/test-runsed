@@ -48,6 +48,15 @@ cleanupExit() {
     /bin/rm $tmpTestCmdFile > /dev/null 2>&1
     /bin/rm $tmpFile > /dev/null 2>&1
     /bin/rm $tmpLine > /dev/null 2>&1
+
+    # These two are created dynamically by this script (see below) for
+    # the v1.1.1 regression tests, and aren't checked into the repo --
+    # remove them so the working tree doesn't accumulate test-runtime
+    # artifacts.
+    #
+    /bin/rm "$TEST_DIR/$HERO_TESTDIR/aaa/sed.script with space" > /dev/null 2>&1
+    /bin/rm -r "$TEST_DIR/$HERO_TESTDIR/dir with space" > /dev/null 2>&1
+
     exit $1
 }
 
@@ -129,6 +138,15 @@ fi
 
 echo "Test is using " `which runsed`
 
+# .runsed.diff.runsed and .runsed.undo.runsed (created by runsed itself,
+# below) are invoked as bare commands later in this script. That only
+# resolves if '.' is in PATH -- which isn't this script's business to
+# assume about the operator's own shell config, so ensure it here.
+#
+if [[ ! ":$PATH:" == *":.:"* ]]; then
+    export PATH=".:$PATH"
+fi
+
 export HERO_TESTDIR=test-runsed-dir
 export HERO_CREATEDATADIR=createTestData-runsed
 
@@ -169,6 +187,24 @@ fi
 ### cat $tmpFile | xargs -0 chmod 666
 ### cd $TEST_DIR
 
+# Regression coverage for the v1.1.1 fixes. These fixtures are created
+# here at runtime, rather than checked in statically like the rest of
+# $HERO_TESTDIR, so the new tests are self-contained in this script.
+#
+#  - A SCRIPT-FILE name containing a space, for the -f/--file fix.
+#  - A whole workingDir whose path contains a space, for the cd/pwd
+#    fix. The generic per-line test format below can't express a
+#    workingDir containing a space itself (see the note below), so
+#    this one is driven by hand, after the main test loop.
+#
+cat > "$TEST_DIR/$HERO_TESTDIR/aaa/sed.script with space" << 'EOF1b'
+1,$ s/Graymalkin/GRAYMALKIN/g
+EOF1b
+
+mkdir -p "$TEST_DIR/$HERO_TESTDIR/dir with space"
+cp "$TEST_DIR/$HERO_TESTDIR/macbeth.txt" "$TEST_DIR/$HERO_TESTDIR/dir with space/macbeth.txt"
+cp "$TEST_DIR/$HERO_TESTDIR/sed.script"  "$TEST_DIR/$HERO_TESTDIR/dir with space/sed.script"
+
 # Timestamp all the test files to be a fixed date so that their file times are 
 # not dependent upon the date set when running the test. This gives us
 # consistent test data output.
@@ -202,6 +238,10 @@ aaa      .runsed.undo.runsed
 aaa      runsed -E -f sed.script.alt macbeth.txt
 aaa      .runsed.diff.runsed
 aaa      .runsed.undo.runsed
+aaa      runsed -f 'sed.script with space' macbeth.txt
+aaa      .runsed.diff.runsed
+aaa      .runsed.undo.runsed
+.        runsed -f                                # missing SCRIPT-FILE arg: should error clearly, not silently misbehave
 EOF
 
 export NUM_TESTS=`wc -l < $tmpTestCmdFile`
@@ -273,6 +313,28 @@ while true; do
 done
 
 set +f # Turn globbing back on
+
+# Extra, hand-rolled regression test for the v1.1.1 cd/pwd fix: a
+# workingDir whose path contains a space. Can't be expressed in the
+# generic per-line table above (see the note near the top of that
+# table), so it's driven directly here instead.
+#
+# The key part of this test is running the undo script from a
+# DIFFERENT directory than where it was created -- that's the exact
+# scenario that used to silently fail to restore the file.
+#
+echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
+echo "----- Extra test -+- dir: 'dir with space' -+- runsed macbeth.txt -----" >> $TEST_DIR/$TEST_OUT_FILENAME
+cd "$TEST_DIR/$HERO_TESTDIR/dir with space"
+runsed macbeth.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+
+echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
+echo "----- Extra test -+- dir: 'dir with space' -+- .runsed.undo.runsed (run from elsewhere) -----" >> $TEST_DIR/$TEST_OUT_FILENAME
+cd $TEST_DIR
+"$TEST_DIR/$HERO_TESTDIR/dir with space/.runsed.undo.runsed" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+echo "undo exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
+echo "restored macbeth.txt:" >> $TEST_DIR/$TEST_OUT_FILENAME
+cat "$TEST_DIR/$HERO_TESTDIR/dir with space/macbeth.txt" >> $TEST_DIR/$TEST_OUT_FILENAME
 
 sed -e "1,$ s-$TEST_DIR-/...absPathToRepo.../tests-g" < $TEST_DIR/$TEST_OUT_FILENAME | \
     sed -e "1,$ s/$USER/testUser/g" > $tmpFile

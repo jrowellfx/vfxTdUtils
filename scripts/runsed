@@ -40,12 +40,14 @@
 
 set +o noclobber
 
+tmpFile=`mktemp` || exit 1
+
 cleanup() {
-    /bin/rm /tmp/runsed$$ > /dev/null 2>&1
+    /bin/rm "$tmpFile" > /dev/null 2>&1
     exit
 }
 
-trap cleanup INT
+trap cleanup INT TERM
 
 # Semantic Versioning 2.0.0
 #
@@ -53,7 +55,7 @@ trap cleanup INT
 # MINOR version for added functionality in a backwards compatible manner
 # PATCH version for backwards compatible bug fixes
 #
-VERSION=1.1.0
+VERSION=1.1.1
 
 SED_SCRIPT_FILENAME=sed.script
 OPT_EXTENDED_REGEX=""
@@ -119,6 +121,10 @@ do
 
         -f|--file)
             shift
+            if [ $# -eq 0 ]; then
+                echo "runsed: ERROR: -f|--file requires a SCRIPT-FILE argument."
+                usageExit
+            fi
             SED_SCRIPT_FILENAME=$1
             shift
         ;;
@@ -135,16 +141,18 @@ do
     esac
 done
 
-if [ ! -e $SED_SCRIPT_FILENAME ]; then
+if [ ! -e "$SED_SCRIPT_FILENAME" ]; then
     echo runsed: Error: the $SED_SCRIPT_FILENAME file does not exist.
     echo "               hint: try making a file called sed.script in the current directory."
     exit 1
 fi
 
-echo '#!/bin/bash' >  .runsed.undo.runsed
-echo cd `pwd`      >> .runsed.undo.runsed
-echo '#!/bin/bash' >  .runsed.diff.runsed
-echo cd `pwd`      >> .runsed.diff.runsed
+curDir=`pwd`
+
+echo '#!/bin/bash'  >  .runsed.undo.runsed
+echo cd \"$curDir\" >> .runsed.undo.runsed
+echo '#!/bin/bash'  >  .runsed.diff.runsed
+echo cd \"$curDir\" >> .runsed.diff.runsed
 chmod +x .runsed.undo.runsed .runsed.diff.runsed
 echo '( set -x' >> .runsed.diff.runsed
 
@@ -152,22 +160,22 @@ while  [ $# -ne 0 ]
 do
     i="$1"
 
-    if [ "$i" != $SED_SCRIPT_FILENAME ] && [ -f "$i" ] && [ -w "$i" ] ; then
-        sed $OPT_EXTENDED_REGEX -f $SED_SCRIPT_FILENAME "$i" > /tmp/runsed$$
+    if [ "$i" != "$SED_SCRIPT_FILENAME" ] && [ -f "$i" ] && [ -w "$i" ] ; then
+        sed $OPT_EXTENDED_REGEX -f "$SED_SCRIPT_FILENAME" "$i" > "$tmpFile"
         if [ $? -ne 0 ]; then
             /bin/rm .runsed.undo.runsed
             /bin/rm .runsed.diff.runsed
-            /bin/rm /tmp/runsed$$ > /dev/null 2>&1
+            /bin/rm "$tmpFile" > /dev/null 2>&1
             exit 1
         fi
-        cmp -s "$i" /tmp/runsed$$ > /dev/null 2>&1
+        cmp -s "$i" "$tmpFile" > /dev/null 2>&1
         if [ $? -eq 1 ]; then
             d=`dirname "$i"`
             f=`basename "$i"`
             /bin/cp "$i" "$d"/."$f".runsed
             echo /bin/cp \""$d"\"/.\""$f"\".runsed \""$i"\" >> .runsed.undo.runsed
             echo "/usr/bin/diff \""$d"\"/.\""$f"\".runsed \""$i"\"; echo" >> .runsed.diff.runsed
-            /bin/cp /tmp/runsed$$ "$i"
+            /bin/cp "$tmpFile" "$i"
         fi
     fi
     if [ ! -w "$i" ]; then

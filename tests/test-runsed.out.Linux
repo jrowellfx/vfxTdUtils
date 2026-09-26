@@ -9,7 +9,7 @@ runsed: Error: the sed.script file does not exist.
 --+--  runsed returned non-zero error code: 1  --+--
 
 ----- Test 3 -+- dir: . -+- runsed --version -----
-1.1.0
+1.1.1
 
 ----- Test 4 -+- dir: . -+- runsed --help -----
 usage: runsed [-h | --help] [OPTION]... [FILE]...
@@ -163,3 +163,39 @@ usage: runsed [-h | --help] [OPTION]... [FILE]...
 
 
 ----- Test 17 -+- dir: aaa -+- .runsed.undo.runsed -----
+
+----- Test 18 -+- dir: aaa -+- runsed -f 'sed.script with space' macbeth.txt -----
+
+----- Test 19 -+- dir: aaa -+- .runsed.diff.runsed -----
++ /usr/bin/diff ./.macbeth.txt.runsed macbeth.txt
+9c9
+<     I come, Graymalkin!
+---
+>     I come, GRAYMALKIN!
+
+
+----- Test 20 -+- dir: aaa -+- .runsed.undo.runsed -----
+
+----- Test 21 -+- dir: . -+- runsed -f -----
+runsed: ERROR: -f|--file requires a SCRIPT-FILE argument.
+usage: runsed [-h | --help] [OPTION]... [FILE]...
+--+--  runsed returned non-zero error code: 1  --+--
+
+----- Extra test -+- dir: 'dir with space' -+- runsed macbeth.txt -----
+
+----- Extra test -+- dir: 'dir with space' -+- .runsed.undo.runsed (run from elsewhere) -----
+undo exit code: 0
+restored macbeth.txt:
+    When shall we three meet again
+    In thunder, lightning, or in rain?
+        When the hurlyburly's done,
+        When the battle's lost and won.
+            That will be ere the set of sun.
+    Where the place?
+        Upon the heath.
+            There to meet with Macbeth.
+    I come, Graymalkin!
+        Paddock calls.
+            Anon.
+                Fair is foul, and foul is fair:
+                Hover through the fog and filthy air.
