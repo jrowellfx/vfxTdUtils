@@ -40,14 +40,18 @@
 # MINOR version for added functionality in a backwards compatible manner
 # PATCH version for backwards compatible bug fixes
 #
-VERSION=2.2.2
+VERSION=2.2.3
 
 set +o noclobber
 cmdName=`basename "$0"`
 
+tmpEmpty=`mktemp`     || exit 1
+tmpSedScript=`mktemp` || exit 1
+tmpHelper=`mktemp`    || exit 1
+tmpTac=`mktemp`       || exit 1
+
 cleanup() {
-    /bin/rm /tmp/tmp.$cmdName.*.$$ > /dev/null 2>&1
-    /bin/rm /tmp/tmp.$cmdName.$$ > /dev/null 2>&1
+    /bin/rm "$tmpEmpty" "$tmpSedScript" "$tmpHelper" "$tmpTac" > /dev/null 2>&1
     exit 0
 }
 
@@ -55,7 +59,7 @@ tac() {
     perl -e "print reverse(<>)" "$@"
 }
 
-trap cleanup INT
+trap cleanup INT TERM
 
 usageExit() {
     echo "usage: $1 [-h | --help] [OPTION]..."
@@ -196,14 +200,14 @@ do
     esac
 done
 
-echo '#!/bin/bash' > /tmp/tmp.$cmdName.empty.$$
-echo '' >> /tmp/tmp.$cmdName.empty.$$
+echo '#!/bin/bash' > "$tmpEmpty"
+echo '' >> "$tmpEmpty"
 
 # Make a sed script that removes spaces.
 # Start with an empty file, it fills up below
 # based on command-line options above.
 #
-cat /dev/null > /tmp/tmp.$cmdName.sed.script.$$
+cat /dev/null > "$tmpSedScript"
 
 # The sed scripts below attempt to encapsulate some basic
 # heuristics for removing spaces or a few special (to the shell)
@@ -219,7 +223,7 @@ cat /dev/null > /tmp/tmp.$cmdName.sed.script.$$
 #   - Replaces hash-marks (#) with a space.
 #
 if [ "$OPT_REMOVE_QUOTES" = true ] ; then
-cat <<EOF2a >> /tmp/tmp.$cmdName.sed.script.$$
+cat <<EOF2a >> "$tmpSedScript"
 s/\\([a-zA-Z]\\)'s/\\1s/g
 s/\\([A-Z]\\)'S/\\1S/g
 s/\\[/ /g
@@ -233,7 +237,7 @@ fi
 
 # Replaces white-space (includes tabs) with a single space.
 #
-echo -e 's/[ \t][ \t]*/ /g' >> /tmp/tmp.$cmdName.sed.script.$$
+echo -e 's/[ \t][ \t]*/ /g' >> "$tmpSedScript"
 
 # Remove spaces from front and back of filename.
 # Replace multiple-spaces with single-space.
@@ -244,7 +248,7 @@ echo -e 's/[ \t][ \t]*/ /g' >> /tmp/tmp.$cmdName.sed.script.$$
 # replates hex(C2 A0) non-breaking space with a space.
 # replaces UTF-8 em and en dashes with '-' (minus) ascii dash.
 #
-cat <<EOF2b >> /tmp/tmp.$cmdName.sed.script.$$
+cat <<EOF2b >> "$tmpSedScript"
 s/\\xc2\\xa0/ /g
 s/\\xe2\\x80\\x94/-/g
 s/\\xe2\\x80\\x93/-/g
@@ -254,7 +258,7 @@ s/  */ /
 s/\\([!-.:-?\\[-\`]\\) /\\1/g
 s/ \\([!-.:-?\\[-\`]\\)/\\1/g
 s/ \\([vV]\\)\\([0-9]\\)/_\\1\\2/g
-s/\\([0-9]\\) \\(0-9]\\)/\\1_\\2/g
+s/\\([0-9]\\) \\([0-9]\\)/\\1_\\2/g
 s/_-/-/g
 s/-_/-/g
 EOF2b
@@ -272,7 +276,7 @@ EOF2b
 #   YY.MM.DD
 #
 if [ "$OPT_MATCH_DATES" = true ] ; then
-cat <<EOF2e >> /tmp/tmp.$cmdName.sed.script.$$
+cat <<EOF2e >> "$tmpSedScript"
 
 s/\\(19[0-9][0-9]0[1-9]0[1-9]\\) /\\1_/g
 s/\\(19[0-9][0-9]0[1-9][12][0-9]\\) /\\1_/g
@@ -469,7 +473,7 @@ fi
 # Replace spaces based on camelCase convention.
 #
 if [ "$OPT_CAMELCASE" = true ] ; then
-cat <<EOF2c >> /tmp/tmp.$cmdName.sed.script.$$
+cat <<EOF2c >> "$tmpSedScript"
 s/\\([A-Z]\\) \\([a-zA-Z]\\)/\\1_\\2/g
 s/\\([a-z]\\) \\([A-Z]\\)/\\1\\2/g
 s/\\([a-zA-Z]\\) \\([0-9]\\)/\\1\\2/g
@@ -506,7 +510,7 @@ fi
 # At this point, any spaces left over (after all of the above is run)
 # get replaces with underscores. Plus a couple of other odd cases.
 #
-cat <<EOF2d >> /tmp/tmp.$cmdName.sed.script.$$
+cat <<EOF2d >> "$tmpSedScript"
 s/ /_/g
 s/_-_/-/g
 s/_-/-/g
@@ -515,7 +519,7 @@ EOF2d
 
 # Make a shell script that gets executed by "find" as it walks the tree.
 #
-cat <<EOF3 > /tmp/tmp.$cmdName.$$
+cat <<EOF3 > "$tmpHelper"
 #!/bin/bash
 
     renameCmds=\$2/.rename.\$3.$cmdName
@@ -533,7 +537,7 @@ cat <<EOF3 > /tmp/tmp.$cmdName.$$
     safe_bName=\`echo "\$bName" | sed -e "s/'/'\"'\"'/g"\`
     safe_srcName="\$safe_dName/\$safe_bName"
 
-    dest_bName=\`echo "\$bName" | sed -f /tmp/tmp.$cmdName.sed.script.$$\`
+    dest_bName=\`echo "\$bName" | sed -f "$tmpSedScript"\`
     destName="\$dName/\$dest_bName"
 
     safe_dest_bName=\`echo "\$dest_bName" | sed -e "s/'/'\"'\"'/g"\`
@@ -551,7 +555,7 @@ cat <<EOF3 > /tmp/tmp.$cmdName.$$
         echo mv \\'"\$safe_destName"\\' \\'"\$safe_srcName"\\' >> \$undoCmds
     fi
 EOF3
-chmod 755 /tmp/tmp.$cmdName.$$
+chmod 755 "$tmpHelper"
 
 # Print the move commands into the following execuatble scripts.
 #
@@ -583,7 +587,7 @@ if [ "$OPT_DO_REGFILES" = true ] ; then
                 -o -name "*'*" \
                 -o -name '*"*' \) \
             \( -type f -o -type l \) \
-            -exec /tmp/tmp.$cmdName.$$ {} `pwd` files \;
+            -exec "$tmpHelper" {} `pwd` files \;
     else
         # Note below we're matching 'find' with regular ascii spaces and UTF-8
         # non-breaking spaces.  I cut/paste the non-breaking space into
@@ -592,29 +596,29 @@ if [ "$OPT_DO_REGFILES" = true ] ; then
         # as well as below for directory names.
         #
         find . $findOptions \( -name '* *' -o -name '* *' \) \( -type f -o -type l \) \
-            -exec /tmp/tmp.$cmdName.$$ {} `pwd` files \;
+            -exec "$tmpHelper" {} `pwd` files \;
     fi
 
     echo '' >> .rename.files.$cmdName
     echo '#!/bin/bash' >> .undo.files.$cmdName
     echo '' >> .failed.files.$cmdName
-    tac .undo.files.$cmdName > /tmp/tmp.$cmdName.tac.$$
-    /bin/mv /tmp/tmp.$cmdName.tac.$$ .undo.files.$cmdName > /dev/null 2>&1
+    tac .undo.files.$cmdName > "$tmpTac"
+    /bin/mv "$tmpTac" .undo.files.$cmdName > /dev/null 2>&1
     echo '' >> .undo.files.$cmdName
 
     chmod +x .*.$cmdName
 
-    cmp --quiet /tmp/tmp.$cmdName.empty.$$ .rename.files.$cmdName
+    cmp --quiet "$tmpEmpty" .rename.files.$cmdName
     if [ $? -eq 0 ]; then
         /bin/rm .rename.files.$cmdName > /dev/null 2>&1
     fi
 
-    cmp --quiet /tmp/tmp.$cmdName.empty.$$ .undo.files.$cmdName
+    cmp --quiet "$tmpEmpty" .undo.files.$cmdName
     if [ $? -eq 0 ]; then
         /bin/rm .undo.files.$cmdName > /dev/null 2>&1
     fi
 
-    cmp --quiet /tmp/tmp.$cmdName.empty.$$ .failed.files.$cmdName
+    cmp --quiet "$tmpEmpty" .failed.files.$cmdName
     if [ $? -eq 0 ]; then
         /bin/rm .failed.files.$cmdName > /dev/null 2>&1
     fi
@@ -644,33 +648,33 @@ if [ "$OPT_DO_DIRECTORIES" = true ] ; then
                 -o -name '*}*' \
                 -o -name "*'*" \
                 -o -name '*"*' \) \
-            -type d -exec /tmp/tmp.$cmdName.$$ {} `pwd` dirs \;
+            -type d -exec "$tmpHelper" {} `pwd` dirs \;
     else
         find . -depth \( -name '* *' -o -name '* *' \) \
-            -type d -exec /tmp/tmp.$cmdName.$$ {} `pwd` dirs \;
+            -type d -exec "$tmpHelper" {} `pwd` dirs \;
     fi
 
     echo '' >> .rename.dirs.$cmdName
     echo '#!/bin/bash' >> .undo.dirs.$cmdName
     echo '' >> .failed.dirs.$cmdName
 
-    tac .undo.dirs.$cmdName > /tmp/tmp.$cmdName.tac.$$
-    /bin/mv /tmp/tmp.$cmdName.tac.$$ .undo.dirs.$cmdName > /dev/null 2>&1
+    tac .undo.dirs.$cmdName > "$tmpTac"
+    /bin/mv "$tmpTac" .undo.dirs.$cmdName > /dev/null 2>&1
     echo '' >> .undo.dirs.$cmdName
 
     chmod +x .*.$cmdName
 
-    cmp --quiet /tmp/tmp.$cmdName.empty.$$ .rename.dirs.$cmdName
+    cmp --quiet "$tmpEmpty" .rename.dirs.$cmdName
     if [ $? -eq 0 ]; then
         /bin/rm .rename.dirs.$cmdName > /dev/null 2>&1
     fi
 
-    cmp --quiet /tmp/tmp.$cmdName.empty.$$ .undo.dirs.$cmdName
+    cmp --quiet "$tmpEmpty" .undo.dirs.$cmdName
     if [ $? -eq 0 ]; then
         /bin/rm .undo.dirs.$cmdName > /dev/null 2>&1
     fi
 
-    cmp --quiet /tmp/tmp.$cmdName.empty.$$ .failed.dirs.$cmdName
+    cmp --quiet "$tmpEmpty" .failed.dirs.$cmdName
     if [ $? -eq 0 ]; then
         /bin/rm .failed.dirs.$cmdName > /dev/null 2>&1
     fi
