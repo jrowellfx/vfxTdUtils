@@ -86,11 +86,13 @@ optional arguments:
   --no-strip-trailing-whitespace leave trailing whitespace untouched [default]
   --version                      print out the version number and exit
 
-Tip: if your editor's tab width differs from the system default (most
-systems assume 8), first run "tabs2spaces -t N" (using YOUR editor's
-width) to convert indentation to spaces, then "spaces2tabs -t 8" to
-re-tab at the standard width. This preserves how the file looks, even
-for someone viewing it with an unmodified, default-width tool.
+Tip: Assuming your system-default tabstop is set to 8 then when
+encountering a file that appears to have been created with a
+different tabstop setting (let's guess 4), to get the file to
+look correct, first run "tabs2spaces -t 4" to convert indentation
+to spaces, then "spaces2tabs -t 8" to re-tab at the standard width.
+Undo the changes if still not looking correct, and try another guess
+until it looks correct.
 
 EOF
         exit 0
