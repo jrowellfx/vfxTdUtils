@@ -5,10 +5,12 @@
 # expand/unexpand).
 #
 # Run this from the 'tests' directory in the vfxTdUtils git repo, having
-# first sourced source_to.runlocal (or otherwise arranged for tabs2spaces
+# first sourced source.to.runlocal (or otherwise arranged for tabs2spaces
 # and spaces2tabs to be on your PATH).
 
 export TEST_DIR=`pwd`
+
+export HERO_TESTDIR=test-tabs2spaces-dir
 
 tmpArgs=`mktemp`
 tmpTestCmdFile=`mktemp`
@@ -23,11 +25,13 @@ cleanupExit() {
 
     # Dynamically-created working copies used for the round-trip and
     # cd-with-space checks below, not checked into the repo -- this
-    # includes both the files themselves and the .FILE.tabs backups
-    # tabs2spaces/spaces2tabs create for each one they actually modify.
+    # includes both the files themselves and the .FILE.tabs/.FILE.spaces
+    # backups tabs2spaces/spaces2tabs create for each one they actually
+    # modify.
     #
     find "$TEST_DIR/$HERO_TESTDIR" -maxdepth 1 -name 'roundtrip-*' -delete > /dev/null 2>&1
-    find "$TEST_DIR/$HERO_TESTDIR" -maxdepth 1 -name '.roundtrip-*.tabs' -delete > /dev/null 2>&1
+    find "$TEST_DIR/$HERO_TESTDIR" -maxdepth 1 -name '.*.tabs' -delete > /dev/null 2>&1
+    find "$TEST_DIR/$HERO_TESTDIR" -maxdepth 1 -name '.*.spaces' -delete > /dev/null 2>&1
     /bin/rm -r "$TEST_DIR/$HERO_TESTDIR/dir with space" > /dev/null 2>&1
 
     exit $1
@@ -42,7 +46,8 @@ if [[ ! ":$PATH:" == *":$TEST_DIR:"* ]]; then
     export PATH="$TEST_DIR:$PATH"
 fi
 
-# .tabs.diff.tabs and .tabs.undo.tabs (created by tabs2spaces/spaces2tabs
+# .tabs.diff.tabs, .tabs.undo.tabs, .spaces.diff.spaces
+# and .spaces.undo.spaces (created by tabs2spaces/spaces2tabs
 # themselves, below) are invoked as bare commands later in this script.
 # That only resolves if '.' is in PATH.
 #
@@ -50,11 +55,11 @@ if [[ ! ":$PATH:" == *":.:"* ]]; then
     export PATH=".:$PATH"
 fi
 
-echo "Test is using " `which tabs2spaces` " and " `which spaces2tabs`
+echo "Test is using: "
+echo "    " `which tabs2spaces` ", and"
+echo "    " `which spaces2tabs`
 
-export HERO_TESTDIR=test-tabs2spaces-dir
-
-# Double check sensible REPO_DIR value (before doing any recursive rm).
+# Double check sensible REPO_DIR value.
 #
 REPO_DIR=`dirname $TEST_DIR`
 if [ -z "$REPO_DIR" ] || [ "$REPO_DIR" = "/" ] || [ "$REPO_DIR" = "." ]; then
@@ -63,13 +68,6 @@ if [ -z "$REPO_DIR" ] || [ "$REPO_DIR" = "/" ] || [ "$REPO_DIR" = "." ]; then
 fi
 
 TEST_OUT_FILENAME=test-tabs2spaces.out.`uname`.new
-
-# Timestamp all the test files to be a fixed date so that their file times
-# are not dependent upon the date set when running the test.
-#
-# Note: We use HAL's birthday from 2001: A Space Odyssey.
-#
-find $TEST_DIR/$HERO_TESTDIR -type f -exec touch -t 199201121330 \{\} \;
 
 /bin/rm -f $TEST_DIR/$TEST_OUT_FILENAME
 
@@ -85,13 +83,13 @@ find $TEST_DIR/$HERO_TESTDIR -type f -exec touch -t 199201121330 \{\} \;
 # after the main loop below for how that case is covered instead.
 #
 cat << EOF > $tmpTestCmdFile
-.        tabs2spaces --version
-.        spaces2tabs --version
-.        tabs2spaces --help
-.        spaces2tabs --help
-.        tabs2spaces -t abc123def nonexistent.doesnotmatter    # bad -t, no such file: still must not blow up
-.        tabs2spaces --bogus-option
-.        spaces2tabs --bogus-option
+.    tabs2spaces --version
+.    spaces2tabs --version
+.    tabs2spaces --help
+.    spaces2tabs --help
+.    tabs2spaces -t abc123def nonexistent.doesnotmatter    # bad -t, no such file: still must not blow up
+.    tabs2spaces --bogus-option
+.    spaces2tabs --bogus-option
 EOF
 
 NUM_TESTS=`wc -l < $tmpTestCmdFile`
@@ -200,12 +198,41 @@ echo "cmp (restored vs original) exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
 /bin/rm -f .tabs.undo.tabs .tabs.diff.tabs
 
 echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
+echo "----- Extra test -+- spaces2tabs's own diff/undo scripts, same check -----" >> $TEST_DIR/$TEST_OUT_FILENAME
+cp "macbeth.notabs.txt" roundtrip-undo2.txt
+spaces2tabs roundtrip-undo2.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+.spaces.undo.spaces >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+echo "undo exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
+cmp roundtrip-undo2.txt "macbeth.notabs.txt" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+echo "cmp (restored vs original) exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
+/bin/rm -f .spaces.undo.spaces .spaces.diff.spaces
+
+echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
+echo "----- Extra test -+- chained tabs2spaces + spaces2tabs on the SAME file, then both undos in reverse order -----" >> $TEST_DIR/$TEST_OUT_FILENAME
+printf '\tsome code\n\t\tnested code\n' > roundtrip-chain.txt
+tabs2spaces -t 4 roundtrip-chain.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+spaces2tabs -t 8 roundtrip-chain.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+echo "both backups present, distinctly:" >> $TEST_DIR/$TEST_OUT_FILENAME
+ls .roundtrip-chain.txt.tabs .roundtrip-chain.txt.spaces >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+.spaces.undo.spaces >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+echo "after undoing spaces2tabs's step:" >> $TEST_DIR/$TEST_OUT_FILENAME
+cat -A roundtrip-chain.txt >> $TEST_DIR/$TEST_OUT_FILENAME
+.tabs.undo.tabs >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+echo "after ALSO undoing tabs2spaces's step:" >> $TEST_DIR/$TEST_OUT_FILENAME
+cat -A roundtrip-chain.txt >> $TEST_DIR/$TEST_OUT_FILENAME
+printf '\tsome code\n\t\tnested code\n' > roundtrip-chain-orig.txt
+cmp roundtrip-chain.txt roundtrip-chain-orig.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+echo "cmp (fully-undone-chain vs true original) exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
+/bin/rm -f .tabs.undo.tabs .tabs.diff.tabs .spaces.undo.spaces .spaces.diff.spaces
+
+echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
 echo "----- Extra test -+- workingDir contains a space (cd/pwd regression check) -----" >> $TEST_DIR/$TEST_OUT_FILENAME
 mkdir -p "dir with space"
 cp "macbeth.tabs.txt" "dir with space/target.txt"
 cd "dir with space"
 tabs2spaces target.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
 cd $TEST_DIR/$HERO_TESTDIR
+#
 # Run the undo script from a DIFFERENT directory than where it was
 # created -- this is exactly the scenario that used to silently fail.
 #
@@ -220,8 +247,8 @@ cd $TEST_DIR
 # the golden master is reproducible across machines/users, same as the
 # other test harnesses in this repo.
 #
-sed -e "1,$ s-$TEST_DIR-/...absPathToRepo.../tests-g" < $TEST_DIR/$TEST_OUT_FILENAME | \
+sed -e "1,$ s-$TEST_DIR-/...absPathToRepo.../tests-g" $TEST_DIR/$TEST_OUT_FILENAME | \
     sed -e "1,$ s/$USER/testUser/g" > $tmpFile
-expand < $tmpFile | sed -e '1,$ s/ *$//' > $TEST_DIR/$TEST_OUT_FILENAME
+expand $tmpFile | sed -e '1,$ s/ *$//' > $TEST_DIR/$TEST_OUT_FILENAME
 
 cleanupExit 0

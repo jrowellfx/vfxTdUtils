@@ -38,6 +38,8 @@
 
 # test-time-stamp - Run the time-stamp regression tests.
 
+export HERO_TESTDIR=test-time-stamp-dir
+
 tmpArgs=/tmp/tmpARGS_TIMESTAMP.$$
 tmpTestCmdFile=/tmp/tmpTESTCMDFILE_TIMESTAMP.$$
 tmpFile=/tmp/tmpFILE_TIMESTAMP.$$

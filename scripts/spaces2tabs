@@ -65,16 +65,16 @@ usageExit() {
 
 $cmdName is a wrapper for the command unexpand. The FILES are changed in place.
 
-A backup copy of each original FILE is created called ".FILE.tabs" in the
+A backup copy of each original FILE is created called ".FILE.spaces" in the
 directory that FILE resides.
 
 Two special files are also created in the current directory to allow you
 to review all the changes made as well as undo the changes if the results
-weren't what you expected.  Namely, the files ".tabs.diff.tabs" and
-".tabs.undo.tabs" which are executable.
+weren't what you expected.  Namely, the files ".spaces.diff.spaces" and
+".spaces.undo.spaces" which are executable.
 
 Note: To get rid of all the crufty leftovers:
-    find . -name '.*.tabs' -type f -print0 | xargs -0 /bin/rm -f
+    find . -name '.*.spaces' -type f -print0 | xargs -0 /bin/rm -f
 
 positional arguments:
   FILE                      The file(s) to modify
@@ -86,11 +86,16 @@ optional arguments:
   --no-strip-trailing-whitespace leave trailing whitespace untouched [default]
   --version                      print out the version number and exit
 
-Tip: if your editor's tab width differs from the system default (most
-systems assume 8), first run "tabs2spaces -t N" (using YOUR editor's
-width) to convert indentation to spaces, then "spaces2tabs -t 8" to
-re-tab at the standard width. This preserves how the file looks, even
-for someone viewing it with an unmodified, default-width tool.
+Tip: If a file appears to have been created with a tabstop setting
+different from your system default (assumed to be 8), first guess
+that setting -- say, 4 -- and run "tabs2spaces -t 4" to see the
+result. If it still doesn't look right, undo (".tabs.undo.tabs")
+and try a different guess. Once the all-spaces result looks correct,
+run "spaces2tabs -t 8" to re-tab it at the standard width. Each
+step's undo is independent, so if you later change your mind, undo
+spaces2tabs first (".spaces.undo.spaces"), then tabs2spaces
+(".tabs.undo.tabs"), to cleanly reverse both steps back to the
+file's true original.
 
 EOF
         exit 0
@@ -159,12 +164,12 @@ esac
 
 curDir=`pwd`
 
-echo '#!/bin/bash'  >  .tabs.undo.tabs
-echo cd \"$curDir\" >> .tabs.undo.tabs
-echo '#!/bin/bash'  >  .tabs.diff.tabs
-echo cd \"$curDir\" >> .tabs.diff.tabs
-chmod +x .tabs.undo.tabs .tabs.diff.tabs
-echo '( set -x' >> .tabs.diff.tabs
+echo '#!/bin/bash'  >  .spaces.undo.spaces
+echo cd \"$curDir\" >> .spaces.undo.spaces
+echo '#!/bin/bash'  >  .spaces.diff.spaces
+echo cd \"$curDir\" >> .spaces.diff.spaces
+chmod +x .spaces.undo.spaces .spaces.diff.spaces
+echo '( set -x' >> .spaces.diff.spaces
 
 while  [ $# -ne 0 ]
 do
@@ -183,15 +188,15 @@ do
             if [ $? -eq 1 ]; then
                 d=`dirname "$i"`
                 f=`basename "$i"`
-                /bin/cp "$i" "$d"/."$f".tabs
-                echo /bin/cp \""$d"\"/.\""$f"\".tabs \""$i"\" >> .tabs.undo.tabs
-                echo "/usr/bin/diff \""$d"\"/.\""$f"\".tabs \""$i"\"; echo" >> .tabs.diff.tabs
+                /bin/cp "$i" "$d"/."$f".spaces
+                echo /bin/cp \""$d"\"/.\""$f"\".spaces \""$i"\" >> .spaces.undo.spaces
+                echo "/usr/bin/diff \""$d"\"/.\""$f"\".spaces \""$i"\"; echo" >> .spaces.diff.spaces
                 /bin/mv -f "$tmpFile" "$i"
                 if [ "$machine" == "mac" ]; then
-                    permissions=`stat -r "$d"/."$f".tabs | cut -d' ' -f3 | cut -c5-7`
+                    permissions=`stat -r "$d"/."$f".spaces | cut -d' ' -f3 | cut -c5-7`
                     chmod $permissions "$i"
                 else
-                    chmod --reference="$d"/."$f".tabs "$i"
+                    chmod --reference="$d"/."$f".spaces "$i"
                 fi
             fi
         fi
@@ -202,6 +207,6 @@ do
     shift
 done
 
-echo ') 2>&1 | grep -v "^+ echo" | less' >> .tabs.diff.tabs
+echo ') 2>&1 | grep -v "^+ echo" | less' >> .spaces.diff.spaces
 
 cleanup

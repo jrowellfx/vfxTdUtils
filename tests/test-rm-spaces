@@ -38,6 +38,9 @@
 
 # test-rm-spaces - Run the rm-spaces regression tests.
 
+export HERO_TESTDIR=test-rm-spaces-dir
+export HERO_CREATEDATADIR=createTestData-rm-spaces
+
 tmpArgs=/tmp/tmpARGS_RMSPACES.$$
 tmpTestCmdFile=/tmp/tmpTESTCMDFILE_RMSPACES.$$
 tmpFile=/tmp/tmpFILE_RMSPACES.$$
@@ -129,9 +132,6 @@ else
 fi
 
 echo "Test is using " `which rm-spaces`
-
-export HERO_TESTDIR=test-rm-spaces-dir
-export HERO_CREATEDATADIR=createTestData-rm-spaces
 
 # Double check sensible REPO_DIR value before removing old $HERO_TESTDIR
 #

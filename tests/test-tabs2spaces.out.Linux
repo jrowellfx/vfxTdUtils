@@ -33,11 +33,16 @@ optional arguments:
   --no-strip-trailing-whitespace leave trailing whitespace untouched [default]
   --version                      print out the version number and exit
 
-Tip: if your editor's tab width differs from the system default (most
-systems assume 8), first run "tabs2spaces -t N" (using YOUR editor's
-width) to convert indentation to spaces, then "spaces2tabs -t 8" to
-re-tab at the standard width. This preserves how the file looks, even
-for someone viewing it with an unmodified, default-width tool.
+Tip: If a file appears to have been created with a tabstop setting
+different from your system default (assumed to be 8), first guess
+that setting -- say, 4 -- and run "tabs2spaces -t 4" to see the
+result. If it still doesn't look right, undo (".tabs.undo.tabs")
+and try a different guess. Once the all-spaces result looks correct,
+run "spaces2tabs -t 8" to re-tab it at the standard width. Each
+step's undo is independent, so if you later change your mind, undo
+spaces2tabs first (".spaces.undo.spaces"), then tabs2spaces
+(".tabs.undo.tabs"), to cleanly reverse both steps back to the
+file's true original.
 
 exit code: 0
 
@@ -46,16 +51,16 @@ usage: spaces2tabs [-h | --help] [OPTION]... [FILE]...
 
 spaces2tabs is a wrapper for the command unexpand. The FILES are changed in place.
 
-A backup copy of each original FILE is created called ".FILE.tabs" in the
+A backup copy of each original FILE is created called ".FILE.spaces" in the
 directory that FILE resides.
 
 Two special files are also created in the current directory to allow you
 to review all the changes made as well as undo the changes if the results
-weren't what you expected.  Namely, the files ".tabs.diff.tabs" and
-".tabs.undo.tabs" which are executable.
+weren't what you expected.  Namely, the files ".spaces.diff.spaces" and
+".spaces.undo.spaces" which are executable.
 
 Note: To get rid of all the crufty leftovers:
-    find . -name '.*.tabs' -type f -print0 | xargs -0 /bin/rm -f
+    find . -name '.*.spaces' -type f -print0 | xargs -0 /bin/rm -f
 
 positional arguments:
   FILE                      The file(s) to modify
@@ -67,11 +72,16 @@ optional arguments:
   --no-strip-trailing-whitespace leave trailing whitespace untouched [default]
   --version                      print out the version number and exit
 
-Tip: if your editor's tab width differs from the system default (most
-systems assume 8), first run "tabs2spaces -t N" (using YOUR editor's
-width) to convert indentation to spaces, then "spaces2tabs -t 8" to
-re-tab at the standard width. This preserves how the file looks, even
-for someone viewing it with an unmodified, default-width tool.
+Tip: If a file appears to have been created with a tabstop setting
+different from your system default (assumed to be 8), first guess
+that setting -- say, 4 -- and run "tabs2spaces -t 4" to see the
+result. If it still doesn't look right, undo (".tabs.undo.tabs")
+and try a different guess. Once the all-spaces result looks correct,
+run "spaces2tabs -t 8" to re-tab it at the standard width. Each
+step's undo is independent, so if you later change your mind, undo
+spaces2tabs first (".spaces.undo.spaces"), then tabs2spaces
+(".tabs.undo.tabs"), to cleanly reverse both steps back to the
+file's true original.
 
 exit code: 0
 
@@ -118,6 +128,22 @@ a^Ib$
 ----- Extra test -+- diff/undo scripts, and undo actually restores the file -----
 undo exit code: 0
 cmp (restored vs original) exit code: 0
+
+----- Extra test -+- spaces2tabs's own diff/undo scripts, same check -----
+undo exit code: 0
+cmp (restored vs original) exit code: 0
+
+----- Extra test -+- chained tabs2spaces + spaces2tabs on the SAME file, then both undos in reverse order -----
+both backups present, distinctly:
+.roundtrip-chain.txt.spaces
+.roundtrip-chain.txt.tabs
+after undoing spaces2tabs's step:
+    some code$
+        nested code$
+after ALSO undoing tabs2spaces's step:
+^Isome code$
+^I^Inested code$
+cmp (fully-undone-chain vs true original) exit code: 0
 
 ----- Extra test -+- workingDir contains a space (cd/pwd regression check) -----
 undo exit code: 0

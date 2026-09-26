@@ -86,13 +86,16 @@ optional arguments:
   --no-strip-trailing-whitespace leave trailing whitespace untouched [default]
   --version                      print out the version number and exit
 
-Tip: Assuming your system-default tabstop is set to 8 then when
-encountering a file that appears to have been created with a
-different tabstop setting (let's guess 4), to get the file to
-look correct, first run "tabs2spaces -t 4" to convert indentation
-to spaces, then "spaces2tabs -t 8" to re-tab at the standard width.
-Undo the changes if still not looking correct, and try another guess
-until it looks correct.
+Tip: If a file appears to have been created with a tabstop setting
+different from your system default (assumed to be 8), first guess
+that setting -- say, 4 -- and run "tabs2spaces -t 4" to see the
+result. If it still doesn't look right, undo (".tabs.undo.tabs")
+and try a different guess. Once the all-spaces result looks correct,
+run "spaces2tabs -t 8" to re-tab it at the standard width. Each
+step's undo is independent, so if you later change your mind, undo
+spaces2tabs first (".spaces.undo.spaces"), then tabs2spaces
+(".tabs.undo.tabs"), to cleanly reverse both steps back to the
+file's true original.
 
 EOF
         exit 0
