@@ -41,12 +41,14 @@
 set +o noclobber
 cmdName=`basename "$0"`
 
+tmpFile=`mktemp` || exit 1
+
 cleanup() {
-    /bin/rm /tmp/tmpTABS$$ > /dev/null 2>&1
+    /bin/rm "$tmpFile" > /dev/null 2>&1
     exit 0
 }
 
-trap cleanup INT
+trap cleanup INT TERM
 
 # Semantic Versioning 2.0.0
 #
@@ -54,7 +56,7 @@ trap cleanup INT
 # MINOR version for added functionality in a backwards compatible manner
 # PATCH version for backwards compatible bug fixes
 #
-VERSION=1.0.1
+VERSION=2.0.0
 
 usageExit() {
     echo "usage: $1 [-h | --help] [OPTION]... [FILE]..."
@@ -78,9 +80,17 @@ positional arguments:
   FILE                      The file(s) to modify
 
 optional arguments:
-  -h, --help                Display this help and exit
-  -t NUMBER, --tabs=NUMBER  expands/unexpands tabs by NUMBER characters - default 8.
-  --version                 print out the version number and exit
+  -h, --help                     Display this help and exit
+  -t NUMBER, --tabs=NUMBER       expands/unexpands tabs by NUMBER characters - default 8.
+  --strip-trailing-whitespace    also strip trailing whitespace from every line
+  --no-strip-trailing-whitespace leave trailing whitespace untouched [default]
+  --version                      print out the version number and exit
+
+Tip: if your editor's tab width differs from the system default (most
+systems assume 8), first run "tabs2spaces -t N" (using YOUR editor's
+width) to convert indentation to spaces, then "spaces2tabs -t 8" to
+re-tab at the standard width. This preserves how the file looks, even
+for someone viewing it with an unmodified, default-width tool.
 
 EOF
         exit 0
@@ -89,6 +99,7 @@ EOF
 }
 
 tabSize=8
+stripTrailingWS=no
 
 #
 # Parse options.  Stop when you get to the file list.
@@ -106,7 +117,7 @@ do
 
         -t)
             shift
-            if ! [[ $1 =~ [0-9]+ ]]; then
+            if ! [[ $1 =~ ^[0-9]+$ ]]; then
                 usageExit $cmdName
             fi
             tabSize=$1
@@ -115,9 +126,17 @@ do
 
         --tabs=+([0-9]))
             tabSize=`echo $1 | sed "s/--tabs=//"`
-            if ! [[ $tabSize =~ [0-9]+ ]]; then
+            if ! [[ $tabSize =~ ^[0-9]+$ ]]; then
                 usageExit $cmdName
             fi
+            shift
+        ;;
+
+        --strip-trailing-whitespace) stripTrailingWS=yes
+            shift
+        ;;
+
+        --no-strip-trailing-whitespace) stripTrailingWS=no
             shift
         ;;
 
@@ -138,10 +157,12 @@ case "${unameOut}" in
     *)          machine="UNKNOWN:${unameOut}"
 esac
 
-echo '#!/bin/bash' >  .tabs.undo.tabs
-echo cd `pwd`      >> .tabs.undo.tabs
-echo '#!/bin/bash' >  .tabs.diff.tabs
-echo cd `pwd`      >> .tabs.diff.tabs
+curDir=`pwd`
+
+echo '#!/bin/bash'  >  .tabs.undo.tabs
+echo cd \"$curDir\" >> .tabs.undo.tabs
+echo '#!/bin/bash'  >  .tabs.diff.tabs
+echo cd \"$curDir\" >> .tabs.diff.tabs
 chmod +x .tabs.undo.tabs .tabs.diff.tabs
 echo '( set -x' >> .tabs.diff.tabs
 
@@ -150,20 +171,28 @@ do
     i="$1"
 
     if  [ -f "$i" ] && [ -w "$i" ] ; then
-        unexpand -t $tabSize --first-only < "$i" > /tmp/tmpTABS$$
-        cmp "$i" /tmp/tmpTABS$$ > /dev/null 2>&1
-        if [ $? -eq 1 ]; then
-            d=`dirname "$i"`
-            f=`basename "$i"`
-            /bin/cp "$i" "$d"/."$f".tabs
-            echo /bin/cp \""$d"\"/.\""$f"\".tabs \""$i"\" >> .tabs.undo.tabs
-            echo "/usr/bin/diff \""$d"\"/.\""$f"\".tabs \""$i"\"; echo" >> .tabs.diff.tabs
-            /bin/mv -f /tmp/tmpTABS$$ "$i"
-            if [ "$machine" == "mac" ]; then
-                permissions=`stat -r "$d"/."$f".tabs | cut -d' ' -f3 | cut -c5-7`
-                chmod $permissions "$i"
-            else
-                chmod --reference="$d"/."$f".tabs "$i"
+        if [ "$stripTrailingWS" = yes ]; then
+            unexpand -t $tabSize --first-only < "$i" | sed -e '1,$ s/ *$//' > "$tmpFile"
+        else
+            unexpand -t $tabSize --first-only < "$i" > "$tmpFile"
+        fi
+        if [ ${PIPESTATUS[0]} -ne 0 ]; then
+            echo "$cmdName: ERROR: unexpand failed on \"$i\"; left unchanged." >&2
+        else
+            cmp -s "$i" "$tmpFile" > /dev/null 2>&1
+            if [ $? -eq 1 ]; then
+                d=`dirname "$i"`
+                f=`basename "$i"`
+                /bin/cp "$i" "$d"/."$f".tabs
+                echo /bin/cp \""$d"\"/.\""$f"\".tabs \""$i"\" >> .tabs.undo.tabs
+                echo "/usr/bin/diff \""$d"\"/.\""$f"\".tabs \""$i"\"; echo" >> .tabs.diff.tabs
+                /bin/mv -f "$tmpFile" "$i"
+                if [ "$machine" == "mac" ]; then
+                    permissions=`stat -r "$d"/."$f".tabs | cut -d' ' -f3 | cut -c5-7`
+                    chmod $permissions "$i"
+                else
+                    chmod --reference="$d"/."$f".tabs "$i"
+                fi
             fi
         fi
     fi
