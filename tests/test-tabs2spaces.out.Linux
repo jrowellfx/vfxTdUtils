@@ -1,0 +1,124 @@
+
+----- Test 1 of 7 -+- dir: . -+- tabs2spaces --version -----
+2.0.0
+exit code: 0
+
+----- Test 2 of 7 -+- dir: . -+- spaces2tabs --version -----
+2.0.0
+exit code: 0
+
+----- Test 3 of 7 -+- dir: . -+- tabs2spaces --help -----
+usage: tabs2spaces [-h | --help] [OPTION]... [FILE]...
+
+tabs2spaces is a wrapper for the command expand. The FILES are changed in place.
+
+A backup copy of each original FILE is created called ".FILE.tabs" in the
+directory that FILE resides.
+
+Two special files are also created in the current directory to allow you
+to review all the changes made as well as undo the changes if the results
+weren't what you expected.  Namely, the files ".tabs.diff.tabs" and
+".tabs.undo.tabs" which are executable.
+
+Note: To get rid of all the crufty leftovers:
+    find . -name '.*.tabs' -type f -print0 | xargs -0 /bin/rm -f
+
+positional arguments:
+  FILE                      The file(s) to modify
+
+optional arguments:
+  -h, --help                     Display this help and exit
+  -t NUMBER, --tabs=NUMBER       expands/unexpands tabs by NUMBER characters - default 8.
+  --strip-trailing-whitespace    also strip trailing whitespace from every line
+  --no-strip-trailing-whitespace leave trailing whitespace untouched [default]
+  --version                      print out the version number and exit
+
+Tip: if your editor's tab width differs from the system default (most
+systems assume 8), first run "tabs2spaces -t N" (using YOUR editor's
+width) to convert indentation to spaces, then "spaces2tabs -t 8" to
+re-tab at the standard width. This preserves how the file looks, even
+for someone viewing it with an unmodified, default-width tool.
+
+exit code: 0
+
+----- Test 4 of 7 -+- dir: . -+- spaces2tabs --help -----
+usage: spaces2tabs [-h | --help] [OPTION]... [FILE]...
+
+spaces2tabs is a wrapper for the command unexpand. The FILES are changed in place.
+
+A backup copy of each original FILE is created called ".FILE.tabs" in the
+directory that FILE resides.
+
+Two special files are also created in the current directory to allow you
+to review all the changes made as well as undo the changes if the results
+weren't what you expected.  Namely, the files ".tabs.diff.tabs" and
+".tabs.undo.tabs" which are executable.
+
+Note: To get rid of all the crufty leftovers:
+    find . -name '.*.tabs' -type f -print0 | xargs -0 /bin/rm -f
+
+positional arguments:
+  FILE                      The file(s) to modify
+
+optional arguments:
+  -h, --help                     Display this help and exit
+  -t NUMBER, --tabs=NUMBER       expands/unexpands tabs by NUMBER characters - default 8.
+  --strip-trailing-whitespace    also strip trailing whitespace from every line
+  --no-strip-trailing-whitespace leave trailing whitespace untouched [default]
+  --version                      print out the version number and exit
+
+Tip: if your editor's tab width differs from the system default (most
+systems assume 8), first run "tabs2spaces -t N" (using YOUR editor's
+width) to convert indentation to spaces, then "spaces2tabs -t 8" to
+re-tab at the standard width. This preserves how the file looks, even
+for someone viewing it with an unmodified, default-width tool.
+
+exit code: 0
+
+----- Test 5 of 7 -+- dir: . -+- tabs2spaces -t abc123def nonexistent.doesnotmatter -----
+usage: tabs2spaces [-h | --help] [OPTION]... [FILE]...
+exit code: 1
+
+----- Test 6 of 7 -+- dir: . -+- tabs2spaces --bogus-option -----
+tabs2spaces: ERROR: Invalid option '--bogus-option'.
+usage: tabs2spaces [-h | --help] [OPTION]... [FILE]...
+exit code: 1
+
+----- Test 7 of 7 -+- dir: . -+- spaces2tabs --bogus-option -----
+spaces2tabs: ERROR: Invalid option '--bogus-option'.
+usage: spaces2tabs [-h | --help] [OPTION]... [FILE]...
+exit code: 1
+
+----- Extra test -+- tabs2spaces('macbeth.tabs.txt') cmp 'macbeth.notabs.txt' -----
+cmp exit code: 0
+
+----- Extra test -+- spaces2tabs('macbeth.notabs.txt') cmp 'macbeth.tabs.txt' -----
+cmp exit code: 0
+
+----- Extra test -+- same round trip, filenames containing a space -----
+cmp exit code: 0
+cmp exit code: 0
+
+----- Extra test -+- documented -t 4 / -t 8 tab-width workflow preserves visual width -----
+    some code$
+        nested code$
+    some code$
+^Inested code$
+
+----- Extra test -+- --strip-trailing-whitespace is opt-in, default leaves it alone -----
+a       b   $
+a       b$
+^Ia$
+
+----- Extra test -+- bad -t value leaves the file untouched (data-loss regression check) -----
+usage: tabs2spaces [-h | --help] [OPTION]... [FILE]...
+exit code: 1
+a^Ib$
+
+----- Extra test -+- diff/undo scripts, and undo actually restores the file -----
+undo exit code: 0
+cmp (restored vs original) exit code: 0
+
+----- Extra test -+- workingDir contains a space (cd/pwd regression check) -----
+undo exit code: 0
+cmp (restored vs original) exit code: 0

@@ -1,0 +1,227 @@
+#!/bin/bash
+
+# Regression test for both tabs2spaces and spaces2tabs (siblings, sharing
+# this one test harness since they're mirror-image wrappers around
+# expand/unexpand).
+#
+# Run this from the 'tests' directory in the vfxTdUtils git repo, having
+# first sourced source_to.runlocal (or otherwise arranged for tabs2spaces
+# and spaces2tabs to be on your PATH).
+
+export TEST_DIR=`pwd`
+
+tmpArgs=`mktemp`
+tmpTestCmdFile=`mktemp`
+tmpFile=`mktemp`
+tmpLine=`mktemp`
+
+cleanupExit() {
+    /bin/rm "$tmpArgs" > /dev/null 2>&1
+    /bin/rm "$tmpTestCmdFile" > /dev/null 2>&1
+    /bin/rm "$tmpFile" > /dev/null 2>&1
+    /bin/rm "$tmpLine" > /dev/null 2>&1
+
+    # Dynamically-created working copies used for the round-trip and
+    # cd-with-space checks below, not checked into the repo -- this
+    # includes both the files themselves and the .FILE.tabs backups
+    # tabs2spaces/spaces2tabs create for each one they actually modify.
+    #
+    find "$TEST_DIR/$HERO_TESTDIR" -maxdepth 1 -name 'roundtrip-*' -delete > /dev/null 2>&1
+    find "$TEST_DIR/$HERO_TESTDIR" -maxdepth 1 -name '.roundtrip-*.tabs' -delete > /dev/null 2>&1
+    /bin/rm -r "$TEST_DIR/$HERO_TESTDIR/dir with space" > /dev/null 2>&1
+
+    exit $1
+}
+
+trap cleanupExit INT TERM
+
+ln -sf ../scripts/tabs2spaces tabs2spaces
+ln -sf ../scripts/spaces2tabs spaces2tabs
+
+if [[ ! ":$PATH:" == *":$TEST_DIR:"* ]]; then
+    export PATH="$TEST_DIR:$PATH"
+fi
+
+# .tabs.diff.tabs and .tabs.undo.tabs (created by tabs2spaces/spaces2tabs
+# themselves, below) are invoked as bare commands later in this script.
+# That only resolves if '.' is in PATH.
+#
+if [[ ! ":$PATH:" == *":.:"* ]]; then
+    export PATH=".:$PATH"
+fi
+
+echo "Test is using " `which tabs2spaces` " and " `which spaces2tabs`
+
+export HERO_TESTDIR=test-tabs2spaces-dir
+
+# Double check sensible REPO_DIR value (before doing any recursive rm).
+#
+REPO_DIR=`dirname $TEST_DIR`
+if [ -z "$REPO_DIR" ] || [ "$REPO_DIR" = "/" ] || [ "$REPO_DIR" = "." ]; then
+    echo "$0: error: REPO_DIR might not be set to vfxTdUtils repo, dangerous recursive rm avoided."
+    cleanupExit 1
+fi
+
+TEST_OUT_FILENAME=test-tabs2spaces.out.`uname`.new
+
+# Timestamp all the test files to be a fixed date so that their file times
+# are not dependent upon the date set when running the test.
+#
+# Note: We use HAL's birthday from 2001: A Space Odyssey.
+#
+find $TEST_DIR/$HERO_TESTDIR -type f -exec touch -t 199201121330 \{\} \;
+
+/bin/rm -f $TEST_DIR/$TEST_OUT_FILENAME
+
+# The following are tests. One test per line.
+# The first item on a line is the directory relative to
+#     $TEST_DIR/$HERO_TESTDIR to run the test in.
+# The second is the command to run.
+# The rest of the line is the arguments to the command.
+# Use single quotes (') around args with spaces in the name.
+# Note: Does not properly handle case when 'workingDir' has spaces in
+# the name. Could be fixed, but for now just avoid doing tests with a
+# 'workingDir' with spaces in the name -- see the hand-rolled block
+# after the main loop below for how that case is covered instead.
+#
+cat << EOF > $tmpTestCmdFile
+.        tabs2spaces --version
+.        spaces2tabs --version
+.        tabs2spaces --help
+.        spaces2tabs --help
+.        tabs2spaces -t abc123def nonexistent.doesnotmatter    # bad -t, no such file: still must not blow up
+.        tabs2spaces --bogus-option
+.        spaces2tabs --bogus-option
+EOF
+
+NUM_TESTS=`wc -l < $tmpTestCmdFile`
+
+i=1
+set -f # Turn off globbing so args like '*.txt' below (if ever added) come through literally.
+while true
+do
+    sed -n -e "$i p" $tmpTestCmdFile > $tmpLine
+    if [ ! -s $tmpLine ]; then
+        break
+    fi
+    sed -e 's/#.*//' $tmpLine > $tmpFile
+    cat $tmpFile | tr -s ' ' '\n' | grep -v '^$' > $tmpArgs
+
+    declare -a cmdLine
+    mapfile -t cmdLine < $tmpArgs
+
+    workingDir="${cmdLine[0]}"
+    cmd="${cmdLine[1]}"
+    testArgs=("${cmdLine[@]:2}")
+
+    echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
+    echo "----- Test $i of $NUM_TESTS -+- dir: $workingDir -+- $cmd ${testArgs[@]} -----" >> $TEST_DIR/$TEST_OUT_FILENAME
+
+    cd $TEST_DIR/$HERO_TESTDIR/$workingDir
+    $cmd "${testArgs[@]}" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+    echo "exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
+    cd $TEST_DIR
+
+    i=$((i+1))
+done
+set +f
+
+# =====================================================================
+# Extra, hand-rolled tests below -- things that don't fit the generic
+# "one command per line" table above: round-trip checks that need a
+# fresh working copy plus a cmp against a DIFFERENT file, the new
+# --strip-trailing-whitespace / --no-strip-trailing-whitespace options,
+# and the cd/pwd-with-a-space regression check (can't be expressed as
+# a workingDir in the table above -- see the note in that table).
+# =====================================================================
+
+cd $TEST_DIR/$HERO_TESTDIR
+
+echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
+echo "----- Extra test -+- tabs2spaces('macbeth.tabs.txt') cmp 'macbeth.notabs.txt' -----" >> $TEST_DIR/$TEST_OUT_FILENAME
+cp "macbeth.tabs.txt" roundtrip-t2s.txt
+tabs2spaces roundtrip-t2s.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+cmp roundtrip-t2s.txt "macbeth.notabs.txt" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+echo "cmp exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
+
+echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
+echo "----- Extra test -+- spaces2tabs('macbeth.notabs.txt') cmp 'macbeth.tabs.txt' -----" >> $TEST_DIR/$TEST_OUT_FILENAME
+cp "macbeth.notabs.txt" roundtrip-s2t.txt
+spaces2tabs roundtrip-s2t.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+cmp roundtrip-s2t.txt "macbeth.tabs.txt" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+echo "cmp exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
+
+echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
+echo "----- Extra test -+- same round trip, filenames containing a space -----" >> $TEST_DIR/$TEST_OUT_FILENAME
+cp "mac beth.tabs.txt" "roundtrip-t2s space.txt"
+tabs2spaces "roundtrip-t2s space.txt" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+cmp "roundtrip-t2s space.txt" "mac beth.notabs.txt" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+echo "cmp exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
+cp "mac beth.notabs.txt" "roundtrip-s2t space.txt"
+spaces2tabs "roundtrip-s2t space.txt" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+cmp "roundtrip-s2t space.txt" "mac beth.tabs.txt" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+echo "cmp exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
+
+echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
+echo "----- Extra test -+- documented -t 4 / -t 8 tab-width workflow preserves visual width -----" >> $TEST_DIR/$TEST_OUT_FILENAME
+printf '\tsome code\n\t\tnested code\n' > roundtrip-width.txt
+tabs2spaces -t 4 roundtrip-width.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+cat -A roundtrip-width.txt >> $TEST_DIR/$TEST_OUT_FILENAME
+spaces2tabs -t 8 roundtrip-width.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+cat -A roundtrip-width.txt >> $TEST_DIR/$TEST_OUT_FILENAME
+
+echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
+echo "----- Extra test -+- --strip-trailing-whitespace is opt-in, default leaves it alone -----" >> $TEST_DIR/$TEST_OUT_FILENAME
+printf 'a\tb   \n' > roundtrip-strip1.txt
+tabs2spaces roundtrip-strip1.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+cat -A roundtrip-strip1.txt >> $TEST_DIR/$TEST_OUT_FILENAME
+printf 'a\tb   \n' > roundtrip-strip2.txt
+tabs2spaces --strip-trailing-whitespace roundtrip-strip2.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+cat -A roundtrip-strip2.txt >> $TEST_DIR/$TEST_OUT_FILENAME
+printf '        a   \n' > roundtrip-strip3.txt
+spaces2tabs --strip-trailing-whitespace roundtrip-strip3.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+cat -A roundtrip-strip3.txt >> $TEST_DIR/$TEST_OUT_FILENAME
+
+echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
+echo "----- Extra test -+- bad -t value leaves the file untouched (data-loss regression check) -----" >> $TEST_DIR/$TEST_OUT_FILENAME
+printf 'a\tb\n' > roundtrip-badt.txt
+tabs2spaces -t abc123def roundtrip-badt.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+echo "exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
+cat -A roundtrip-badt.txt >> $TEST_DIR/$TEST_OUT_FILENAME
+
+echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
+echo "----- Extra test -+- diff/undo scripts, and undo actually restores the file -----" >> $TEST_DIR/$TEST_OUT_FILENAME
+cp "macbeth.tabs.txt" roundtrip-undo.txt
+tabs2spaces roundtrip-undo.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+.tabs.undo.tabs >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+echo "undo exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
+cmp roundtrip-undo.txt "macbeth.tabs.txt" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+echo "cmp (restored vs original) exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
+/bin/rm -f .tabs.undo.tabs .tabs.diff.tabs
+
+echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
+echo "----- Extra test -+- workingDir contains a space (cd/pwd regression check) -----" >> $TEST_DIR/$TEST_OUT_FILENAME
+mkdir -p "dir with space"
+cp "macbeth.tabs.txt" "dir with space/target.txt"
+cd "dir with space"
+tabs2spaces target.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+cd $TEST_DIR/$HERO_TESTDIR
+# Run the undo script from a DIFFERENT directory than where it was
+# created -- this is exactly the scenario that used to silently fail.
+#
+"$TEST_DIR/$HERO_TESTDIR/dir with space/.tabs.undo.tabs" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+echo "undo exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
+cmp "dir with space/target.txt" "macbeth.tabs.txt" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+echo "cmp (restored vs original) exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
+
+cd $TEST_DIR
+
+# Scrub the test-machine-specific path and username out of the output so
+# the golden master is reproducible across machines/users, same as the
+# other test harnesses in this repo.
+#
+sed -e "1,$ s-$TEST_DIR-/...absPathToRepo.../tests-g" < $TEST_DIR/$TEST_OUT_FILENAME | \
+    sed -e "1,$ s/$USER/testUser/g" > $tmpFile
+expand < $tmpFile | sed -e '1,$ s/ *$//' > $TEST_DIR/$TEST_OUT_FILENAME
+
+cleanupExit 0
