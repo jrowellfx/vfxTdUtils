@@ -31,6 +31,12 @@ to review all the changes made as well as undo the changes if the results
 weren't what you expected.  Namely, the files ".runsed.diff.runsed" and
 ".runsed.undo.runsed" which are executable.
 
+Note: when running either of these directly, explicitly prefix the path
+(almost always "./"), e.g. "./.runsed.undo.runsed", rather than typing
+just the bare filename. Without the "./", your shell searches $PATH in
+order and may find and run a different, unrelated file of the same name
+sitting in an earlier directory instead of the one just created here.
+
 When you are eventually satisfied simply remove the ".*.runsed" files
 with the command:
     rm .*.runsed
@@ -83,7 +89,7 @@ usage: runsed [-h | --help] [OPTION]... [FILE]...
 
 ----- Test 8 -+- dir: . -+- runsed macbeth.txt -----
 
------ Test 9 -+- dir: . -+- .runsed.diff.runsed -----
+----- Test 9 -+- dir: . -+- ./.runsed.diff.runsed -----
 + /usr/bin/diff ./.macbeth.txt.runsed macbeth.txt
 1c1
 <     When shall we three meet again
@@ -111,7 +117,7 @@ usage: runsed [-h | --help] [OPTION]... [FILE]...
 >                 Hover through t' fog & filthy air.
 
 
------ Test 10 -+- dir: . -+- .runsed.undo.runsed -----
+----- Test 10 -+- dir: . -+- ./.runsed.undo.runsed -----
 
 ----- Test 11 -+- dir: . -+- cat macbeth.txt -----
     When shall we three meet again
@@ -130,7 +136,7 @@ usage: runsed [-h | --help] [OPTION]... [FILE]...
 
 ----- Test 12 -+- dir: aaa -+- runsed -f sed.script.alt macbeth.txt -----
 
------ Test 13 -+- dir: aaa -+- .runsed.diff.runsed -----
+----- Test 13 -+- dir: aaa -+- ./.runsed.diff.runsed -----
 + /usr/bin/diff ./.macbeth.txt.runsed macbeth.txt
 4c4
 <         When the battle's lost and won.
@@ -144,11 +150,11 @@ usage: runsed [-h | --help] [OPTION]... [FILE]...
 >                 Hover through the fog & filthy air.
 
 
------ Test 14 -+- dir: aaa -+- .runsed.undo.runsed -----
+----- Test 14 -+- dir: aaa -+- ./.runsed.undo.runsed -----
 
 ----- Test 15 -+- dir: aaa -+- runsed -E -f sed.script.alt macbeth.txt -----
 
------ Test 16 -+- dir: aaa -+- .runsed.diff.runsed -----
+----- Test 16 -+- dir: aaa -+- ./.runsed.diff.runsed -----
 + /usr/bin/diff ./.macbeth.txt.runsed macbeth.txt
 4c4
 <         When the battle's lost and won.
@@ -162,11 +168,11 @@ usage: runsed [-h | --help] [OPTION]... [FILE]...
 >                 Hover through the fog & filthy air.
 
 
------ Test 17 -+- dir: aaa -+- .runsed.undo.runsed -----
+----- Test 17 -+- dir: aaa -+- ./.runsed.undo.runsed -----
 
 ----- Test 18 -+- dir: aaa -+- runsed -f 'sed.script with space' macbeth.txt -----
 
------ Test 19 -+- dir: aaa -+- .runsed.diff.runsed -----
+----- Test 19 -+- dir: aaa -+- ./.runsed.diff.runsed -----
 + /usr/bin/diff ./.macbeth.txt.runsed macbeth.txt
 9c9
 <     I come, Graymalkin!
@@ -174,7 +180,7 @@ usage: runsed [-h | --help] [OPTION]... [FILE]...
 >     I come, GRAYMALKIN!
 
 
------ Test 20 -+- dir: aaa -+- .runsed.undo.runsed -----
+----- Test 20 -+- dir: aaa -+- ./.runsed.undo.runsed -----
 
 ----- Test 21 -+- dir: . -+- runsed -f -----
 runsed: ERROR: -f|--file requires a SCRIPT-FILE argument.

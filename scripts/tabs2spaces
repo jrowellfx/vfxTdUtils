@@ -73,6 +73,12 @@ to review all the changes made as well as undo the changes if the results
 weren't what you expected.  Namely, the files ".tabs.diff.tabs" and
 ".tabs.undo.tabs" which are executable.
 
+Note: when running either of these directly, explicitly prefix the path
+(almost always "./"), e.g. "./.tabs.undo.tabs", rather than typing just
+the bare filename. Without the "./", your shell searches \$PATH in order
+and may find and run a different, unrelated file of the same name
+sitting in an earlier directory instead of the one just created here.
+
 Note: To get rid of all the crufty leftovers:
     find . -name '.*.tabs' -type f -print0 | xargs -0 /bin/rm -f
 

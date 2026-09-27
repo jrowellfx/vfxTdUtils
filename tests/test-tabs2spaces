@@ -46,15 +46,6 @@ if [[ ! ":$PATH:" == *":$TEST_DIR:"* ]]; then
     export PATH="$TEST_DIR:$PATH"
 fi
 
-# .tabs.diff.tabs, .tabs.undo.tabs, .spaces.diff.spaces
-# and .spaces.undo.spaces (created by tabs2spaces/spaces2tabs
-# themselves, below) are invoked as bare commands later in this script.
-# That only resolves if '.' is in PATH.
-#
-if [[ ! ":$PATH:" == *":.:"* ]]; then
-    export PATH=".:$PATH"
-fi
-
 echo "Test is using: "
 echo "    " `which tabs2spaces` "and"
 echo "    " `which spaces2tabs`
@@ -147,14 +138,14 @@ cat << EOF > $tmpTestCmdFile
 #
 .    cp macbeth.tabs.txt roundtrip-undo.txt
 .    tabs2spaces roundtrip-undo.txt
-.    .tabs.undo.tabs
+.    ./.tabs.undo.tabs
 .    cmp roundtrip-undo.txt macbeth.tabs.txt
 #
 # spaces2tabs's own diff/undo scripts, same check.
 #
 .    cp macbeth.notabs.txt roundtrip-undo2.txt
 .    spaces2tabs roundtrip-undo2.txt
-.    .spaces.undo.spaces
+.    ./.spaces.undo.spaces
 .    cmp roundtrip-undo2.txt macbeth.notabs.txt
 #
 # Chained tabs2spaces + spaces2tabs on the SAME file, then both undos in
@@ -164,9 +155,9 @@ cat << EOF > $tmpTestCmdFile
 .    tabs2spaces -t 4 roundtrip-chain.txt
 .    spaces2tabs -t 8 roundtrip-chain.txt
 .    ls .roundtrip-chain.txt.tabs .roundtrip-chain.txt.spaces
-.    .spaces.undo.spaces
+.    ./.spaces.undo.spaces
 .    cat -te roundtrip-chain.txt
-.    .tabs.undo.tabs
+.    ./.tabs.undo.tabs
 .    cat -te roundtrip-chain.txt
 .    cp small.tabs.txt roundtrip-chain-orig.txt
 .    cmp roundtrip-chain.txt roundtrip-chain-orig.txt

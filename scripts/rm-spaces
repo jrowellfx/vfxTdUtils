@@ -118,6 +118,12 @@ working directory:
  - .failed.dirs.$cmdName
      List of renames that would have failed due to name conflict
 
+Note: when running any of these directly, explicitly prefix the path
+(almost always "./"), e.g. "./.undo.files.$cmdName", rather than typing
+just the bare filename. Without the "./", your shell searches \$PATH in
+order and may find and run a different, unrelated file of the same name
+sitting in an earlier directory instead of the one just created here.
+
 EOF1
         set +f
         exit 0

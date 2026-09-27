@@ -140,15 +140,6 @@ fi
 
 echo "Test is using " `which runsed`
 
-# .runsed.diff.runsed and .runsed.undo.runsed (created by runsed itself,
-# below) are invoked as bare commands later in this script. That only
-# resolves if '.' is in PATH -- which isn't this script's business to
-# assume about the operator's own shell config, so ensure it here.
-#
-if [[ ! ":$PATH:" == *":.:"* ]]; then
-    export PATH=".:$PATH"
-fi
-
 # Double check sensible REPO_DIR value
 #
 if [ -z "$REPO_DIR" ]; then
@@ -204,18 +195,18 @@ emptyDir runsed                                # Run with no args - should do no
 .        cat macbeth.txt
 .        cat sed.script
 .        runsed macbeth.txt
-.        .runsed.diff.runsed
-.        .runsed.undo.runsed
+.        ./.runsed.diff.runsed
+.        ./.runsed.undo.runsed
 .        cat macbeth.txt
 aaa      runsed -f sed.script.alt macbeth.txt
-aaa      .runsed.diff.runsed
-aaa      .runsed.undo.runsed
+aaa      ./.runsed.diff.runsed
+aaa      ./.runsed.undo.runsed
 aaa      runsed -E -f sed.script.alt macbeth.txt
-aaa      .runsed.diff.runsed
-aaa      .runsed.undo.runsed
+aaa      ./.runsed.diff.runsed
+aaa      ./.runsed.undo.runsed
 aaa      runsed -f 'sed.script with space' macbeth.txt
-aaa      .runsed.diff.runsed
-aaa      .runsed.undo.runsed
+aaa      ./.runsed.diff.runsed
+aaa      ./.runsed.undo.runsed
 .        runsed -f                                # missing SCRIPT-FILE arg: should error clearly, not silently misbehave
 EOF
 
