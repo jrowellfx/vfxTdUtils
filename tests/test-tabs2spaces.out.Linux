@@ -124,13 +124,13 @@ usage: spaces2tabs [-h | --help] [OPTION]... [FILE]...
 
 ----- Test 21 -+- dir: . -+- tabs2spaces -t 4 roundtrip-width.txt -----
 
------ Test 22 -+- dir: . -+- cat -A roundtrip-width.txt -----
+----- Test 22 -+- dir: . -+- cat -te roundtrip-width.txt -----
     some code$
         nested code$
 
 ----- Test 23 -+- dir: . -+- spaces2tabs -t 8 roundtrip-width.txt -----
 
------ Test 24 -+- dir: . -+- cat -A roundtrip-width.txt -----
+----- Test 24 -+- dir: . -+- cat -te roundtrip-width.txt -----
     some code$
 ^Inested code$
 
@@ -138,21 +138,21 @@ usage: spaces2tabs [-h | --help] [OPTION]... [FILE]...
 
 ----- Test 26 -+- dir: . -+- tabs2spaces roundtrip-strip1.txt -----
 
------ Test 27 -+- dir: . -+- cat -A roundtrip-strip1.txt -----
+----- Test 27 -+- dir: . -+- cat -te roundtrip-strip1.txt -----
 a       b   $
 
 ----- Test 28 -+- dir: . -+- cp trailing.tabs.txt roundtrip-strip2.txt -----
 
 ----- Test 29 -+- dir: . -+- tabs2spaces --strip-trailing-whitespace roundtrip-strip2.txt -----
 
------ Test 30 -+- dir: . -+- cat -A roundtrip-strip2.txt -----
+----- Test 30 -+- dir: . -+- cat -te roundtrip-strip2.txt -----
 a       b$
 
 ----- Test 31 -+- dir: . -+- cp trailing.notabs.txt roundtrip-strip3.txt -----
 
 ----- Test 32 -+- dir: . -+- spaces2tabs --strip-trailing-whitespace roundtrip-strip3.txt -----
 
------ Test 33 -+- dir: . -+- cat -A roundtrip-strip3.txt -----
+----- Test 33 -+- dir: . -+- cat -te roundtrip-strip3.txt -----
 ^Ia$
 
 ----- Test 34 -+- dir: . -+- cp small.tabs.txt roundtrip-badt.txt -----
@@ -193,13 +193,13 @@ roundtrip-undo.txt macbeth.tabs.txt differ: byte 1, line 1
 
 ----- Test 49 -+- dir: . -+- .spaces.undo.spaces  -----
 
------ Test 50 -+- dir: . -+- cat -A roundtrip-chain.txt -----
+----- Test 50 -+- dir: . -+- cat -te roundtrip-chain.txt -----
     some code$
         nested code$
 
 ----- Test 51 -+- dir: . -+- .tabs.undo.tabs  -----
 
------ Test 52 -+- dir: . -+- cat -A roundtrip-chain.txt -----
+----- Test 52 -+- dir: . -+- cat -te roundtrip-chain.txt -----
     some code$
         nested code$
 

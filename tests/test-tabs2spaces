@@ -95,19 +95,19 @@ cat << EOF > $tmpTestCmdFile
 .    tabs2spaces -t abc123def nonexistent.doesnotmatter    # bad -t, no such file: still must not blow up
 .    tabs2spaces --bogus-option
 .    spaces2tabs --bogus-option
-
+#
 # Round trip: tabs2spaces(macbeth.tabs.txt) must exactly match macbeth.notabs.txt.
 #
 .    cp macbeth.tabs.txt roundtrip-t2s.txt
 .    tabs2spaces roundtrip-t2s.txt
 .    cmp roundtrip-t2s.txt macbeth.notabs.txt
-
+#
 # Round trip: spaces2tabs(macbeth.notabs.txt) must exactly match macbeth.tabs.txt.
 #
 .    cp macbeth.notabs.txt roundtrip-s2t.txt
 .    spaces2tabs roundtrip-s2t.txt
 .    cmp roundtrip-s2t.txt macbeth.tabs.txt
-
+#
 # Same round trip, exercising filenames that contain a space.
 #
 .    cp 'mac beth.tabs.txt' 'roundtrip-t2s space.txt'
@@ -116,47 +116,47 @@ cat << EOF > $tmpTestCmdFile
 .    cp 'mac beth.notabs.txt' 'roundtrip-s2t space.txt'
 .    spaces2tabs 'roundtrip-s2t space.txt'
 .    cmp 'roundtrip-s2t space.txt' 'mac beth.tabs.txt'
-
+#
 # Documented -t 4 / -t 8 tab-width workflow preserves visual width.
 #
 .    cp small.tabs.txt roundtrip-width.txt
 .    tabs2spaces -t 4 roundtrip-width.txt
-.    cat -A roundtrip-width.txt
+.    cat -te roundtrip-width.txt
 .    spaces2tabs -t 8 roundtrip-width.txt
-.    cat -A roundtrip-width.txt
-
+.    cat -te roundtrip-width.txt
+#
 # --strip-trailing-whitespace is opt-in; default leaves it alone.
 #
 .    cp trailing.tabs.txt roundtrip-strip1.txt
 .    tabs2spaces roundtrip-strip1.txt
-.    cat -A roundtrip-strip1.txt
+.    cat -te roundtrip-strip1.txt
 .    cp trailing.tabs.txt roundtrip-strip2.txt
 .    tabs2spaces --strip-trailing-whitespace roundtrip-strip2.txt
-.    cat -A roundtrip-strip2.txt
+.    cat -te roundtrip-strip2.txt
 .    cp trailing.notabs.txt roundtrip-strip3.txt
 .    spaces2tabs --strip-trailing-whitespace roundtrip-strip3.txt
-.    cat -A roundtrip-strip3.txt
-
+.    cat -te roundtrip-strip3.txt
+#
 # Bad -t value must leave the file untouched (data-loss regression check).
 #
 .    cp small.tabs.txt roundtrip-badt.txt
 .    tabs2spaces -t abc123def roundtrip-badt.txt
 .    cmp roundtrip-badt.txt small.tabs.txt
-
+#
 # tabs2spaces's own diff/undo scripts; undo actually restores the file.
 #
 .    cp macbeth.tabs.txt roundtrip-undo.txt
 .    tabs2spaces roundtrip-undo.txt
 .    .tabs.undo.tabs
 .    cmp roundtrip-undo.txt macbeth.tabs.txt
-
+#
 # spaces2tabs's own diff/undo scripts, same check.
 #
 .    cp macbeth.notabs.txt roundtrip-undo2.txt
 .    spaces2tabs roundtrip-undo2.txt
 .    .spaces.undo.spaces
 .    cmp roundtrip-undo2.txt macbeth.notabs.txt
-
+#
 # Chained tabs2spaces + spaces2tabs on the SAME file, then both undos in
 # reverse order must cleanly restore the true original.
 #
@@ -165,9 +165,9 @@ cat << EOF > $tmpTestCmdFile
 .    spaces2tabs -t 8 roundtrip-chain.txt
 .    ls .roundtrip-chain.txt.tabs .roundtrip-chain.txt.spaces
 .    .spaces.undo.spaces
-.    cat -A roundtrip-chain.txt
+.    cat -te roundtrip-chain.txt
 .    .tabs.undo.tabs
-.    cat -A roundtrip-chain.txt
+.    cat -te roundtrip-chain.txt
 .    cp small.tabs.txt roundtrip-chain-orig.txt
 .    cmp roundtrip-chain.txt roundtrip-chain-orig.txt
 EOF
