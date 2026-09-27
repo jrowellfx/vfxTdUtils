@@ -56,7 +56,7 @@ if [[ ! ":$PATH:" == *":.:"* ]]; then
 fi
 
 echo "Test is using: "
-echo "    " `which tabs2spaces` ", and"
+echo "    " `which tabs2spaces` "and"
 echo "    " `which spaces2tabs`
 
 # Double check sensible REPO_DIR value.
@@ -77,12 +77,17 @@ TEST_OUT_FILENAME=test-tabs2spaces.out.`uname`.new
 # The second is the command to run.
 # The rest of the line is the arguments to the command.
 # Use single quotes (') around args with spaces in the name.
+# A line that is entirely a comment (starts with #, ignoring leading
+# whitespace), or blank, is skipped -- it does not run anything and
+# does not count toward the "Test N of M" numbering below.
 # Note: Does not properly handle case when 'workingDir' has spaces in
 # the name. Could be fixed, but for now just avoid doing tests with a
 # 'workingDir' with spaces in the name -- see the hand-rolled block
 # after the main loop below for how that case is covered instead.
 #
 cat << EOF > $tmpTestCmdFile
+# Basic option/error handling.
+#
 .    tabs2spaces --version
 .    spaces2tabs --version
 .    tabs2spaces --help
@@ -90,143 +95,175 @@ cat << EOF > $tmpTestCmdFile
 .    tabs2spaces -t abc123def nonexistent.doesnotmatter    # bad -t, no such file: still must not blow up
 .    tabs2spaces --bogus-option
 .    spaces2tabs --bogus-option
+
+# Round trip: tabs2spaces(macbeth.tabs.txt) must exactly match macbeth.notabs.txt.
+#
+.    cp macbeth.tabs.txt roundtrip-t2s.txt
+.    tabs2spaces roundtrip-t2s.txt
+.    cmp roundtrip-t2s.txt macbeth.notabs.txt
+
+# Round trip: spaces2tabs(macbeth.notabs.txt) must exactly match macbeth.tabs.txt.
+#
+.    cp macbeth.notabs.txt roundtrip-s2t.txt
+.    spaces2tabs roundtrip-s2t.txt
+.    cmp roundtrip-s2t.txt macbeth.tabs.txt
+
+# Same round trip, exercising filenames that contain a space.
+#
+.    cp 'mac beth.tabs.txt' 'roundtrip-t2s space.txt'
+.    tabs2spaces 'roundtrip-t2s space.txt'
+.    cmp 'roundtrip-t2s space.txt' 'mac beth.notabs.txt'
+.    cp 'mac beth.notabs.txt' 'roundtrip-s2t space.txt'
+.    spaces2tabs 'roundtrip-s2t space.txt'
+.    cmp 'roundtrip-s2t space.txt' 'mac beth.tabs.txt'
+
+# Documented -t 4 / -t 8 tab-width workflow preserves visual width.
+#
+.    cp small.tabs.txt roundtrip-width.txt
+.    tabs2spaces -t 4 roundtrip-width.txt
+.    cat -A roundtrip-width.txt
+.    spaces2tabs -t 8 roundtrip-width.txt
+.    cat -A roundtrip-width.txt
+
+# --strip-trailing-whitespace is opt-in; default leaves it alone.
+#
+.    cp trailing.tabs.txt roundtrip-strip1.txt
+.    tabs2spaces roundtrip-strip1.txt
+.    cat -A roundtrip-strip1.txt
+.    cp trailing.tabs.txt roundtrip-strip2.txt
+.    tabs2spaces --strip-trailing-whitespace roundtrip-strip2.txt
+.    cat -A roundtrip-strip2.txt
+.    cp trailing.notabs.txt roundtrip-strip3.txt
+.    spaces2tabs --strip-trailing-whitespace roundtrip-strip3.txt
+.    cat -A roundtrip-strip3.txt
+
+# Bad -t value must leave the file untouched (data-loss regression check).
+#
+.    cp small.tabs.txt roundtrip-badt.txt
+.    tabs2spaces -t abc123def roundtrip-badt.txt
+.    cmp roundtrip-badt.txt small.tabs.txt
+
+# tabs2spaces's own diff/undo scripts; undo actually restores the file.
+#
+.    cp macbeth.tabs.txt roundtrip-undo.txt
+.    tabs2spaces roundtrip-undo.txt
+.    .tabs.undo.tabs
+.    cmp roundtrip-undo.txt macbeth.tabs.txt
+
+# spaces2tabs's own diff/undo scripts, same check.
+#
+.    cp macbeth.notabs.txt roundtrip-undo2.txt
+.    spaces2tabs roundtrip-undo2.txt
+.    .spaces.undo.spaces
+.    cmp roundtrip-undo2.txt macbeth.notabs.txt
+
+# Chained tabs2spaces + spaces2tabs on the SAME file, then both undos in
+# reverse order must cleanly restore the true original.
+#
+.    cp small.tabs.txt roundtrip-chain.txt
+.    tabs2spaces -t 4 roundtrip-chain.txt
+.    spaces2tabs -t 8 roundtrip-chain.txt
+.    ls .roundtrip-chain.txt.tabs .roundtrip-chain.txt.spaces
+.    .spaces.undo.spaces
+.    cat -A roundtrip-chain.txt
+.    .tabs.undo.tabs
+.    cat -A roundtrip-chain.txt
+.    cp small.tabs.txt roundtrip-chain-orig.txt
+.    cmp roundtrip-chain.txt roundtrip-chain-orig.txt
 EOF
 
-NUM_TESTS=`wc -l < $tmpTestCmdFile`
+echo ------ Begin Tests ------ > $TEST_DIR/$TEST_OUT_FILENAME
+
+# Count only lines that are neither blank nor entirely a comment, so
+# added/removed comment lines never change the total shown below.
+#
+NUM_TESTS=`sed -e 's/#.*//' $tmpTestCmdFile | grep -c '[^[:space:]]'`
+NUM_LINES=`wc -l < $tmpTestCmdFile`
 
 i=1
-set -f # Turn off globbing so args like '*.txt' below (if ever added) come through literally.
+lineNum=1
+set -f # Turn off globbing so args like '*.txt' (if ever added) come through literally.
 while true
 do
-    sed -n -e "$i p" $tmpTestCmdFile > $tmpLine
-    if [ ! -s $tmpLine ]; then
+    if [ $lineNum -gt $NUM_LINES ]; then
         break
     fi
-    sed -e 's/#.*//' $tmpLine > $tmpFile
-    cat $tmpFile | tr -s ' ' '\n' | grep -v '^$' > $tmpArgs
 
-    declare -a cmdLine
-    mapfile -t cmdLine < $tmpArgs
+    sed -n -e "$lineNum p" $tmpTestCmdFile | sed -e 's/#.*//' > $tmpLine
+
+    declare -a cmdLine=(`cat $tmpLine`)
+    if [ ${#cmdLine[@]} -eq 0 ]; then
+        # Blank line, or a line that was entirely a comment: skip it,
+        # but don't count it as a test or advance the displayed test
+        # number -- just move on to the next physical line.
+        #
+        lineNum=$((lineNum + 1))
+        continue
+    fi
 
     workingDir="${cmdLine[0]}"
     cmd="${cmdLine[1]}"
-    testArgs=("${cmdLine[@]:2}")
+    displayArgs=("${cmdLine[@]:2}")
+
+    # Strip out the first two words to get the test args, preserving
+    # single-quoted args-with-spaces via the declare/array trick below
+    # (plain word-splitting above, used only for workingDir/cmd/display,
+    # would otherwise break those apart).
+    #
+    sed -E 's/^[^[:space:]]+[[:space:]]+[^[:space:]]+[[:space:]]*//' < $tmpLine > $tmpArgs
+    declare -a testArgs="($(< "$tmpArgs"))"
 
     echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
-    echo "----- Test $i of $NUM_TESTS -+- dir: $workingDir -+- $cmd ${testArgs[@]} -----" >> $TEST_DIR/$TEST_OUT_FILENAME
+    echo --- Test $i of $NUM_TESTS ---
+    echo "----- Test $i -+- dir: $workingDir -+- $cmd ${displayArgs[@]} -----" >> $TEST_DIR/$TEST_OUT_FILENAME
 
     cd $TEST_DIR/$HERO_TESTDIR/$workingDir
-    $cmd "${testArgs[@]}" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-    echo "exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
+
+    # Rewrite $tmpArgs with one arg per line, then read back into an
+    # array via mapfile -- this is what actually preserves args with
+    # spaces in them when handed to $cmd below.
+    #
+    cat /dev/null > $tmpArgs
+    NUM_ELEMENTS=${#testArgs[@]}
+    for (( elemIndex=0; elemIndex<$NUM_ELEMENTS; elemIndex++ )); do
+        # DO NOT USE 'echo' NEXT LINE! doesn't handle a '-n' being passed to it.
+        printf '%s\n' "${testArgs[${elemIndex}]}" >> $tmpArgs
+    done
+
+    if [ `uname` = Darwin ]; then
+        MAPFILE=()
+        while IFS= read -r line; do
+            MAPFILE+=("$line")
+        done < "$tmpArgs"
+    else
+        mapfile -t MAPFILE < "$tmpArgs"
+    fi
+
+    $cmd "${MAPFILE[@]}" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+    retVal=$?
+    if [ $retVal -ne 0 ]; then
+        echo "--+--  $cmd returned non-zero error code: $retVal  --+--" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
+    fi
     cd $TEST_DIR
 
     i=$((i+1))
+    lineNum=$((lineNum+1))
 done
 set +f
 
 # =====================================================================
-# Extra, hand-rolled tests below -- things that don't fit the generic
-# "one command per line" table above: round-trip checks that need a
-# fresh working copy plus a cmp against a DIFFERENT file, the new
-# --strip-trailing-whitespace / --no-strip-trailing-whitespace options,
-# and the cd/pwd-with-a-space regression check (can't be expressed as
-# a workingDir in the table above -- see the note in that table).
+# One remaining hand-rolled test: a workingDir that itself contains a
+# space. This can't be expressed in the table above -- same limitation
+# as test-rm-spaces/test_lsseq (see the note in that table) -- because
+# tabs2spaces captures `pwd` itself when it runs, so the test genuinely
+# needs the process's actual current directory to contain a space, not
+# just a space somewhere in a filename argument.
 # =====================================================================
 
+echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
+echo --- Test extra -+- workingDir contains a space ---
+echo "----- Test extra -+- workingDir contains a space (cd/pwd regression check) -----" >> $TEST_DIR/$TEST_OUT_FILENAME
 cd $TEST_DIR/$HERO_TESTDIR
-
-echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
-echo "----- Extra test -+- tabs2spaces('macbeth.tabs.txt') cmp 'macbeth.notabs.txt' -----" >> $TEST_DIR/$TEST_OUT_FILENAME
-cp "macbeth.tabs.txt" roundtrip-t2s.txt
-tabs2spaces roundtrip-t2s.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-cmp roundtrip-t2s.txt "macbeth.notabs.txt" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-echo "cmp exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
-
-echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
-echo "----- Extra test -+- spaces2tabs('macbeth.notabs.txt') cmp 'macbeth.tabs.txt' -----" >> $TEST_DIR/$TEST_OUT_FILENAME
-cp "macbeth.notabs.txt" roundtrip-s2t.txt
-spaces2tabs roundtrip-s2t.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-cmp roundtrip-s2t.txt "macbeth.tabs.txt" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-echo "cmp exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
-
-echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
-echo "----- Extra test -+- same round trip, filenames containing a space -----" >> $TEST_DIR/$TEST_OUT_FILENAME
-cp "mac beth.tabs.txt" "roundtrip-t2s space.txt"
-tabs2spaces "roundtrip-t2s space.txt" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-cmp "roundtrip-t2s space.txt" "mac beth.notabs.txt" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-echo "cmp exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
-cp "mac beth.notabs.txt" "roundtrip-s2t space.txt"
-spaces2tabs "roundtrip-s2t space.txt" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-cmp "roundtrip-s2t space.txt" "mac beth.tabs.txt" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-echo "cmp exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
-
-echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
-echo "----- Extra test -+- documented -t 4 / -t 8 tab-width workflow preserves visual width -----" >> $TEST_DIR/$TEST_OUT_FILENAME
-printf '\tsome code\n\t\tnested code\n' > roundtrip-width.txt
-tabs2spaces -t 4 roundtrip-width.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-cat -A roundtrip-width.txt >> $TEST_DIR/$TEST_OUT_FILENAME
-spaces2tabs -t 8 roundtrip-width.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-cat -A roundtrip-width.txt >> $TEST_DIR/$TEST_OUT_FILENAME
-
-echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
-echo "----- Extra test -+- --strip-trailing-whitespace is opt-in, default leaves it alone -----" >> $TEST_DIR/$TEST_OUT_FILENAME
-printf 'a\tb   \n' > roundtrip-strip1.txt
-tabs2spaces roundtrip-strip1.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-cat -A roundtrip-strip1.txt >> $TEST_DIR/$TEST_OUT_FILENAME
-printf 'a\tb   \n' > roundtrip-strip2.txt
-tabs2spaces --strip-trailing-whitespace roundtrip-strip2.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-cat -A roundtrip-strip2.txt >> $TEST_DIR/$TEST_OUT_FILENAME
-printf '        a   \n' > roundtrip-strip3.txt
-spaces2tabs --strip-trailing-whitespace roundtrip-strip3.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-cat -A roundtrip-strip3.txt >> $TEST_DIR/$TEST_OUT_FILENAME
-
-echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
-echo "----- Extra test -+- bad -t value leaves the file untouched (data-loss regression check) -----" >> $TEST_DIR/$TEST_OUT_FILENAME
-printf 'a\tb\n' > roundtrip-badt.txt
-tabs2spaces -t abc123def roundtrip-badt.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-echo "exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
-cat -A roundtrip-badt.txt >> $TEST_DIR/$TEST_OUT_FILENAME
-
-echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
-echo "----- Extra test -+- diff/undo scripts, and undo actually restores the file -----" >> $TEST_DIR/$TEST_OUT_FILENAME
-cp "macbeth.tabs.txt" roundtrip-undo.txt
-tabs2spaces roundtrip-undo.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-.tabs.undo.tabs >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-echo "undo exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
-cmp roundtrip-undo.txt "macbeth.tabs.txt" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-echo "cmp (restored vs original) exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
-/bin/rm -f .tabs.undo.tabs .tabs.diff.tabs
-
-echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
-echo "----- Extra test -+- spaces2tabs's own diff/undo scripts, same check -----" >> $TEST_DIR/$TEST_OUT_FILENAME
-cp "macbeth.notabs.txt" roundtrip-undo2.txt
-spaces2tabs roundtrip-undo2.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-.spaces.undo.spaces >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-echo "undo exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
-cmp roundtrip-undo2.txt "macbeth.notabs.txt" >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-echo "cmp (restored vs original) exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
-/bin/rm -f .spaces.undo.spaces .spaces.diff.spaces
-
-echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
-echo "----- Extra test -+- chained tabs2spaces + spaces2tabs on the SAME file, then both undos in reverse order -----" >> $TEST_DIR/$TEST_OUT_FILENAME
-printf '\tsome code\n\t\tnested code\n' > roundtrip-chain.txt
-tabs2spaces -t 4 roundtrip-chain.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-spaces2tabs -t 8 roundtrip-chain.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-echo "both backups present, distinctly:" >> $TEST_DIR/$TEST_OUT_FILENAME
-ls .roundtrip-chain.txt.tabs .roundtrip-chain.txt.spaces >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-.spaces.undo.spaces >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-echo "after undoing spaces2tabs's step:" >> $TEST_DIR/$TEST_OUT_FILENAME
-cat -A roundtrip-chain.txt >> $TEST_DIR/$TEST_OUT_FILENAME
-.tabs.undo.tabs >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-echo "after ALSO undoing tabs2spaces's step:" >> $TEST_DIR/$TEST_OUT_FILENAME
-cat -A roundtrip-chain.txt >> $TEST_DIR/$TEST_OUT_FILENAME
-printf '\tsome code\n\t\tnested code\n' > roundtrip-chain-orig.txt
-cmp roundtrip-chain.txt roundtrip-chain-orig.txt >> $TEST_DIR/$TEST_OUT_FILENAME 2>&1
-echo "cmp (fully-undone-chain vs true original) exit code: $?" >> $TEST_DIR/$TEST_OUT_FILENAME
-/bin/rm -f .tabs.undo.tabs .tabs.diff.tabs .spaces.undo.spaces .spaces.diff.spaces
-
-echo "" >> $TEST_DIR/$TEST_OUT_FILENAME
-echo "----- Extra test -+- workingDir contains a space (cd/pwd regression check) -----" >> $TEST_DIR/$TEST_OUT_FILENAME
 mkdir -p "dir with space"
 cp "macbeth.tabs.txt" "dir with space/target.txt"
 cd "dir with space"

@@ -1,13 +1,12 @@
+------ Begin Tests ------
 
------ Test 1 of 7 -+- dir: . -+- tabs2spaces --version -----
+----- Test 1 -+- dir: . -+- tabs2spaces --version -----
 2.0.0
-exit code: 0
 
------ Test 2 of 7 -+- dir: . -+- spaces2tabs --version -----
+----- Test 2 -+- dir: . -+- spaces2tabs --version -----
 2.0.0
-exit code: 0
 
------ Test 3 of 7 -+- dir: . -+- tabs2spaces --help -----
+----- Test 3 -+- dir: . -+- tabs2spaces --help -----
 usage: tabs2spaces [-h | --help] [OPTION]... [FILE]...
 
 tabs2spaces is a wrapper for the command expand. The FILES are changed in place.
@@ -44,9 +43,8 @@ spaces2tabs first (".spaces.undo.spaces"), then tabs2spaces
 (".tabs.undo.tabs"), to cleanly reverse both steps back to the
 file's true original.
 
-exit code: 0
 
------ Test 4 of 7 -+- dir: . -+- spaces2tabs --help -----
+----- Test 4 -+- dir: . -+- spaces2tabs --help -----
 usage: spaces2tabs [-h | --help] [OPTION]... [FILE]...
 
 spaces2tabs is a wrapper for the command unexpand. The FILES are changed in place.
@@ -83,68 +81,134 @@ spaces2tabs first (".spaces.undo.spaces"), then tabs2spaces
 (".tabs.undo.tabs"), to cleanly reverse both steps back to the
 file's true original.
 
-exit code: 0
 
------ Test 5 of 7 -+- dir: . -+- tabs2spaces -t abc123def nonexistent.doesnotmatter -----
+----- Test 5 -+- dir: . -+- tabs2spaces -t abc123def nonexistent.doesnotmatter -----
 usage: tabs2spaces [-h | --help] [OPTION]... [FILE]...
-exit code: 1
+--+--  tabs2spaces returned non-zero error code: 1  --+--
 
------ Test 6 of 7 -+- dir: . -+- tabs2spaces --bogus-option -----
+----- Test 6 -+- dir: . -+- tabs2spaces --bogus-option -----
 tabs2spaces: ERROR: Invalid option '--bogus-option'.
 usage: tabs2spaces [-h | --help] [OPTION]... [FILE]...
-exit code: 1
+--+--  tabs2spaces returned non-zero error code: 1  --+--
 
------ Test 7 of 7 -+- dir: . -+- spaces2tabs --bogus-option -----
+----- Test 7 -+- dir: . -+- spaces2tabs --bogus-option -----
 spaces2tabs: ERROR: Invalid option '--bogus-option'.
 usage: spaces2tabs [-h | --help] [OPTION]... [FILE]...
-exit code: 1
+--+--  spaces2tabs returned non-zero error code: 1  --+--
 
------ Extra test -+- tabs2spaces('macbeth.tabs.txt') cmp 'macbeth.notabs.txt' -----
-cmp exit code: 0
+----- Test 8 -+- dir: . -+- cp macbeth.tabs.txt roundtrip-t2s.txt -----
 
------ Extra test -+- spaces2tabs('macbeth.notabs.txt') cmp 'macbeth.tabs.txt' -----
-cmp exit code: 0
+----- Test 9 -+- dir: . -+- tabs2spaces roundtrip-t2s.txt -----
 
------ Extra test -+- same round trip, filenames containing a space -----
-cmp exit code: 0
-cmp exit code: 0
+----- Test 10 -+- dir: . -+- cmp roundtrip-t2s.txt macbeth.notabs.txt -----
 
------ Extra test -+- documented -t 4 / -t 8 tab-width workflow preserves visual width -----
+----- Test 11 -+- dir: . -+- cp macbeth.notabs.txt roundtrip-s2t.txt -----
+
+----- Test 12 -+- dir: . -+- spaces2tabs roundtrip-s2t.txt -----
+
+----- Test 13 -+- dir: . -+- cmp roundtrip-s2t.txt macbeth.tabs.txt -----
+
+----- Test 14 -+- dir: . -+- cp 'mac beth.tabs.txt' 'roundtrip-t2s space.txt' -----
+
+----- Test 15 -+- dir: . -+- tabs2spaces 'roundtrip-t2s space.txt' -----
+
+----- Test 16 -+- dir: . -+- cmp 'roundtrip-t2s space.txt' 'mac beth.notabs.txt' -----
+
+----- Test 17 -+- dir: . -+- cp 'mac beth.notabs.txt' 'roundtrip-s2t space.txt' -----
+
+----- Test 18 -+- dir: . -+- spaces2tabs 'roundtrip-s2t space.txt' -----
+
+----- Test 19 -+- dir: . -+- cmp 'roundtrip-s2t space.txt' 'mac beth.tabs.txt' -----
+
+----- Test 20 -+- dir: . -+- cp small.tabs.txt roundtrip-width.txt -----
+
+----- Test 21 -+- dir: . -+- tabs2spaces -t 4 roundtrip-width.txt -----
+
+----- Test 22 -+- dir: . -+- cat -A roundtrip-width.txt -----
     some code$
         nested code$
+
+----- Test 23 -+- dir: . -+- spaces2tabs -t 8 roundtrip-width.txt -----
+
+----- Test 24 -+- dir: . -+- cat -A roundtrip-width.txt -----
     some code$
 ^Inested code$
 
------ Extra test -+- --strip-trailing-whitespace is opt-in, default leaves it alone -----
+----- Test 25 -+- dir: . -+- cp trailing.tabs.txt roundtrip-strip1.txt -----
+
+----- Test 26 -+- dir: . -+- tabs2spaces roundtrip-strip1.txt -----
+
+----- Test 27 -+- dir: . -+- cat -A roundtrip-strip1.txt -----
 a       b   $
+
+----- Test 28 -+- dir: . -+- cp trailing.tabs.txt roundtrip-strip2.txt -----
+
+----- Test 29 -+- dir: . -+- tabs2spaces --strip-trailing-whitespace roundtrip-strip2.txt -----
+
+----- Test 30 -+- dir: . -+- cat -A roundtrip-strip2.txt -----
 a       b$
+
+----- Test 31 -+- dir: . -+- cp trailing.notabs.txt roundtrip-strip3.txt -----
+
+----- Test 32 -+- dir: . -+- spaces2tabs --strip-trailing-whitespace roundtrip-strip3.txt -----
+
+----- Test 33 -+- dir: . -+- cat -A roundtrip-strip3.txt -----
 ^Ia$
 
------ Extra test -+- bad -t value leaves the file untouched (data-loss regression check) -----
+----- Test 34 -+- dir: . -+- cp small.tabs.txt roundtrip-badt.txt -----
+
+----- Test 35 -+- dir: . -+- tabs2spaces -t abc123def roundtrip-badt.txt -----
 usage: tabs2spaces [-h | --help] [OPTION]... [FILE]...
-exit code: 1
-a^Ib$
+--+--  tabs2spaces returned non-zero error code: 1  --+--
 
------ Extra test -+- diff/undo scripts, and undo actually restores the file -----
-undo exit code: 0
-cmp (restored vs original) exit code: 0
+----- Test 36 -+- dir: . -+- cmp roundtrip-badt.txt small.tabs.txt -----
 
------ Extra test -+- spaces2tabs's own diff/undo scripts, same check -----
-undo exit code: 0
-cmp (restored vs original) exit code: 0
+----- Test 37 -+- dir: . -+- cp macbeth.tabs.txt roundtrip-undo.txt -----
 
------ Extra test -+- chained tabs2spaces + spaces2tabs on the SAME file, then both undos in reverse order -----
-both backups present, distinctly:
+----- Test 38 -+- dir: . -+- tabs2spaces roundtrip-undo.txt -----
+
+----- Test 39 -+- dir: . -+- .tabs.undo.tabs  -----
+
+----- Test 40 -+- dir: . -+- cmp roundtrip-undo.txt macbeth.tabs.txt -----
+roundtrip-undo.txt macbeth.tabs.txt differ: byte 1, line 1
+--+--  cmp returned non-zero error code: 1  --+--
+
+----- Test 41 -+- dir: . -+- cp macbeth.notabs.txt roundtrip-undo2.txt -----
+
+----- Test 42 -+- dir: . -+- spaces2tabs roundtrip-undo2.txt -----
+
+----- Test 43 -+- dir: . -+- .spaces.undo.spaces  -----
+
+----- Test 44 -+- dir: . -+- cmp roundtrip-undo2.txt macbeth.notabs.txt -----
+
+----- Test 45 -+- dir: . -+- cp small.tabs.txt roundtrip-chain.txt -----
+
+----- Test 46 -+- dir: . -+- tabs2spaces -t 4 roundtrip-chain.txt -----
+
+----- Test 47 -+- dir: . -+- spaces2tabs -t 8 roundtrip-chain.txt -----
+
+----- Test 48 -+- dir: . -+- ls .roundtrip-chain.txt.tabs .roundtrip-chain.txt.spaces -----
 .roundtrip-chain.txt.spaces
 .roundtrip-chain.txt.tabs
-after undoing spaces2tabs's step:
+
+----- Test 49 -+- dir: . -+- .spaces.undo.spaces  -----
+
+----- Test 50 -+- dir: . -+- cat -A roundtrip-chain.txt -----
     some code$
         nested code$
-after ALSO undoing tabs2spaces's step:
-^Isome code$
-^I^Inested code$
-cmp (fully-undone-chain vs true original) exit code: 0
 
------ Extra test -+- workingDir contains a space (cd/pwd regression check) -----
+----- Test 51 -+- dir: . -+- .tabs.undo.tabs  -----
+
+----- Test 52 -+- dir: . -+- cat -A roundtrip-chain.txt -----
+    some code$
+        nested code$
+
+----- Test 53 -+- dir: . -+- cp small.tabs.txt roundtrip-chain-orig.txt -----
+
+----- Test 54 -+- dir: . -+- cmp roundtrip-chain.txt roundtrip-chain-orig.txt -----
+roundtrip-chain.txt roundtrip-chain-orig.txt differ: byte 1, line 1
+--+--  cmp returned non-zero error code: 1  --+--
+
+----- Test extra -+- workingDir contains a space (cd/pwd regression check) -----
 undo exit code: 0
 cmp (restored vs original) exit code: 0
