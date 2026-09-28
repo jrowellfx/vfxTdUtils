@@ -1,0 +1,231 @@
+------ Begin Tests ------
+
+----- Test 1 -+- dir: . -+- tabs2spaces --version -----
+2.0.0
+
+----- Test 2 -+- dir: . -+- spaces2tabs --version -----
+2.0.0
+
+----- Test 3 -+- dir: . -+- tabs2spaces --help -----
+usage: tabs2spaces [-h | --help] [OPTION]... [FILE]...
+
+tabs2spaces is a wrapper for the command expand. The FILES are changed in place.
+
+A backup copy of each original FILE is created called ".FILE.tabs" in the
+directory that FILE resides.
+
+Two special files are also created in the current directory to allow you
+to review all the changes made as well as undo the changes if the results
+weren't what you expected.  Namely, the files ".tabs.diff.tabs" and
+".tabs.undo.tabs" which are executable.
+
+Note: when running either of these directly, explicitly prefix the path
+(almost always "./"), e.g. "./.tabs.undo.tabs", rather than typing just
+the bare filename. Without the "./", your shell searches $PATH in order,
+and if it finds an unrelated, same-named file left over from some
+earlier, unrelated run sitting in an earlier directory, it WILL actually
+run that one instead -- silently undoing or overwriting whatever file IT
+was created for, somewhere else on your system, with no warning at all.
+
+Note: To get rid of all the crufty leftovers:
+    find . -name '.*.tabs' -type f -print0 | xargs -0 /bin/rm -f
+
+positional arguments:
+  FILE                      The file(s) to modify
+
+optional arguments:
+  -h, --help                     Display this help and exit
+  -t NUMBER, --tabs=NUMBER       expands/unexpands tabs by NUMBER characters - default 8.
+  --strip-trailing-whitespace    also strip trailing whitespace from every line
+  --no-strip-trailing-whitespace leave trailing whitespace untouched [default]
+  --version                      print out the version number and exit
+
+Tip: If a file appears to have been created with a tabstop setting
+different from your system default (assumed to be 8), first guess
+that setting -- say, 4 -- and run "tabs2spaces -t 4" to see the
+result. If it still doesn't look right, undo (".tabs.undo.tabs")
+and try a different guess. Once the all-spaces result looks correct,
+run "spaces2tabs -t 8" to re-tab it at the standard width. Each
+step's undo is independent, so if you later change your mind, undo
+spaces2tabs first (".spaces.undo.spaces"), then tabs2spaces
+(".tabs.undo.tabs"), to cleanly reverse both steps back to the
+file's true original.
+
+
+----- Test 4 -+- dir: . -+- spaces2tabs --help -----
+usage: spaces2tabs [-h | --help] [OPTION]... [FILE]...
+
+spaces2tabs is a wrapper for the command unexpand. The FILES are changed in place.
+
+A backup copy of each original FILE is created called ".FILE.spaces" in the
+directory that FILE resides.
+
+Two special files are also created in the current directory to allow you
+to review all the changes made as well as undo the changes if the results
+weren't what you expected.  Namely, the files ".spaces.diff.spaces" and
+".spaces.undo.spaces" which are executable.
+
+Note: when running either of these directly, explicitly prefix the path
+(almost always "./"), e.g. "./.spaces.undo.spaces", rather than typing
+just the bare filename. Without the "./", your shell searches $PATH in
+order, and if it finds an unrelated, same-named file left over from some
+earlier, unrelated run sitting in an earlier directory, it WILL actually
+run that one instead -- silently undoing or overwriting whatever file IT
+was created for, somewhere else on your system, with no warning at all.
+
+Note: To get rid of all the crufty leftovers:
+    find . -name '.*.spaces' -type f -print0 | xargs -0 /bin/rm -f
+
+positional arguments:
+  FILE                      The file(s) to modify
+
+optional arguments:
+  -h, --help                     Display this help and exit
+  -t NUMBER, --tabs=NUMBER       expands/unexpands tabs by NUMBER characters - default 8.
+  --strip-trailing-whitespace    also strip trailing whitespace from every line
+  --no-strip-trailing-whitespace leave trailing whitespace untouched [default]
+  --version                      print out the version number and exit
+
+Tip: If a file appears to have been created with a tabstop setting
+different from your system default (assumed to be 8), first guess
+that setting -- say, 4 -- and run "tabs2spaces -t 4" to see the
+result. If it still doesn't look right, undo (".tabs.undo.tabs")
+and try a different guess. Once the all-spaces result looks correct,
+run "spaces2tabs -t 8" to re-tab it at the standard width. Each
+step's undo is independent, so if you later change your mind, undo
+spaces2tabs first (".spaces.undo.spaces"), then tabs2spaces
+(".tabs.undo.tabs"), to cleanly reverse both steps back to the
+file's true original.
+
+
+----- Test 5 -+- dir: . -+- tabs2spaces -t abc123def nonexistent.doesnotmatter -----
+usage: tabs2spaces [-h | --help] [OPTION]... [FILE]...
+--+--  tabs2spaces returned non-zero error code: 1  --+--
+
+----- Test 6 -+- dir: . -+- tabs2spaces --bogus-option -----
+tabs2spaces: ERROR: Invalid option '--bogus-option'.
+usage: tabs2spaces [-h | --help] [OPTION]... [FILE]...
+--+--  tabs2spaces returned non-zero error code: 1  --+--
+
+----- Test 7 -+- dir: . -+- spaces2tabs --bogus-option -----
+spaces2tabs: ERROR: Invalid option '--bogus-option'.
+usage: spaces2tabs [-h | --help] [OPTION]... [FILE]...
+--+--  spaces2tabs returned non-zero error code: 1  --+--
+
+----- Test 8 -+- dir: . -+- cp macbeth.tabs.txt roundtrip-t2s.txt -----
+
+----- Test 9 -+- dir: . -+- tabs2spaces roundtrip-t2s.txt -----
+
+----- Test 10 -+- dir: . -+- cmp roundtrip-t2s.txt macbeth.notabs.txt -----
+
+----- Test 11 -+- dir: . -+- cp macbeth.notabs.txt roundtrip-s2t.txt -----
+
+----- Test 12 -+- dir: . -+- spaces2tabs roundtrip-s2t.txt -----
+
+----- Test 13 -+- dir: . -+- cmp roundtrip-s2t.txt macbeth.tabs.txt -----
+
+----- Test 14 -+- dir: . -+- cp 'mac beth.tabs.txt' 'roundtrip-t2s space.txt' -----
+
+----- Test 15 -+- dir: . -+- tabs2spaces 'roundtrip-t2s space.txt' -----
+
+----- Test 16 -+- dir: . -+- cmp 'roundtrip-t2s space.txt' 'mac beth.notabs.txt' -----
+
+----- Test 17 -+- dir: . -+- cp 'mac beth.notabs.txt' 'roundtrip-s2t space.txt' -----
+
+----- Test 18 -+- dir: . -+- spaces2tabs 'roundtrip-s2t space.txt' -----
+
+----- Test 19 -+- dir: . -+- cmp 'roundtrip-s2t space.txt' 'mac beth.tabs.txt' -----
+
+----- Test 20 -+- dir: . -+- cp small.tabs.txt roundtrip-width.txt -----
+
+----- Test 21 -+- dir: . -+- tabs2spaces -t 4 roundtrip-width.txt -----
+
+----- Test 22 -+- dir: . -+- cat -te roundtrip-width.txt -----
+    some code$
+        nested code$
+
+----- Test 23 -+- dir: . -+- spaces2tabs -t 8 roundtrip-width.txt -----
+
+----- Test 24 -+- dir: . -+- cat -te roundtrip-width.txt -----
+    some code$
+^Inested code$
+
+----- Test 25 -+- dir: . -+- cp trailing.tabs.txt roundtrip-strip1.txt -----
+
+----- Test 26 -+- dir: . -+- tabs2spaces roundtrip-strip1.txt -----
+
+----- Test 27 -+- dir: . -+- cat -te roundtrip-strip1.txt -----
+a       b   $
+
+----- Test 28 -+- dir: . -+- cp trailing.tabs.txt roundtrip-strip2.txt -----
+
+----- Test 29 -+- dir: . -+- tabs2spaces --strip-trailing-whitespace roundtrip-strip2.txt -----
+
+----- Test 30 -+- dir: . -+- cat -te roundtrip-strip2.txt -----
+a       b$
+
+----- Test 31 -+- dir: . -+- cp trailing.notabs.txt roundtrip-strip3.txt -----
+
+----- Test 32 -+- dir: . -+- spaces2tabs --strip-trailing-whitespace roundtrip-strip3.txt -----
+
+----- Test 33 -+- dir: . -+- cat -te roundtrip-strip3.txt -----
+^Ia$
+
+----- Test 34 -+- dir: . -+- cp small.tabs.txt roundtrip-badt.txt -----
+
+----- Test 35 -+- dir: . -+- tabs2spaces -t abc123def roundtrip-badt.txt -----
+usage: tabs2spaces [-h | --help] [OPTION]... [FILE]...
+--+--  tabs2spaces returned non-zero error code: 1  --+--
+
+----- Test 36 -+- dir: . -+- cmp roundtrip-badt.txt small.tabs.txt -----
+
+----- Test 37 -+- dir: . -+- cp macbeth.tabs.txt roundtrip-undo.txt -----
+
+----- Test 38 -+- dir: . -+- tabs2spaces roundtrip-undo.txt -----
+
+----- Test 39 -+- dir: . -+- ./.tabs.undo.tabs  -----
+./.tabs.undo.tabs: Running from /...absPathToRepo.../tests/test-tabs2spaces-dir
+
+----- Test 40 -+- dir: . -+- cmp roundtrip-undo.txt macbeth.tabs.txt -----
+
+----- Test 41 -+- dir: . -+- cp macbeth.notabs.txt roundtrip-undo2.txt -----
+
+----- Test 42 -+- dir: . -+- spaces2tabs roundtrip-undo2.txt -----
+
+----- Test 43 -+- dir: . -+- ./.spaces.undo.spaces  -----
+./.spaces.undo.spaces: Running from /...absPathToRepo.../tests/test-tabs2spaces-dir
+
+----- Test 44 -+- dir: . -+- cmp roundtrip-undo2.txt macbeth.notabs.txt -----
+
+----- Test 45 -+- dir: . -+- cp small.tabs.txt roundtrip-chain.txt -----
+
+----- Test 46 -+- dir: . -+- tabs2spaces -t 4 roundtrip-chain.txt -----
+
+----- Test 47 -+- dir: . -+- spaces2tabs -t 8 roundtrip-chain.txt -----
+
+----- Test 48 -+- dir: . -+- ls .roundtrip-chain.txt.tabs .roundtrip-chain.txt.spaces -----
+.roundtrip-chain.txt.spaces
+.roundtrip-chain.txt.tabs
+
+----- Test 49 -+- dir: . -+- ./.spaces.undo.spaces  -----
+./.spaces.undo.spaces: Running from /...absPathToRepo.../tests/test-tabs2spaces-dir
+
+----- Test 50 -+- dir: . -+- cat -te roundtrip-chain.txt -----
+    some code$
+        nested code$
+
+----- Test 51 -+- dir: . -+- ./.tabs.undo.tabs  -----
+./.tabs.undo.tabs: Running from /...absPathToRepo.../tests/test-tabs2spaces-dir
+
+----- Test 52 -+- dir: . -+- cat -te roundtrip-chain.txt -----
+^Isome code$
+^I^Inested code$
+
+----- Test 53 -+- dir: . -+- cp small.tabs.txt roundtrip-chain-orig.txt -----
+
+----- Test 54 -+- dir: . -+- cmp roundtrip-chain.txt roundtrip-chain-orig.txt -----
+
+----- Test extra -+- workingDir contains a space (cd/pwd regression check) -----
+/...absPathToRepo.../tests/test-tabs2spaces-dir/dir with space/.tabs.undo.tabs: Running from /...absPathToRepo.../tests/test-tabs2spaces-dir/dir with space
+undo exit code: 0
+cmp (restored vs original) exit code: 0
