@@ -76,8 +76,10 @@ weren't what you expected.  Namely, the files ".spaces.diff.spaces" and
 Note: when running either of these directly, explicitly prefix the path
 (almost always "./"), e.g. "./.spaces.undo.spaces", rather than typing
 just the bare filename. Without the "./", your shell searches \$PATH in
-order and may find and run a different, unrelated file of the same name
-sitting in an earlier directory instead of the one just created here.
+order, and if it finds an unrelated, same-named file left over from some
+earlier, unrelated run sitting in an earlier directory, it WILL actually
+run that one instead -- silently undoing or overwriting whatever file IT
+was created for, somewhere else on your system, with no warning at all.
 
 Note: To get rid of all the crufty leftovers:
     find . -name '.*.spaces' -type f -print0 | xargs -0 /bin/rm -f
@@ -172,8 +174,10 @@ curDir=`pwd`
 
 echo '#!/bin/bash'  >  .spaces.undo.spaces
 echo cd \"$curDir\" >> .spaces.undo.spaces
+echo echo \"\$0: Running from $curDir\" >> .spaces.undo.spaces
 echo '#!/bin/bash'  >  .spaces.diff.spaces
 echo cd \"$curDir\" >> .spaces.diff.spaces
+echo echo \"\$0: Running from $curDir\" >> .spaces.diff.spaces
 chmod +x .spaces.undo.spaces .spaces.diff.spaces
 echo '( set -x' >> .spaces.diff.spaces
 

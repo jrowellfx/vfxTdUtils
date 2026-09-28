@@ -34,8 +34,10 @@ weren't what you expected.  Namely, the files ".runsed.diff.runsed" and
 Note: when running either of these directly, explicitly prefix the path
 (almost always "./"), e.g. "./.runsed.undo.runsed", rather than typing
 just the bare filename. Without the "./", your shell searches $PATH in
-order and may find and run a different, unrelated file of the same name
-sitting in an earlier directory instead of the one just created here.
+order, and if it finds an unrelated, same-named file left over from some
+earlier, unrelated run sitting in an earlier directory, it WILL actually
+run that one instead -- silently undoing or overwriting whatever file IT
+was created for, somewhere else on your system, with no warning at all.
 
 When you are eventually satisfied simply remove the ".*.runsed" files
 with the command:
@@ -90,6 +92,7 @@ usage: runsed [-h | --help] [OPTION]... [FILE]...
 ----- Test 8 -+- dir: . -+- runsed macbeth.txt -----
 
 ----- Test 9 -+- dir: . -+- ./.runsed.diff.runsed -----
+./.runsed.diff.runsed: Running from /...absPathToRepo.../tests/test-runsed-dir
 + /usr/bin/diff ./.macbeth.txt.runsed macbeth.txt
 1c1
 <     When shall we three meet again
@@ -118,6 +121,7 @@ usage: runsed [-h | --help] [OPTION]... [FILE]...
 
 
 ----- Test 10 -+- dir: . -+- ./.runsed.undo.runsed -----
+./.runsed.undo.runsed: Running from /...absPathToRepo.../tests/test-runsed-dir
 
 ----- Test 11 -+- dir: . -+- cat macbeth.txt -----
     When shall we three meet again
@@ -137,6 +141,7 @@ usage: runsed [-h | --help] [OPTION]... [FILE]...
 ----- Test 12 -+- dir: aaa -+- runsed -f sed.script.alt macbeth.txt -----
 
 ----- Test 13 -+- dir: aaa -+- ./.runsed.diff.runsed -----
+./.runsed.diff.runsed: Running from /...absPathToRepo.../tests/test-runsed-dir/aaa
 + /usr/bin/diff ./.macbeth.txt.runsed macbeth.txt
 4c4
 <         When the battle's lost and won.
@@ -151,10 +156,12 @@ usage: runsed [-h | --help] [OPTION]... [FILE]...
 
 
 ----- Test 14 -+- dir: aaa -+- ./.runsed.undo.runsed -----
+./.runsed.undo.runsed: Running from /...absPathToRepo.../tests/test-runsed-dir/aaa
 
 ----- Test 15 -+- dir: aaa -+- runsed -E -f sed.script.alt macbeth.txt -----
 
 ----- Test 16 -+- dir: aaa -+- ./.runsed.diff.runsed -----
+./.runsed.diff.runsed: Running from /...absPathToRepo.../tests/test-runsed-dir/aaa
 + /usr/bin/diff ./.macbeth.txt.runsed macbeth.txt
 4c4
 <         When the battle's lost and won.
@@ -169,10 +176,12 @@ usage: runsed [-h | --help] [OPTION]... [FILE]...
 
 
 ----- Test 17 -+- dir: aaa -+- ./.runsed.undo.runsed -----
+./.runsed.undo.runsed: Running from /...absPathToRepo.../tests/test-runsed-dir/aaa
 
 ----- Test 18 -+- dir: aaa -+- runsed -f 'sed.script with space' macbeth.txt -----
 
 ----- Test 19 -+- dir: aaa -+- ./.runsed.diff.runsed -----
+./.runsed.diff.runsed: Running from /...absPathToRepo.../tests/test-runsed-dir/aaa
 + /usr/bin/diff ./.macbeth.txt.runsed macbeth.txt
 9c9
 <     I come, Graymalkin!
@@ -181,6 +190,7 @@ usage: runsed [-h | --help] [OPTION]... [FILE]...
 
 
 ----- Test 20 -+- dir: aaa -+- ./.runsed.undo.runsed -----
+./.runsed.undo.runsed: Running from /...absPathToRepo.../tests/test-runsed-dir/aaa
 
 ----- Test 21 -+- dir: . -+- runsed -f -----
 runsed: ERROR: -f|--file requires a SCRIPT-FILE argument.
@@ -190,6 +200,7 @@ usage: runsed [-h | --help] [OPTION]... [FILE]...
 ----- Extra test -+- dir: 'dir with space' -+- runsed macbeth.txt -----
 
 ----- Extra test -+- dir: 'dir with space' -+- .runsed.undo.runsed (run from elsewhere) -----
+/...absPathToRepo.../tests/test-runsed-dir/dir with space/.runsed.undo.runsed: Running from /...absPathToRepo.../tests/test-runsed-dir/dir with space
 undo exit code: 0
 restored macbeth.txt:
     When shall we three meet again

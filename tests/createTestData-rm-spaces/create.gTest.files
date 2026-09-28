@@ -1,0 +1,5 @@
+gdir/file  with  double  spaces.txt
+gdir/file   triple   spaces.txt
+gdir/  leading double.txt
+gdir/trailing double .txt  
+gdir/mixed single  double   triple    space.txt

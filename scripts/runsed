@@ -85,8 +85,10 @@ weren't what you expected.  Namely, the files ".runsed.diff.runsed" and
 Note: when running either of these directly, explicitly prefix the path
 (almost always "./"), e.g. "./.runsed.undo.runsed", rather than typing
 just the bare filename. Without the "./", your shell searches \$PATH in
-order and may find and run a different, unrelated file of the same name
-sitting in an earlier directory instead of the one just created here.
+order, and if it finds an unrelated, same-named file left over from some
+earlier, unrelated run sitting in an earlier directory, it WILL actually
+run that one instead -- silently undoing or overwriting whatever file IT
+was created for, somewhere else on your system, with no warning at all.
 
 When you are eventually satisfied simply remove the ".*.runsed" files
 with the command:
@@ -157,8 +159,10 @@ curDir=`pwd`
 
 echo '#!/bin/bash'  >  .runsed.undo.runsed
 echo cd \"$curDir\" >> .runsed.undo.runsed
+echo echo \"\$0: Running from $curDir\" >> .runsed.undo.runsed
 echo '#!/bin/bash'  >  .runsed.diff.runsed
 echo cd \"$curDir\" >> .runsed.diff.runsed
+echo echo \"\$0: Running from $curDir\" >> .runsed.diff.runsed
 chmod +x .runsed.undo.runsed .runsed.diff.runsed
 echo '( set -x' >> .runsed.diff.runsed
 

@@ -72,139 +72,139 @@ optional arguments:
 
 
 ----- Test 6 -+- dir: . -+- date -----
-Sat May  2 18:31:32 GMT 2026
+Mon Sep 28 00:10:38 GMT 2026
 
 ----- Test 7 -+- dir: . -+- time-stamp -----
-260502-183132
+260928-001038
 
 ----- Test 8 -+- dir: . -+- time-stamp --no-seconds -----
-260502-1831
+260928-0010
 
 ----- Test 9 -+- dir: . -+- time-stamp --no-minutes -----
-260502-18
+260928-00
 
 ----- Test 10 -+- dir: . -+- time-stamp --round-quarter --no-seconds -----
-260502-1830
+260928-0000
 
 ----- Test 11 -+- dir: . -+- time-stamp --round-half --no-seconds -----
-260502-1830
+260928-0000
 
 ----- Test 12 -+- dir: . -+- time-stamp --only-time -----
-183132
+001038
 
 ----- Test 13 -+- dir: . -+- time-stamp --only-time --round-quarter --no-seconds -----
-1830
+0000
 
 ----- Test 14 -+- dir: . -+- time-stamp --only-time --round-half --no-seconds -----
-1830
+0000
 
 ----- Test 15 -+- dir: . -+- time-stamp --short -----
-260502
+260928
 
 ----- Test 16 -+- dir: . -+- time-stamp --only-date -----
-260502
+260928
 
 ----- Test 17 -+- dir: . -+- time-stamp --full-year -----
-20260502-183132
+20260928-001038
 
 ----- Test 18 -+- dir: . -+- time-stamp --full-year --round-quarter --no-seconds -----
-20260502-1830
+20260928-0000
 
 ----- Test 19 -+- dir: . -+- time-stamp --full-year --round-half --no-seconds -----
-20260502-1830
+20260928-0000
 
 ----- Test 20 -+- dir: . -+- time-stamp --full-year --short -----
-260502
+260928
 
 ----- Test 21 -+- dir: . -+- time-stamp --full-year --no-seconds -----
-20260502-1831
+20260928-0010
 
 ----- Test 22 -+- dir: . -+- time-stamp --full-year --no-minutes -----
-20260502-18
+20260928-00
 
 ----- Test 23 -+- dir: . -+- time-stamp --round-quarter -----
-260502-183000
+260928-000000
 
 ----- Test 24 -+- dir: . -+- time-stamp --round-half -----
-260502-183000
+260928-000000
 
 ----- Test 25 -+- dir: . -+- time-stamp --only-time --round-quarter -----
-183000
+000000
 
 ----- Test 26 -+- dir: . -+- time-stamp --only-time --round-half -----
-183000
+000000
 
 ----- Test 27 -+- dir: . -+- time-stamp --full-year --round-quarter -----
-20260502-183000
+20260928-000000
 
 ----- Test 28 -+- dir: . -+- time-stamp --full-year --round-half -----
-20260502-183000
+20260928-000000
 
 ----- Test 29 -+- dir: . -+- time-stamp --full-year --underscore-all -----
-2026_05_02_183132
+2026_09_28_001039
 
 ----- Test 30 -+- dir: . -+- time-stamp --underscore-all -----
-26_05_02_183132
+26_09_28_001039
 
 ----- Test 31 -+- dir: . -+- time-stamp --full-year --round-quarter --underscore-all -----
-2026_05_02_183000
+2026_09_28_000000
 
 ----- Test 32 -+- dir: . -+- time-stamp --full-year --round-half --underscore-all -----
-2026_05_02_183000
+2026_09_28_000000
 
 ----- Test 33 -+- dir: . -+- time-stamp --full-year --only-date --underscore-all -----
-2026_05_02
+2026_09_28
 
 ----- Test 34 -+- dir: . -+- time-stamp --only-date --underscore-all -----
-26_05_02
+26_09_28
 
 ----- Test 35 -+- dir: . -+- time-stamp --only-time --underscore-all -----
-183132
+001039
 
 ----- Test 36 -+- dir: . -+- time-stamp --only-time --underscore-all --no-seconds -----
-1831
+0010
 
 ----- Test 37 -+- dir: . -+- time-stamp --only-time --underscore-all --round-quarter --no-seconds -----
-1830
+0000
 
 ----- Test 38 -+- dir: . -+- time-stamp --only-time --underscore-all --round-half --no-seconds -----
-1830
+0000
 
 ----- Test 39 -+- dir: . -+- time-stamp --full-year --dash-all -----
-2026-05-02-183132
+2026-09-28-001039
 
 ----- Test 40 -+- dir: . -+- time-stamp --dash-all -----
-26-05-02-183132
+26-09-28-001039
 
 ----- Test 41 -+- dir: . -+- time-stamp --full-year --round-quarter --dash-all -----
-2026-05-02-183000
+2026-09-28-000000
 
 ----- Test 42 -+- dir: . -+- time-stamp --full-year --round-half --dash-all -----
-2026-05-02-183000
+2026-09-28-000000
 
 ----- Test 43 -+- dir: . -+- time-stamp --full-year --only-date --dash-all -----
-2026-05-02
+2026-09-28
 
 ----- Test 44 -+- dir: . -+- time-stamp --only-date --dash-all -----
-26-05-02
+26-09-28
 
 ----- Test 45 -+- dir: . -+- time-stamp --only-time --dash-all -----
-183132
+001039
 
 ----- Test 46 -+- dir: . -+- time-stamp --only-time --dash-all --no-seconds -----
-1831
+0010
 
 ----- Test 47 -+- dir: . -+- time-stamp --only-time --dash-all --round-quarter --no-seconds -----
-1830
+0000
 
 ----- Test 48 -+- dir: . -+- time-stamp --only-time --dash-all --round-half --no-seconds -----
-1830
+0000
 
 ----- Test 49 -+- dir: . -+- time-stamp --short --default-stamp -----
-260502-183132
+260928-001039
 
 ----- Test 50 -+- dir: . -+- time-stamp --full-year --underscore-all --default-stamp -----
-260502-183132
+260928-001039
 
 ----- Test 51 -+- dir: . -+- time-stamp --full-year --only-date --short-year -----
-260502
+260928

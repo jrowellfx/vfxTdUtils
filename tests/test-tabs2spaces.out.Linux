@@ -21,9 +21,11 @@ weren't what you expected.  Namely, the files ".tabs.diff.tabs" and
 
 Note: when running either of these directly, explicitly prefix the path
 (almost always "./"), e.g. "./.tabs.undo.tabs", rather than typing just
-the bare filename. Without the "./", your shell searches $PATH in order
-and may find and run a different, unrelated file of the same name
-sitting in an earlier directory instead of the one just created here.
+the bare filename. Without the "./", your shell searches $PATH in order,
+and if it finds an unrelated, same-named file left over from some
+earlier, unrelated run sitting in an earlier directory, it WILL actually
+run that one instead -- silently undoing or overwriting whatever file IT
+was created for, somewhere else on your system, with no warning at all.
 
 Note: To get rid of all the crufty leftovers:
     find . -name '.*.tabs' -type f -print0 | xargs -0 /bin/rm -f
@@ -66,8 +68,10 @@ weren't what you expected.  Namely, the files ".spaces.diff.spaces" and
 Note: when running either of these directly, explicitly prefix the path
 (almost always "./"), e.g. "./.spaces.undo.spaces", rather than typing
 just the bare filename. Without the "./", your shell searches $PATH in
-order and may find and run a different, unrelated file of the same name
-sitting in an earlier directory instead of the one just created here.
+order, and if it finds an unrelated, same-named file left over from some
+earlier, unrelated run sitting in an earlier directory, it WILL actually
+run that one instead -- silently undoing or overwriting whatever file IT
+was created for, somewhere else on your system, with no warning at all.
 
 Note: To get rid of all the crufty leftovers:
     find . -name '.*.spaces' -type f -print0 | xargs -0 /bin/rm -f
@@ -180,6 +184,7 @@ usage: tabs2spaces [-h | --help] [OPTION]... [FILE]...
 ----- Test 38 -+- dir: . -+- tabs2spaces roundtrip-undo.txt -----
 
 ----- Test 39 -+- dir: . -+- ./.tabs.undo.tabs  -----
+./.tabs.undo.tabs: Running from /...absPathToRepo.../tests/test-tabs2spaces-dir
 
 ----- Test 40 -+- dir: . -+- cmp roundtrip-undo.txt macbeth.tabs.txt -----
 
@@ -188,6 +193,7 @@ usage: tabs2spaces [-h | --help] [OPTION]... [FILE]...
 ----- Test 42 -+- dir: . -+- spaces2tabs roundtrip-undo2.txt -----
 
 ----- Test 43 -+- dir: . -+- ./.spaces.undo.spaces  -----
+./.spaces.undo.spaces: Running from /...absPathToRepo.../tests/test-tabs2spaces-dir
 
 ----- Test 44 -+- dir: . -+- cmp roundtrip-undo2.txt macbeth.notabs.txt -----
 
@@ -202,12 +208,14 @@ usage: tabs2spaces [-h | --help] [OPTION]... [FILE]...
 .roundtrip-chain.txt.tabs
 
 ----- Test 49 -+- dir: . -+- ./.spaces.undo.spaces  -----
+./.spaces.undo.spaces: Running from /...absPathToRepo.../tests/test-tabs2spaces-dir
 
 ----- Test 50 -+- dir: . -+- cat -te roundtrip-chain.txt -----
     some code$
         nested code$
 
 ----- Test 51 -+- dir: . -+- ./.tabs.undo.tabs  -----
+./.tabs.undo.tabs: Running from /...absPathToRepo.../tests/test-tabs2spaces-dir
 
 ----- Test 52 -+- dir: . -+- cat -te roundtrip-chain.txt -----
 ^Isome code$
@@ -218,5 +226,6 @@ usage: tabs2spaces [-h | --help] [OPTION]... [FILE]...
 ----- Test 54 -+- dir: . -+- cmp roundtrip-chain.txt roundtrip-chain-orig.txt -----
 
 ----- Test extra -+- workingDir contains a space (cd/pwd regression check) -----
+/...absPathToRepo.../tests/test-tabs2spaces-dir/dir with space/.tabs.undo.tabs: Running from /...absPathToRepo.../tests/test-tabs2spaces-dir/dir with space
 undo exit code: 0
 cmp (restored vs original) exit code: 0

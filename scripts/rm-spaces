@@ -46,12 +46,13 @@ set +o noclobber
 cmdName=`basename "$0"`
 
 tmpEmpty=`mktemp`     || exit 1
+tmpEmptyScript=`mktemp` || exit 1
 tmpSedScript=`mktemp` || exit 1
 tmpHelper=`mktemp`    || exit 1
 tmpTac=`mktemp`       || exit 1
 
 cleanup() {
-    /bin/rm "$tmpEmpty" "$tmpSedScript" "$tmpHelper" "$tmpTac" > /dev/null 2>&1
+    /bin/rm "$tmpEmpty" "$tmpEmptyScript" "$tmpSedScript" "$tmpHelper" "$tmpTac" > /dev/null 2>&1
     exit 0
 }
 
@@ -121,8 +122,10 @@ working directory:
 Note: when running any of these directly, explicitly prefix the path
 (almost always "./"), e.g. "./.undo.files.$cmdName", rather than typing
 just the bare filename. Without the "./", your shell searches \$PATH in
-order and may find and run a different, unrelated file of the same name
-sitting in an earlier directory instead of the one just created here.
+order, and if it finds an unrelated, same-named file left over from some
+earlier, unrelated run sitting in an earlier directory, it WILL actually
+run that one instead -- silently undoing or overwriting whatever file IT
+was created for, somewhere else on your system, with no warning at all.
 
 EOF1
         set +f
@@ -208,6 +211,17 @@ done
 
 echo '#!/bin/bash' > "$tmpEmpty"
 echo '' >> "$tmpEmpty"
+
+# The executable .rename.* and .undo.* scripts start with a header (see
+# below), so a script containing no mv commands is no longer identical to
+# "$tmpEmpty" above. Build a second reference that matches such a script,
+# using the same commands that write the real header, so we can still
+# tell when there's nothing worth keeping.
+#
+echo '#!/bin/bash' > "$tmpEmptyScript"
+echo cd \"`pwd`\" >> "$tmpEmptyScript"
+echo echo \"\$0: Running from `pwd`\" >> "$tmpEmptyScript"
+echo '' >> "$tmpEmptyScript"
 
 # Make a sed script that removes spaces.
 # Start with an empty file, it fills up below
@@ -568,6 +582,8 @@ chmod 755 "$tmpHelper"
 if [ "$OPT_DO_REGFILES" = true ] ; then
 
     echo '#!/bin/bash' > .rename.files.$cmdName
+    echo cd \"`pwd`\" >> .rename.files.$cmdName
+    echo echo \"\$0: Running from `pwd`\" >> .rename.files.$cmdName
     cp /dev/null .undo.files.$cmdName
     echo '#!/bin/bash' > .failed.files.$cmdName
 
@@ -606,6 +622,8 @@ if [ "$OPT_DO_REGFILES" = true ] ; then
     fi
 
     echo '' >> .rename.files.$cmdName
+    echo echo \"\$0: Running from `pwd`\" >> .undo.files.$cmdName
+    echo cd \"`pwd`\" >> .undo.files.$cmdName
     echo '#!/bin/bash' >> .undo.files.$cmdName
     echo '' >> .failed.files.$cmdName
     tac .undo.files.$cmdName > "$tmpTac"
@@ -614,12 +632,12 @@ if [ "$OPT_DO_REGFILES" = true ] ; then
 
     chmod +x .*.$cmdName
 
-    cmp --quiet "$tmpEmpty" .rename.files.$cmdName
+    cmp --quiet "$tmpEmptyScript" .rename.files.$cmdName
     if [ $? -eq 0 ]; then
         /bin/rm .rename.files.$cmdName > /dev/null 2>&1
     fi
 
-    cmp --quiet "$tmpEmpty" .undo.files.$cmdName
+    cmp --quiet "$tmpEmptyScript" .undo.files.$cmdName
     if [ $? -eq 0 ]; then
         /bin/rm .undo.files.$cmdName > /dev/null 2>&1
     fi
@@ -637,6 +655,8 @@ if [ "$OPT_DO_DIRECTORIES" = true ] ; then
     # Prep some files to start dumping commands into.
     #
     echo '#!/bin/bash' > .rename.dirs.$cmdName
+    echo cd \"`pwd`\" >> .rename.dirs.$cmdName
+    echo echo \"\$0: Running from `pwd`\" >> .rename.dirs.$cmdName
     cp /dev/null .undo.dirs.$cmdName
     echo '#!/bin/bash' > .failed.dirs.$cmdName
 
@@ -661,6 +681,8 @@ if [ "$OPT_DO_DIRECTORIES" = true ] ; then
     fi
 
     echo '' >> .rename.dirs.$cmdName
+    echo echo \"\$0: Running from `pwd`\" >> .undo.dirs.$cmdName
+    echo cd \"`pwd`\" >> .undo.dirs.$cmdName
     echo '#!/bin/bash' >> .undo.dirs.$cmdName
     echo '' >> .failed.dirs.$cmdName
 
@@ -670,12 +692,12 @@ if [ "$OPT_DO_DIRECTORIES" = true ] ; then
 
     chmod +x .*.$cmdName
 
-    cmp --quiet "$tmpEmpty" .rename.dirs.$cmdName
+    cmp --quiet "$tmpEmptyScript" .rename.dirs.$cmdName
     if [ $? -eq 0 ]; then
         /bin/rm .rename.dirs.$cmdName > /dev/null 2>&1
     fi
 
-    cmp --quiet "$tmpEmpty" .undo.dirs.$cmdName
+    cmp --quiet "$tmpEmptyScript" .undo.dirs.$cmdName
     if [ $? -eq 0 ]; then
         /bin/rm .undo.dirs.$cmdName > /dev/null 2>&1
     fi

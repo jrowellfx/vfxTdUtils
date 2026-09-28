@@ -145,7 +145,7 @@ elif [[ `basename $REPO_DIR` != 'vfxTdUtils' ]]; then
     echo $0: error: REPO_DIR might not be set to vfxTdUtils repo, dangerous recursive rm avoided.
     cleanupExit 1
 fi
-rm -rf $REPO_DIR/tests/$HERO_TESTDIR/*
+rm -rf $REPO_DIR/tests/$HERO_TESTDIR
 mkdir $REPO_DIR/tests/$HERO_TESTDIR > /dev/null 2>&1
 
 # Create list of test directories needed.
@@ -260,6 +260,11 @@ fdir rm-spaces -x -r -q
 fdir find . -type f
 fdir ./.undo.files.rm-spaces
 fdir find . -type f
+gdir find . -type f
+gdir rm-spaces -x
+gdir find . -type f
+gdir ./.undo.files.rm-spaces
+gdir find . -type f
 EOF
 
 ### cat << EOFdebug > $tmpTestCmdFile

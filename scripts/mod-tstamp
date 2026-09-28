@@ -83,7 +83,7 @@
 # MINOR version for added functionality in a backwards compatible manner
 # PATCH version for backwards compatible bug fixes
 #
-VERSION=1.0.1
+VERSION=1.0.2
 
 usage_exit() {
     echo "usage: ${0##*/} [-h | --help] [OPTION]... -N | +N [FILE]..."
@@ -143,15 +143,10 @@ do
                 usage_exit
             fi
 
-            # Verify that the arg is a whole number.  In other words,
-            # everything after the initial +/- should be a digit.
+            # Note: no further validation needed here -- the case
+            # pattern above (-+([0-9])|++([0-9])) already guarantees
+            # everything after the leading +/- is one or more digits.
             #
-            should_be_null=$(echo "$1" | awk '{gsub("^[-+][0-9]*","");print}')
-            if [ "$should_be_null" != "" ]; then
-                echo "${0##*/}: ERROR: Timestamp increment/decrement must be a whole number."
-                usage_exit
-            fi
-
             inc_or_dec="$1"
             shift
         ;;
@@ -164,6 +159,16 @@ do
     esac
 done
 
+# mod-tstamp currently depends on tools that behave differently on
+# macOS (GNU-style "ls --full-time", and an awk providing mktime() and
+# strftime()), so it is not implemented there yet.
+#
+if [ "`uname`" = Darwin ]; then
+    echo "${0##*/}: Sorry, ${0##*/} is not currently implemented on Darwin (macOS)." >&2
+    echo "Please contact james@alpha-eleven.com if you would like this to be implemented." >&2
+    exit 1
+fi
+
 # Verify that the mandatory increment/decrement has been specified.
 #
 if [ "$inc_or_dec" = "" ]; then
@@ -171,20 +176,34 @@ if [ "$inc_or_dec" = "" ]; then
     usage_exit
 fi
 
+exitStatus=0
+
 if [ "$recurse" = yes ]; then
     while [ $# -ne 0 ]
     do
 	f="$1"
+        if [ ! -e "$f" ]; then
+            echo "${0##*/}: ERROR: '$f' does not exist, skipping." >&2
+            exitStatus=1
+            shift
+            continue
+        fi
         # If it's a directory, let "find" do our work.
         if [ -d "$f" ]; then
             # Note use of -print0 and -0 to deal with spaces in names.
-            find "$f" -print0 | xargs -0 $0 $touch_option $inc_or_dec
+            find "$f" -print0 | xargs -0 "$0" $touch_option $inc_or_dec
+            if [ $? -ne 0 ]; then
+                exitStatus=1
+            fi
         else # ...just deal with this file.
-            $0 $touch_option $inc_or_dec "$f"
+            "$0" $touch_option $inc_or_dec "$f"
+            if [ $? -ne 0 ]; then
+                exitStatus=1
+            fi
         fi
 	shift
     done
-    exit
+    exit $exitStatus
 fi
 
 # Convert the HOURS to increment/decrement into SECONDS.
@@ -193,6 +212,14 @@ secs_to_inc_or_dec=$(($inc_or_dec * 60 * 60))
 while  [ $# -ne 0 ]
 do
     f="$1"
+
+    if [ ! -e "$f" ]; then
+        echo "${0##*/}: ERROR: '$f' does not exist, skipping." >&2
+        exitStatus=1
+        shift
+        continue
+    fi
+
     # Get the existing modification and last access timestamps for this file/dir.
     modtime=$(ls -d --full-time "$f" | awk '{print $6,$7}' | sed 's/[:-]/ /g;s/\.000000000//')
     acctime=$(ls -d -u --full-time "$f" | awk '{print $6,$7}' | sed 's/[:-]/ /g;s/\.000000000//')
@@ -210,14 +237,32 @@ do
                                        # BOTH the modification time AND the
                                        # access time.
         touch -m -t $adjusted_modtime "$f"
+        if [ $? -ne 0 ]; then
+            echo "${0##*/}: ERROR: failed to update modification time on '$f'." >&2
+            exitStatus=1
+        fi
         touch -a -t $adjusted_acctime "$f"
+        if [ $? -ne 0 ]; then
+            echo "${0##*/}: ERROR: failed to update access time on '$f'." >&2
+            exitStatus=1
+        fi
     else
         case "$touch_option" in
             -m) touch -m -t $adjusted_modtime "$f"
+                if [ $? -ne 0 ]; then
+                    echo "${0##*/}: ERROR: failed to update modification time on '$f'." >&2
+                    exitStatus=1
+                fi
             ;;
             -a) touch -a -t $adjusted_acctime "$f"
+                if [ $? -ne 0 ]; then
+                    echo "${0##*/}: ERROR: failed to update access time on '$f'." >&2
+                    exitStatus=1
+                fi
             ;;
         esac
     fi
     shift
 done
+
+exit $exitStatus
