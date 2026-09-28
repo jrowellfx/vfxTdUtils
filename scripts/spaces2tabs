@@ -170,6 +170,20 @@ case "${unameOut}" in
     *)          machine="UNKNOWN:${unameOut}"
 esac
 
+# GNU unexpand needs --first-only so that only the leading blanks (the
+# indentation) get converted -- its -t option would otherwise convert all
+# runs of blanks.
+#
+# unexpand on macOS doesn't accept --first-only, as that is its
+# default behavior, so leave it out there. It is deliberately left
+# unquoted below, becase an empty value simply disappears from
+# the command line.
+#
+firstOnly="--first-only"
+if [ "$machine" == "mac" ]; then
+    firstOnly=""
+fi
+
 curDir=`pwd`
 
 echo '#!/bin/bash'  >  .spaces.undo.spaces
@@ -187,9 +201,9 @@ do
 
     if  [ -f "$i" ] && [ -w "$i" ] ; then
         if [ "$stripTrailingWS" = yes ]; then
-            unexpand -t $tabSize --first-only < "$i" | sed -e '1,$ s/ *$//' > "$tmpFile"
+            unexpand -t $tabSize $firstOnly < "$i" | sed -e '1,$ s/ *$//' > "$tmpFile"
         else
-            unexpand -t $tabSize --first-only < "$i" > "$tmpFile"
+            unexpand -t $tabSize $firstOnly < "$i" > "$tmpFile"
         fi
         if [ ${PIPESTATUS[0]} -ne 0 ]; then
             echo "$cmdName: ERROR: unexpand failed on \"$i\"; left unchanged." >&2
